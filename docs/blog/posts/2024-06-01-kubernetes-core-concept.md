@@ -2,12 +2,20 @@
 draft: false
 date: 2024-06-01
 categories:
-  - k8s
+  - kubernetes
+  - topics
 authors:
   - junho
 ---
 
-* Kubernetes Core Concept
+
+## Kubernetes Component
+
+|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="820">|
+|:--:| 
+| *components-of-kubernetes* |
+
+<!-- more -->
 
 
 - [Kubernetes Component](#kubernetes-component)
@@ -20,18 +28,12 @@ authors:
     - [Ingress Controller](#ingress-controller)
     - [Minikube ingress implementation](#minikube-ingress-implementation)
 
-While I've been using kubectl commands to manage services within a cluster—such as ingress, service, and pod components—I've realized that my understanding of their underlying concepts remains somewhat superficial. I'm interested in comprehending how these components interconnect and how clients access the cluster through endpoints. I've tried to delve deeper into details of each component.
-
 - <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
 - <a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&t=104">Kubernetes by Nana-1hr</a>
 - <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a>
 - <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
 
-## Kubernetes Component
-
-|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="820">|
-|:--:| 
-| *components-of-kubernetes* |
+While I've been using kubectl commands to manage services within a cluster—such as ingress, service, and pod components—I've realized that my understanding of their underlying concepts remains somewhat superficial. I'm interested in comprehending how these components interconnect and how clients access the cluster through endpoints. I've tried to delve deeper into details of each component.
 
 ### Master node
 

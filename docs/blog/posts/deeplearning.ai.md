@@ -3,6 +3,8 @@ draft: false
 date: 2024-05-31
 categories:
   - deeplearning
+  - topics
+  - project
 authors:
   - junho
 ---
@@ -7530,6 +7532,10 @@ a.anchor-link {
 
 <h3 id="Abstract">Abstract<a class="anchor-link" href="#Abstract">¶</a></h3><p>Deep learning, a subset of machine learning and artificial intelligence, is a learning algorithm that mimic how human brain (neurological system) works. It can recognize complex patterns like image, text and sound.</p>
 <p>As an analogy, in neurological system, a neuron receives input from other neurons or external sources, processes these inputs, and generates an output. In the context of deep learning, a neuron can be seen as a function that takes inputs, weights and bias, to compute linear function ($Z^{[l]}=W^{[l]}A^{[l-1]}+b^{[l]}$) and applies activation function ($g(Z^{[l]})$).</p>
+
+
+<!-- more -->
+
 <h3 id="Deep-learning-vs.-Machine-learning">Deep learning vs. Machine learning<a class="anchor-link" href="#Deep-learning-vs.-Machine-learning">¶</a></h3><blockquote>
 <p>Deep learning eliminates some of data pre-processing that is typically involved with machine learning. These algorithms can ingest and process unstructured data, like text and images, and it automates feature extraction, removing some of the dependency on human experts. For example, let’s say that we had a set of photos of different pets, and we wanted to categorize by “cat”, “dog”, “hamster”, et cetera. Deep learning algorithms can determine which features (e.g. ears) are most important to distinguish each animal from another. In machine learning, this hierarchy of features is established manually by a human expert.</p>
 </blockquote>
@@ -7542,6 +7548,7 @@ a.anchor-link {
 <h3 id="Forward-and-Backward-Propagation">Forward and Backward Propagation<a class="anchor-link" href="#Forward-and-Backward-Propagation">¶</a></h3><p>Forward propagation involves passing input data through a neural network to obtain predictions.
 Backward propagation computes gradients of model parameters with respect to a loss function.
 By adjusting weights based on gradients, the model gradually improves its predictions.</p>
+
 <ul>
 <li><strong>Forward propagation</strong>   $A^{[l-1]}, W^{[l]}, b^{[l]} \rightarrow Z^{[l]}, A^{[l]}$</li>
 </ul>
@@ -7555,6 +7562,7 @@ By adjusting weights based on gradients, the model gradually improves its predic
 <p>$$db^{[l]} = \frac{1}{m}np.sum(dZ^{[l]}, axis=1, keepdims=True)$$</p>
 <p>$$dA^{[l-1]} = {W^{[l]}}^T dZ^{[l]} = \frac{dJ}{dA^{[l-1]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} \frac{dJ}{dZ^{[l]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} dZ^{[l]}$$</p>
 <p>$$, where \hspace{3mm} dZ^{[L]} = A^{[L]}-Y$$</p>
+
 <p>Also, we have a Loss function $L = -YlogA -(1-Y)log(1-A)$</p>
 <img alt="No description has been provided for this image" src="https://d17pwbfgewyq5y.cloudfront.net/2layerNN_kiank.png" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 2</u>: 2-layer neural network. <br/> The model can be summarized as: ***INPUT -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID -&gt; OUTPUT***. </center></caption>

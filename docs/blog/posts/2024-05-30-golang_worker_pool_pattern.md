@@ -3,6 +3,7 @@ draft: false
 date: 2024-05-30
 categories:
   - golang
+  - topics
 authors:
   - junho
 ---
@@ -11,6 +12,8 @@ authors:
 |:--:| 
 | *Worker pool pattern* |
 
+<!-- more -->
+
 <br>
 
 - The worker pool pattern involves creating a group of worker goroutines to process tasks concurrently,
@@ -18,6 +21,7 @@ authors:
 - Some examples of using the Worker Pool Pattern in Real-world Applications
   - Handling incoming HTTP requests in a web server.
   - Processing images concurrently.
+
 
 ```go
 package main

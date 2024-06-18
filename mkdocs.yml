@@ -31,6 +31,10 @@ theme:
     - yaml
     - rust
 
+extra_css:
+  # - stylesheets/font-awesome.min.css
+  - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css
+
 plugins:
   - search
   - blog:
@@ -40,5 +44,6 @@ plugins:
 
 nav:
   - About me 🧊: index.md
+  - Resume : Resume.md
   - Blog:
       - blog/index.md

@@ -2,15 +2,29 @@
 draft: false
 date: 2024-06-02
 categories:
-  - k8s
+  - kubernetes
+  - deeplearning
+  - project
 authors:
   - junho
 ---
 
+### System overview
+
+|<img src="https://i.imgur.com/w8PxxXk.png" alt="simpledl architecture" width="500">|
+|:--:| 
+| *kubernetes architecture of my application* |
+
+<!-- more -->
+
+[↑ Back to top](#)
+<br><br>
+
+
 - [System overview](#system-overview)
-  - [Virtualbox network architecture](#virtualbox-network-architecture)
-- [Application demo](#application-demo)
 - [Binary classification](#binary-classification)
+- [Virtualbox network architecture](#virtualbox-network-architecture)
+- [Application demo](#application-demo)
 - [Kubernetes setup](#kubernetes-setup)
 - [Virtualbox setup](#virtualbox-setup)
 - [Microservices](#microservices)
@@ -26,16 +40,16 @@ authors:
 - [2. Microk8s implemntation](#microk8s-implemntation)
 - [3. GCP implementation](#gcp-implementation)
 
-### System overview
 
-|<img src="https://i.imgur.com/w8PxxXk.png" alt="simpledl architecture" width="500">|
-|:--:| 
-| *kubernetes architecture of my application* |
+### Binary classification
+
+It is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I plan to test two simple deep learning models to identify cat images and hand-written digits (0-9), respectively and return the result of identification to the browser.
 
 [↑ Back to top](#)
 <br><br>
 
-#### Virtualbox network architecture
+
+### Virtualbox network architecture
 
 I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. 🔥
 
@@ -60,13 +74,6 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 |<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="700"> |
 |:--:| 
 | *Kubernetes resources* |
-
-[↑ Back to top](#)
-<br><br>
-
-### Binary classification
-
-It is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I plan to test two simple deep learning models to identify cat images and hand-written digits (0-9), respectively and return the result of identification to the browser.
 
 [↑ Back to top](#)
 <br><br>
@@ -271,9 +278,6 @@ The basic operations for forward and backward propagations in deep learning algo
 
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
-| <img src="https://d17pwbfgewyq5y.cloudfront.net/latex.png" alt="pods" width="700"> |
-|:--:| 
-| *web application* |
 
 
 [↑ Back to top](#)
