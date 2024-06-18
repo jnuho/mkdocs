@@ -1,4 +1,6 @@
-# About me 🍄
+# About me 🕮
+
+Intertered in Golang and Kuberentes.
 
 ## Links
 
