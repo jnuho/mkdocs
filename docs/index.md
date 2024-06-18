@@ -1,12 +1,10 @@
-# About me 🌊
+# About me ✨
 
 Intertered in Golang and Kuberentes.
 
 [![jnuho GitHub stats](https://github-readme-stats.vercel.app/api?username=jnuho&show_icons=true&rank_icon=percentile&show=reviews,prs_merged,prs_merged_percentage)](https://github.com/jnuho)
 
 [![jnuho GitHub Streak](https://streak-stats.demolab.com?user=jnuho&theme=github-light)](https://github.com/jnuho)
-
-[![jnuho GitHub Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=jnuho)](https://github.com/jnuho)
 
 ## Projects: Personal
 
