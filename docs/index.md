@@ -1,4 +1,4 @@
-# About me ✨
+# About me 🧊
 
 Intertered in Golang and Kuberentes.
 
@@ -26,8 +26,8 @@ Intertered in Golang and Kuberentes.
 
 ## Experience
 
-* [info](experience)
+* [`info`](experience)
 
 ## Blog post
 
-* [blog post](blog)
+* [`post`](post)
