@@ -7,16 +7,22 @@ authors:
   - junho
 ---
 
+- What I learned about AWS (EC2, VPC, ElastiCache) while I worked at Rowem. Inc.
+
+![diagram](https://d2cg24p20j4o18.cloudfront.net/playvote/000/20210819/82331f92-bc8c-403e-a1d1-5d51bc6fec79.jpg)
+
+<!-- more -->
+
 AWS Infra
+
 - Public/private subnets in a VPC
 - Security Group inbound port 6379 open
 - ElastiCache Cluster : choose created VPC, Subnets
 	- VPC: ElastiCache must be in a same VPC as EC2
 	- Subnet Group: choose private Subnet
 
-![diagram](https://d2cg24p20j4o18.cloudfront.net/playvote/000/20210819/82331f92-bc8c-403e-a1d1-5d51bc6fec79.jpg)
-
 Create AWS Resources in the following order:
+
 1. [VPC](#vpc)
 2. [Internet Gateway](#internet-gateway)
 3. [Subnet, Routing Table](#subnet-routing-table)
@@ -25,12 +31,15 @@ Create AWS Resources in the following order:
 5. [ElastiCache](#elasticache)
 
 VPC
+
 - CIDR 172.20.0.0/16
 
 Internet Gateway
+
 - attach to VPC
 
 Subnet, Routing Table
+
 - Public
   - Subnet : CIDR 172.20.0.0/24
   - Routing table - add internet gateway and link to subnet
@@ -40,6 +49,7 @@ Subnet, Routing Table
   - Routing table - link to private subnet
 
 - Security Group
+
 Define security groups in a VPC
 
   - sg-bastion
@@ -52,6 +62,7 @@ Define security groups in a VPC
     - inbound: sg-was/web/bastion:6379
 
 EC2
+
 - install redis client in EC2 instance
 
 ```sh
@@ -73,6 +84,7 @@ redis-cli -h {ElastiCache endpoint} -p {port defined in a SG 6379}
 ```
 
 ElastiCache
+
 - Redis
 - Node type: select memory type (r5, m5,r4,m4,r3,m3,t3,t2) and network type
 - Create subnet group : same VPC as starpass-was-00, starpass-bastion > Select private subnet
@@ -81,6 +93,7 @@ ElastiCache
 
 
 Test
+
 - ElastiCache is only accessible from ip defined in the Security Group inbound rules.
 - EC2 redis-cli connection test to check jedis working from Spring environemnt.
 - Test cache storing by using apache web server in EC2

@@ -9,6 +9,6 @@ authors:
 
 SBS voting platform
 
-* [`Backend dev`](doc_rm_spring.md)
-* [`AWS ops`](elasticache.md)
-* [`Database`](doc_rm_database.md)
+* [`Backend dev`](rowem_spring.md)
+* [`AWS ops`](rowem_elasticache.md)
+* [`Database`](rowem_database.md)

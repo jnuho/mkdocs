@@ -23,6 +23,8 @@ authors:
   ✻ Junit unit test
 ```
 
+<!-- more -->
+
 <br>
 
 ✻ Code Optimization

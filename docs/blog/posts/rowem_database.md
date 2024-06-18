@@ -7,6 +7,10 @@ authors:
   - junho
 ---
 
+- What I learned about MySQL database (Table, Index, Query) while I worked Rowem. Inc.
+
+<!-- more -->
+
 ❒ What I learned :
 ```
 Define Table

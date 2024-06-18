@@ -7,6 +7,12 @@ authors:
   - junho
 ---
 
+- What I learned about AWS (EC2, VPC, ElastiCache) while I worked at Rowem. Inc.
+
+![diagram](https://imgur.com/xkNudsN.png)
+
+<!-- more -->
+
 - 인프라 OverView
   - 같은 VPC 내에, 퍼블릭/프라이빗 서브넷으로 구분
   - 캐시 클러스터 미생성 상태. 보안그룹은 생성되어 있음(인바운드 6379)
@@ -17,8 +23,6 @@ authors:
 <!-- ![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png) -->
 
 <!-- ![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png) -->
-
-![diagram](https://imgur.com/xkNudsN.png)
 
 - 인프라 구축 테스트
   1. [VPC](#vpc)
