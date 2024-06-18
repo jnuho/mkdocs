@@ -9,7 +9,7 @@ Intertered in Golang and Kuberentes.
 
 <hr>
 
-[![jnuho GitHub stats](https://github-readme-stats.vercel.app/api?username=jnuho&show_icons=true&rank_icon=percentile&show=reviews,prs_merged,prs_merged_percentage)](https://github.com/jnuho)
+<!-- [![jnuho GitHub stats](https://github-readme-stats.vercel.app/api?username=jnuho&show_icons=true&rank_icon=percentile&show=reviews,prs_merged,prs_merged_percentage)](https://github.com/jnuho) -->
 
 [![jnuho GitHub Streak](https://streak-stats.demolab.com?user=jnuho&theme=github-light)](https://github.com/jnuho)
 
@@ -18,12 +18,12 @@ Intertered in Golang and Kuberentes.
 ## Projects
 
 - [`simpledl`](blog/posts/simpledl.md) - k8s application for cat vs. non-cat classifier
-- [`deep learning`](blog/posts/deeplearning.ai.md) - deep learning basics using numpy
-- [`go aws sdk dashboard`](blog/posts/doc_goproject_kor.md) - aws resource monitoring dashboard
-- [`sbs voting platform`](blog/posts/doc_rowem.md) - idol voting platform
+- [`deep learning`](blog/posts/deeplearning.ai.md) - deep learning basics I learned using `numpy`
+- [`go aws sdk dashboard`](blog/posts/doc_goproject_kor.md) - I used golang aws sdk to create a dashboard for aws resource
+- [`sbs voting platform`](blog/posts/doc_rowem.md) - IDOL SBS voting platform developed with Java Spring Framework
 
 <hr>
 
-## Blog
+## Blogs
 
-* [`posts`](blog/index.md)
+* [`Link`](blog/index.md)
