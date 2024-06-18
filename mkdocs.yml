@@ -2,35 +2,43 @@ site_name: Jun Ho Lee
 
 theme:
   name: material
-  # color_mode: dark
-  user_color_mode_toggle: true
-  nav_style: primary
-  include_sidebar: true
-  highlightjs: true
-  hljs_languages:
-    - golang
-    - python
-    - yaml
-    - rust
-  palette:
 
+  features:
+    - navigation.top
+    - navigation.indexes
+    - navigation.path
+    - search.suggest
+    - search.highlight
+
+  palette:
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default 
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
-  features:
-    - navigation.path
-    - navigation.instant
-    - navigation.instant.prefetch
-    - search.suggest
-    - search.highlight
-    - search.share
+
+  highlightjs: true
+  hljs_languages:
+    - golang
+    - python
+    - yaml
+    - rust
+
+plugins:
+  - search
+  - blog:
+      blog_dir: blog
+      authors_file: "{blog}/.authors.yml"
+      archive_name: Archive
+
+nav:
+  - About me 🧊: index.md
+  - Blog:
+      - blog/index.md
