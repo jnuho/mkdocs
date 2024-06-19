@@ -2,11 +2,11 @@
 draft: false
 date: 2024-06-02
 categories:
-  - kubernetes
-  - deeplearning
-  - project
+    - kubernetes
+    - deeplearning
+    - project
 authors:
-  - junho
+    - junho
 ---
 
 ### System overview
@@ -29,13 +29,13 @@ authors:
 - [Kubernetes setup](#kubernetes-setup)
 - [Virtualbox setup](#virtualbox-setup)
 - [Microservices](#microservices)
-  - [CORS issue](#cors-issue)
-  - [Backend - Golang web server](#backend-golang-web-server)
-  - [Backend - Python web server](#backend-python-web-server)
-    - [Mathematical background for deep learning image recognizer](#mathematical-background-for-deep-learning-image-recognizer)
-    - [Image Classification](#image-classification)
-    - [Pytorch](#pytorch)
-  - [Frontend - local setup](#frontend-local-setup)
+    - [CORS issue](#cors-issue)
+    - [Backend - Golang web server](#backend-golang-web-server)
+    - [Backend - Python web server](#backend-python-web-server)
+        - [Mathematical background for deep learning image recognizer](#mathematical-background-for-deep-learning-image-recognizer)
+        - [Image Classification](#image-classification)
+        - [Pytorch](#pytorch)
+    - [Frontend - local setup](#frontend-local-setup)
 - [Dockerize for image build](#dockerize)
 - [1. Minikube implementation](#minikube-implementation)
 - [2. Microk8s implemntation](#microk8s-implemntation)
@@ -84,11 +84,11 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 - Kubernetes : 3-node cluster w/ [microk8s](https://microk8s.io/docs/getting-started).
 - Docker and `docker-compose` for testing
 - Microservices architecture
-  - Frontend : Nginx (with html, css, js) as a reverse proxy server
-  - Backend : Python uvicorn, Golang go-gin as backend web server
+    - Frontend : Nginx (with html, css, js) as a reverse proxy server
+    - Backend : Python uvicorn, Golang go-gin as backend web server
 - Deep learning algorithm for binary classification using basic `numpy`
-  - includes forward and [backward propagation](https://en.wikipedia.org/wiki/Backpropagation)
-  - TODO: `pytorch` for cat/non-cat recognizer
+    - includes forward and [backward propagation](https://en.wikipedia.org/wiki/Backpropagation)
+    - TODO: `pytorch` for cat/non-cat recognizer
 - Virtualbox (cli) to create 3 master nodes (ubuntu) for k8s cluster
 
 I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io/) cluster setup using MicroK8s, with basic web service functionality. **My next goal** is to enhance the Python backend service by adding a fundamental deep learning algorithm. Specifically, the Python backend worker will perform binary classification on cat vs. non-cat images from a given image URL. For implementation, I initially explored using `numpy` for backward/forward propagation, and I am currently exploring the `PyTorch` library.
@@ -131,10 +131,10 @@ VBoxManage dhcpserver add --netname k8snetwork --server-ip "10.0.2.2" --netmask 
 vboxmanage dhcpserver restart --network=k8snetwork
 
 for /L %%i in (1, 1, 3) do (
-  REM Create VM
-  VBoxManage createvm --name ubuntu-%%i --register --ostype Ubuntu_64
-  REM ...
-  REM ...
+    REM Create VM
+    VBoxManage createvm --name ubuntu-%%i --register --ostype Ubuntu_64
+    REM ...
+    REM ...
 )
 
 REM Set up port forwarding rules
@@ -167,7 +167,7 @@ sudo ip link set enp0s3 up
 1. frontend: nginx (nodejs vite in local) + javascript + html + css
 2. backend/web: golang (gin framework)
 3. backend/worker: python (fast api, numpy, scikit-learn)
-  - https://fastapi.tiangolo.com/tutorial/
+    - https://fastapi.tiangolo.com/tutorial/
 
 
 ### Communication between services
@@ -236,11 +236,11 @@ go mod tidy
 ### Backend Python web server
 
 - Use FastAPI + Unicorn
-  - FastAPI is an ASGI (<b>Asynchronous</b> Server Gateway Interface) framework which requires an ASGI server to run.
-  - Unicorn is a lightning-fast ASGI server implementation
+    - FastAPI is an ASGI (<b>Asynchronous</b> Server Gateway Interface) framework which requires an ASGI server to run.
+    - Unicorn is a lightning-fast ASGI server implementation
 
 - install python (download .exe from python.org)
-  - check Add to PATH option (required)
+    - check Add to PATH option (required)
 
 
 - Run the python web server
@@ -259,25 +259,25 @@ The basic operations for forward and backward propagations in deep learning algo
 
 - Forward propagation for layer $l$: $a^{[l-1]}\rightarrow a^{[l]}, z^{[l]}, w^{[l]}, b^{[l]}$
 
-  $Z^{[l]} = W^{[l]} A^{[l-1]} + b^{[l]}$
+    $Z^{[l]} = W^{[l]} A^{[l-1]} + b^{[l]}$
 
-  $A^{[l]} = g^{[l]} (Z^{[l]})$
+    $A^{[l]} = g^{[l]} (Z^{[l]})$
 
-  (for $i=1,\dots,L$ with initial value $A^{[0]} = X$)
+    (for $i=1,\dots,L$ with initial value $A^{[0]} = X$)
 
 <br>
 
 - Backward propagation for layer $l$: $da^{[l]} \rightarrow da^{[l-1]},dW^{[l]}, db^{[l]}$
 
-  $dZ^{[l]} = dA^{[l]} * {g^{[l]}}^{'}(Z^{[l]})$
+    $dZ^{[l]} = dA^{[l]} * {g^{[l]}}^{'}(Z^{[l]})$
 
-  $dW^{[l]} = \frac{1}{m}dZ^{[l]}{A^{[l-1]}}^T$
+    $dW^{[l]} = \frac{1}{m}dZ^{[l]}{A^{[l-1]}}^T$
 
-  $db^{[l]} = \frac{1}{m}np.sum(dZ^{[l]}, axis=1, keepdims=True)$
+    $db^{[l]} = \frac{1}{m}np.sum(dZ^{[l]}, axis=1, keepdims=True)$
 
-  $dA^{[l-1]} = {W^{[l]}}^T dZ^{[l]} = \frac{dJ}{dA^{[l-1]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} \frac{dJ}{dZ^{[l]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} dZ^{[l]}$
+    $dA^{[l-1]} = {W^{[l]}}^T dZ^{[l]} = \frac{dJ}{dA^{[l-1]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} \frac{dJ}{dZ^{[l]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} dZ^{[l]}$
 
-  (with initial value $dZ^{[L]} = A^{[L]}-Y$)
+    (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
 
 
@@ -297,27 +297,27 @@ The basic operations for forward and backward propagations in deep learning algo
 
 ### Frontend - local setup
 
-- Download  & install nodejs 20.12.2
-  - for local development using `vite`
+- Download    & install nodejs 20.12.2
+    - for local development using `vite`
 
 ```sh
 npm create vite@latest
-  ? Project name: lesson11
-  > choose Vanilla, TypeScript
+    ? Project name: lesson11
+    > choose Vanilla, TypeScript
 ```
 
 - Edit `package.json` to edit port and dependencies
 
 ```json
-  "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 8080",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
+    "scripts": {
+        "dev": "vite --host 0.0.0.0 --port 8080",
+        "build": "tsc && vite build",
+        "preview": "vite preview"
+    },
 
-  "dependencies": {
-    "axios": "^1.6.8"
-  }
+    "dependencies": {
+        "axios": "^1.6.8"
+    }
 ```
 
 Note that I will be using nginx instead in production environment. I used nodejs vite just for local development environment.
@@ -327,18 +327,18 @@ Note that I will be using nginx instead in production environment. I used nodejs
 # install if package.json changes e.g. project name
 npm i
 npm run dev
-  VITE v5.2.9  ready in 180 ms
+    VITE v5.2.9    ready in 180 ms
 
-  ➜  Local:   http://localhost:4200/
-  ➜  Network: use --host to expose
-  ➜  press h + enter to show help
+    ➜    Local:     http://localhost:4200/
+    ➜    Network: use --host to expose
+    ➜    press h + enter to show help
 ```
 
 - Edit code
-  - Write `index.html`
-  - Create directory: `./model`, `./templates`
-  - Define models and templates
-  - Edit `main.ts`
+    - Write `index.html`
+    - Create directory: `./model`, `./templates`
+    - Define models and templates
+    - Edit `main.ts`
 
 
 
@@ -351,7 +351,7 @@ npm run dev
 One strategy to achieve this is by utilizing base images that are minimalistic, such as the Alpine image.
 
 - [NOTE on defining backend endpoint in frontend](https://stackoverflow.com/a/56375180/23876187)
-  - frontend app is not in any container, but the javascript is served from container as a js script file to <b>your browser</b>!
+    - frontend app is not in any container, but the javascript is served from container as a js script file to <b>your browser</b>!
 
 - frontend nginx service
 
@@ -385,8 +385,8 @@ sudo dpkg -i minikube_latest_amd64.deb
 ```sh
 # As a TROUBLE SHOOTING:
 docker context use default
-  default
-  Current context is now "default"
+    default
+    Current context is now "default"
 
 minikube start
 ```
@@ -407,10 +407,10 @@ docker login --username YOUR_USERNAME
 
 ```
 k create secret docker-registry regcred \
-  --docker-server=https://index.docker.io/v1/ \
-  --docker-username=USER \
-  --docker-password=PW \
-  --docker-email=EMAIL
+    --docker-server=https://index.docker.io/v1/ \
+    --docker-username=USER \
+    --docker-password=PW \
+    --docker-email=EMAIL
 
 k get secret
 ```
@@ -428,27 +428,27 @@ k get secret
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fe-nginx-deployment
+    name: fe-nginx-deployment
 spec:
-  replicas: 1
-  # Deployement manages pods with label 'app: fe-nginx
-  selector:
-    matchLabels:
-      app: fe-nginx
-  # define labels for the Pods:
-  #   must be matched by service.yaml > spec.selector
-  template:
-    metadata:
-      labels:
-        app: fe-nginx
-    spec:
-      containers:
-      - name: fe-nginx
-        image: jnuho/fe-nginx:latest
-        ports:
-        - containerPort: 80
-      imagePullSecrets:
-      - name: regcred
+    replicas: 1
+    # Deployement manages pods with label 'app: fe-nginx
+    selector:
+        matchLabels:
+            app: fe-nginx
+    # define labels for the Pods:
+    #     must be matched by service.yaml > spec.selector
+    template:
+        metadata:
+            labels:
+                app: fe-nginx
+        spec:
+            containers:
+            - name: fe-nginx
+                image: jnuho/fe-nginx:latest
+                ports:
+                - containerPort: 80
+            imagePullSecrets:
+            - name: regcred
 
 ```
 
@@ -462,17 +462,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fe-nginx-service
-  namespace: simple
+    name: fe-nginx-service
+    namespace: simple
 spec:
-  # must match deployment.yaml > spec.template.metadata.labels
-  selector:
-    app: fe-nginx
-  ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 80
-  type: ClusterIP
+    # must match deployment.yaml > spec.template.metadata.labels
+    selector:
+        app: fe-nginx
+    ports:
+        - protocol: TCP
+            port: 8080
+            targetPort: 80
+    type: ClusterIP
 ```
 
 
@@ -514,34 +514,34 @@ winget install Helm.Helm
 
 # RESTART terminal and do:
 helm upgrade --install ingress-nginx ingress-nginx \
-  --repo https://kubernetes.github.io/ingress-nginx \
-  --namespace ingress-nginx --create-namespace
+    --repo https://kubernetes.github.io/ingress-nginx \
+    --namespace ingress-nginx --create-namespace
 ```
 
 - Check if ingress controller is working:
 
 ```sh
 helm list
-  NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
-  ingress-nginx   default         1               2024-04-30 14:26:18.9350713 +0900 KST   deployed        ingress-nginx-4.10.1    1.10.1
+    NAME                        NAMESPACE             REVISION                UPDATED                                                                 STATUS                    CHART                                     APP VERSION
+    ingress-nginx     default                 1                             2024-04-30 14:26:18.9350713 +0900 KST     deployed                ingress-nginx-4.10.1        1.10.1
 
 k get ClusterRole | grep ingress
-  ingress-nginx                                                          2024-04-30T07:01:05Z
+    ingress-nginx                                                                                                                    2024-04-30T07:01:05Z
 
 k get all
-  NAME                                           READY   STATUS    RESTARTS   AGE
-  pod/ingress-nginx-controller-cf668668c-zvkd9   1/1     Running   0          44s
+    NAME                                                                                     READY     STATUS        RESTARTS     AGE
+    pod/ingress-nginx-controller-cf668668c-zvkd9     1/1         Running     0                    44s
 
-  NAME                                         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
-  service/ingress-nginx-controller             LoadBalancer   10.100.168.236   <pending>     80:32020/TCP,443:31346/TCP   44s
-  service/ingress-nginx-controller-admission   ClusterIP      10.107.208.79    <none>        443/TCP                      44s
-  service/kubernetes                           ClusterIP      10.96.0.1        <none>        443/TCP                      4m8s
+    NAME                                                                                 TYPE                     CLUSTER-IP             EXTERNAL-IP     PORT(S)                                            AGE
+    service/ingress-nginx-controller                         LoadBalancer     10.100.168.236     <pending>         80:32020/TCP,443:31346/TCP     44s
+    service/ingress-nginx-controller-admission     ClusterIP            10.107.208.79        <none>                443/TCP                                            44s
+    service/kubernetes                                                     ClusterIP            10.96.0.1                <none>                443/TCP                                            4m8s
 
-  NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
-  deployment.apps/ingress-nginx-controller   1/1     1            1           44s
+    NAME                                                                             READY     UP-TO-DATE     AVAILABLE     AGE
+    deployment.apps/ingress-nginx-controller     1/1         1                        1                     44s
 
-  NAME                                                 DESIRED   CURRENT   READY   AGE
-  replicaset.apps/ingress-nginx-controller-cf668668c   1         1         1       44s
+    NAME                                                                                                 DESIRED     CURRENT     READY     AGE
+    replicaset.apps/ingress-nginx-controller-cf668668c     1                 1                 1             44s
 ```
 
 
@@ -557,14 +557,14 @@ k get all
 8. **Apply the Ingress YAML File**: Just like with the Deployment and Service files, you can apply the Ingress file with `kubectl apply -f <ingress-filename.yaml>`.
 
 - Ingress rules
-  - Ingress rules are resources that help route services to your desired domain name or prefix. They are divided into prefix and DNS.
-  - .yaml mainifest for ingress rules
+    - Ingress rules are resources that help route services to your desired domain name or prefix. They are divided into prefix and DNS.
+    - .yaml mainifest for ingress rules
 
 ```sh
 k apply ingress.yaml
 k get ingress
-  NAME               CLASS   HOSTS                ADDRESS        PORTS   AGE
-  fe-nginx-ingress   nginx   my-app.example.com   192.168.49.2   80      4m35s
+    NAME                             CLASS     HOSTS                                ADDRESS                PORTS     AGE
+    fe-nginx-ingress     nginx     my-app.example.com     192.168.49.2     80            4m35s
 ```
 
 
@@ -576,17 +576,17 @@ k get ingress
 
 
 - Accessing application
-  - For accessing these applications in a local cluster, you should access it through node port (30000 ports) or use a reverse proxy to send them.
-  - But is there any way to access app on port 80 or 443?
-    - use Port-forward or `MetalLB` to allow access to app on port 80 or 443.
+    - For accessing these applications in a local cluster, you should access it through node port (30000 ports) or use a reverse proxy to send them.
+    - But is there any way to access app on port 80 or 443?
+        - use Port-forward or `MetalLB` to allow access to app on port 80 or 443.
 
 - port forward
 
 ```sh
 k get svc -n ingress-nginx
-NAME                                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
-ingress-nginx-controller             NodePort    10.107.26.28   <none>        80:32361/TCP,443:31064/TCP   3h9m
-ingress-nginx-controller-admission   ClusterIP   10.106.14.66   <none>        443/TCP                      3h9m
+NAME                                                                 TYPE                CLUSTER-IP         EXTERNAL-IP     PORT(S)                                            AGE
+ingress-nginx-controller                         NodePort        10.107.26.28     <none>                80:32361/TCP,443:31064/TCP     3h9m
+ingress-nginx-controller-admission     ClusterIP     10.106.14.66     <none>                443/TCP                                            3h9m
 
 kubectl port-forward -n <namespace> svc/<service-name> <local-port>:<service-port>
 kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80 3001:3001 3002:3002
@@ -603,22 +603,22 @@ kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80 3001:30
 # strictARP to true
 kubectl edit configmap -n kube-system kube-proxy
 
-  apiVersion: kubeproxy.config.k8s.io/v1alpha1
-  kind: KubeProxyConfiguration
-  mode: "ipvs"
-  ipvs:
-    strictARP: true
+    apiVersion: kubeproxy.config.k8s.io/v1alpha1
+    kind: KubeProxyConfiguration
+    mode: "ipvs"
+    ipvs:
+        strictARP: true
 
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-frr.yaml
 
 kubectl get pods -n metallb-system
-  NAME                          READY   STATUS    RESTARTS   AGE
-  controller-596589985b-jrnmk   1/1     Running   0          34m
-  speaker-hdrmc                 4/4     Running   0          34m
+    NAME                                                    READY     STATUS        RESTARTS     AGE
+    controller-596589985b-jrnmk     1/1         Running     0                    34m
+    speaker-hdrmc                                 4/4         Running     0                    34m
 ```
 
 - Now set a range IPs for your local load balancer by creating a configMap. 
-  - Remember that the set of IP addresses you apply must be in the same range as your nodes IPs
+    - Remember that the set of IP addresses you apply must be in the same range as your nodes IPs
 
 The range of IP addresses you choose for MetalLB should be in the same subnet as your nodes' IPs. These IP addresses are used by MetalLB to assign to services of type LoadBalancer.
 Using command, `k get node -o wide`, the INTERNAL-IP of my node is 192.168.49.2. So, choose a range of IP addresses in the 192.168.49.x range for MetalLB. For example, 192.168.49.100-192.168.49.110 as my range.
@@ -628,24 +628,24 @@ The IP addresses you choose for MetalLB should be reserved for MetalLB's use and
 ```yaml
 # to see ip range for node
 kubectl get nodes -o wide
-  NAME       STATUS   ROLES           AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION                       CONTAINER-RUNTIME
-  minikube   Ready    control-plane   41m   v1.30.0   192.168.49.2   <none>        Ubuntu 22.04.4 LTS   5.15.146.1-microsoft-standard-WSL2   docker://26.0.1
+    NAME             STATUS     ROLES                     AGE     VERSION     INTERNAL-IP        EXTERNAL-IP     OS-IMAGE                         KERNEL-VERSION                                             CONTAINER-RUNTIME
+    minikube     Ready        control-plane     41m     v1.30.0     192.168.49.2     <none>                Ubuntu 22.04.4 LTS     5.15.146.1-microsoft-standard-WSL2     docker://26.0.1
 
 cat > configmap.yaml
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: nat
-  namespace: metallb-system
+    name: nat
+    namespace: metallb-system
 spec:
-  addresses:
-    - 192.168.49.100-192.168.49.110
+    addresses:
+        - 192.168.49.100-192.168.49.110
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
-  name: empty
-  namespace: metallb-system
+    name: empty
+    namespace: metallb-system
 
 
 k apply -f configmap.yaml
@@ -655,8 +655,8 @@ kubectl rollout restart deployment controller -n metallb-system
 # check EXTERNAL-IP for nginx-controller is assigned!!!
 # the external IPS is assigned to your NGINX load balancer service and all other load balancer typed services.
 k get svc
-  NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)                      AGE
-  ingress-nginx-controller             LoadBalancer   10.100.168.236   192.168.49.100   80:32020/TCP,443:31346/TCP   68m
+    NAME                                                                 TYPE                     CLUSTER-IP             EXTERNAL-IP            PORT(S)                                            AGE
+    ingress-nginx-controller                         LoadBalancer     10.100.168.236     192.168.49.100     80:32020/TCP,443:31346/TCP     68m
 ```
 
 
@@ -664,8 +664,8 @@ k get svc
 <br><br>
 
 - DNS Setup
-  - Finally, you need to set the domain names defined in the ingress rules in your DNS server or hosts file
-  - edit hosts file, `C:\Windows\System32\drivers\etc\hosts`
+    - Finally, you need to set the domain names defined in the ingress rules in your DNS server or hosts file
+    - edit hosts file, `C:\Windows\System32\drivers\etc\hosts`
 
 ```
 192.168.49.100 my-app.example.com
@@ -683,11 +683,11 @@ k get svc
 
 ```sh
 minikube docker-env
-    W0502 10:17:02.728250   12636 main.go:291] Unable to resolve the current Docker CLI context "default": context "default": context not found: open C:\Users\user\.docker\contexts\meta\37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f\meta.json: The system cannot find the path specified.
-    export DOCKER_TLS_VERIFY="1"
-    export DOCKER_HOST="tcp://127.0.0.1:57853"
-    export DOCKER_CERT_PATH="C:\Users\user\.minikube\certs"
-    export MINIKUBE_ACTIVE_DOCKERD="minikube"
+        W0502 10:17:02.728250     12636 main.go:291] Unable to resolve the current Docker CLI context "default": context "default": context not found: open C:\Users\user\.docker\contexts\meta\37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f\meta.json: The system cannot find the path specified.
+        export DOCKER_TLS_VERIFY="1"
+        export DOCKER_HOST="tcp://127.0.0.1:57853"
+        export DOCKER_CERT_PATH="C:\Users\user\.minikube\certs"
+        export MINIKUBE_ACTIVE_DOCKERD="minikube"
 
 # To point your shell to minikube's docker-daemon, run:
 # eval $(minikube -p minikube docker-env)
@@ -712,13 +712,13 @@ docker build -f dockerfiles/Dockerfile-nginx -t fe-nginx .
 
 ```yaml
 spec:
-  templates:
-    spec:
-      containers:
-      - name: fe-nginx
-        image: fe-nginx:latest
-        ports:
-        - containerPort: 80
+    templates:
+        spec:
+            containers:
+            - name: fe-nginx
+                image: fe-nginx:latest
+                ports:
+                - containerPort: 80
 ```
 
 ```sh
@@ -743,51 +743,51 @@ k apply -f deployment.yaml
 <br><br>
 
 - mount data to minikube cluster
-  - suppose golang docker container source does:
+    - suppose golang docker container source does:
 
 
 ```go
 var version = "0.0.2"
 func indexHandler(w http.ResponseWriter, req *http.Request){ 
-    // after deployment.yaml volumeMount, this will printout
-    // NOTE:
-    localFile, err := os.ReadFile("/tmp/data/hello-world.txt")
-    if err != nil {
-        fmt.Printf("couldn't read file %v\n", err)
-    }
-    // before deployment.yaml volumeMount, this will printout
-    fmt.FPrintf(w,"<h1>hello world :) </h1> \n Version %s\n File Content:%s", version, localFile)
+        // after deployment.yaml volumeMount, this will printout
+        // NOTE:
+        localFile, err := os.ReadFile("/tmp/data/hello-world.txt")
+        if err != nil {
+                fmt.Printf("couldn't read file %v\n", err)
+        }
+        // before deployment.yaml volumeMount, this will printout
+        fmt.FPrintf(w,"<h1>hello world :) </h1> \n Version %s\n File Content:%s", version, localFile)
 }
 ```
 
 
 ```sh
-minikube mount  {localdir}:{minikube hostdir}
+minikube mount    {localdir}:{minikube hostdir}
 
 # mount a volume to minikube cluster (persistant storage)
 # mount files to minikube cluster
-minikube mount  /c/Users/user/Downloads/tmp:/tmp/data
+minikube mount    /c/Users/user/Downloads/tmp:/tmp/data
 ```
 
 ```yaml
 spec:
-  templates:
-    spec:
-      containers:
-      - name: fe-nginx
-        image: fe-nginx:latest
-        ports:
-        - containerPort: 80
-        # target dir inside pod: /tmp/data
-        volumeMounts:
-        - mountPath: /tmp/data
-          name: test-volume
-      volumes:
-        - name: test-volume
-          # host is kubernetes host(vm)
-          hostPath:
-            # directory location on host
-            path: /tmp/data
+    templates:
+        spec:
+            containers:
+            - name: fe-nginx
+                image: fe-nginx:latest
+                ports:
+                - containerPort: 80
+                # target dir inside pod: /tmp/data
+                volumeMounts:
+                - mountPath: /tmp/data
+                    name: test-volume
+            volumes:
+                - name: test-volume
+                    # host is kubernetes host(vm)
+                    hostPath:
+                        # directory location on host
+                        path: /tmp/data
 ```
 
 
@@ -821,7 +821,7 @@ minikube service my-fe-nginx
 ```sh
 minikube ip
 minikube dashboard --url
-    http://127.0.0.1:45583/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+        http://127.0.0.1:45583/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
 ```
 
 
@@ -928,14 +928,14 @@ microk8s join [TOKEN]
 vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
 
 - Address: 172.16.9.201:19001
-  ID: 3297041220608546238
-  Role: 0
+    ID: 3297041220608546238
+    Role: 0
 - Address: 172.16.9.202:19001
-  ID: 13629670026737620399
-  Role: 0
+    ID: 13629670026737620399
+    Role: 0
 - Address: 172.16.9.203:19001
-  ID: 10602814967080190144
-  Role: 0
+    ID: 10602814967080190144
+    Role: 0
 ```
 
 |<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-add-node.png" alt="add-node" width="700">|
@@ -952,13 +952,13 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
 <br><br>
 
 - Trouble-shooting
-  - diagnosis:
-    - deployed pods with count of 2 replicas, one on node1 and another on node3
-    - calling endpoint seems to have different result for each time of calling.
-  - cause:
-    - microk8s ctr images import was done only one node1.
-    - node3 tries to pull image from public docker hub instead of local repository.
-    - in result, two pods have different images: one from local repository, another from public docker repository.
+    - diagnosis:
+        - deployed pods with count of 2 replicas, one on node1 and another on node3
+        - calling endpoint seems to have different result for each time of calling.
+    - cause:
+        - microk8s ctr images import was done only one node1.
+        - node3 tries to pull image from public docker hub instead of local repository.
+        - in result, two pods have different images: one from local repository, another from public docker repository.
 
 
 |<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-cause.png" alt="pods" width="700">|
@@ -968,16 +968,16 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
 
 ```
 k describe pod fe-nginx-deployment-7b9c5bb8f8-xlrs2
-    Containers:
-      fe-nginx:
-        Image:          jnuho/fe-nginx:latest
-        Image ID:       sha256:2544d68d372793a21b627c360def55e648ad2cfbbf330a65ba567dbced1985f2
+        Containers:
+            fe-nginx:
+                Image:                    jnuho/fe-nginx:latest
+                Image ID:             sha256:2544d68d372793a21b627c360def55e648ad2cfbbf330a65ba567dbced1985f2
 
 k describe pod fe-nginx-deployment-7b9c5bb8f8-q6d6m
-    Containers:
-      fe-nginx:
-        Image:          jnuho/fe-nginx:latest
-        Image ID:       docker.io/jnuho/fe-nginx@sha256:48e8995cc2c86a3759ac1156cd954d8f90a1c054ae1fcd67181a77df2ff5492f
+        Containers:
+            fe-nginx:
+                Image:                    jnuho/fe-nginx:latest
+                Image ID:             docker.io/jnuho/fe-nginx@sha256:48e8995cc2c86a3759ac1156cd954d8f90a1c054ae1fcd67181a77df2ff5492f
 
 ```
 
@@ -986,7 +986,7 @@ k describe pod fe-nginx-deployment-7b9c5bb8f8-q6d6m
 <br><br>
 
 - Local docker registory
-  - https://microk8s.io/docs/registry-images
+    - https://microk8s.io/docs/registry-images
 
 ```sh
 git clone https://github.com/jnuho/simpledl.git
@@ -1102,20 +1102,20 @@ go test ./...
 ```sh
 gcloud compute security-policies create my-security-policy
 gcloud compute security-policies rules create 1000 \
-  --security-policy my-security-policy \
-  --action allow \
-  --src-ip-ranges <your-home-ip>
+    --security-policy my-security-policy \
+    --action allow \
+    --src-ip-ranges <your-home-ip>
 gcloud compute security-policies rules create 2000 
-  --security-policy my-security-policy \
-  --action deny \
-  --src-ip-ranges 0.0.0.0/0
+    --security-policy my-security-policy \
+    --action deny \
+    --src-ip-ranges 0.0.0.0/0
 gcloud compute backend-services update <your-backend-service> \
-  --security-policy my-security-policy
+    --security-policy my-security-policy
 ```
 
 - GCP console setup
-  - vm instacne : create with machine type(E2- memory 4GB)
-  - VPC network : firewalls > add filewall rule (your ip)
+    - vm instacne : create with machine type(E2- memory 4GB)
+    - VPC network : firewalls > add filewall rule (your ip)
 
 - gcp ssh connect
 
@@ -1129,34 +1129,34 @@ gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 <br><br>
 
 - Google Cloud SDK
-  - Create Service account
-    - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
-    - Create key and download and rename `gcp-sa-key.json`
+    - Create Service account
+        - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
+        - Create key and download and rename `gcp-sa-key.json`
 
 
 - Google Kubernetes Engine
-  - <a href="https://www.youtube.com/watch?v=P1x1Rk_TzV4" target="_blank">Ingress in 5 Minutes</a>
-  - <a href="https://youtu.be/8RQvtagsrg0?si=IwP0qNMz0kutUOVo" target="_blank">GKE Load Balancing</a>
-  - <a href="https://youtu.be/jW_-KZCjsm0?si=u8-842mszl7O9Kr3" target="_blank">GKE tutorial</a>
-  - https://www.youtube.com/watch?v=QvVmQtO-ftU&ab_channel=GoogleCloudTech
+    - <a href="https://www.youtube.com/watch?v=P1x1Rk_TzV4" target="_blank">Ingress in 5 Minutes</a>
+    - <a href="https://youtu.be/8RQvtagsrg0?si=IwP0qNMz0kutUOVo" target="_blank">GKE Load Balancing</a>
+    - <a href="https://youtu.be/jW_-KZCjsm0?si=u8-842mszl7O9Kr3" target="_blank">GKE tutorial</a>
+    - https://www.youtube.com/watch?v=QvVmQtO-ftU&ab_channel=GoogleCloudTech
 
 - GKE provides a variety of Kubernetes-native constructs to manage L4 and L7 load balancers on Google Cloud.
-  - Service, Ingress, Gateway, Network endpoint groups
-  - GKE load balancers work by routing traffic to pods based on a set of rules
-  - Exposing services outside of the cluster
-    - NodePort Service
-      - uses GKE Node IP, exposes a service on the "same" port on every Node
-    - Load Balancer Service
-      - L4 routing (TCP/UDP), allocates a routable IP+port to a Cloud Load Balancer and uses a Node Port to forward traffic to backend pods
-    - Ingress/Gateway
-      - L7 routing (HTTP/S), allocates a routable IP + HTTP/S ports to a Cloud Load Balancer and uses Pods' IP address to forward traffic directly
+    - Service, Ingress, Gateway, Network endpoint groups
+    - GKE load balancers work by routing traffic to pods based on a set of rules
+    - Exposing services outside of the cluster
+        - NodePort Service
+            - uses GKE Node IP, exposes a service on the "same" port on every Node
+        - Load Balancer Service
+            - L4 routing (TCP/UDP), allocates a routable IP+port to a Cloud Load Balancer and uses a Node Port to forward traffic to backend pods
+        - Ingress/Gateway
+            - L7 routing (HTTP/S), allocates a routable IP + HTTP/S ports to a Cloud Load Balancer and uses Pods' IP address to forward traffic directly
 
 
 0. Create new project and enable Google Kuberentes Engine api
 
 1. Create Kubernetes cluster (console/cli)
-  - in console create a cluster
-  - 3 nodes, 6CPUs 12 GB
+    - in console create a cluster
+    - 3 nodes, 6CPUs 12 GB
 
 ```sh
 gcloud container clusters create my-cluster --zone=asia-northeast3-a --num-nodes=3 --machine-type=n1-standard-2
@@ -1172,7 +1172,7 @@ gcloud components install kubectl
 ```
 
 3. Authenticate with gcloud
-  - authenticate using your google cloud credentials
+    - authenticate using your google cloud credentials
 
 ```sh
 gcloud auth login
@@ -1187,7 +1187,7 @@ gcloud config set project poised-cortex-422112-g5
 # Connect to cluster
 # `in console 3 dots > Connect` gives a command:
 gcloud container clusters get-credentials my-cluster --zone asia-northeast3-a --project poised-cortex-422112-g5
-#   > kubeconfig entry generated for my-cluster
+#     > kubeconfig entry generated for my-cluster
 
 # Deploy microservices by creating deployment and service
 kubectl create deployment hello-world-rest-api --image=jnuho/fe-nginx:latest
@@ -1195,12 +1195,12 @@ kubectl create deployment hello-world-rest-api --image=jnuho/fe-nginx:latest
 kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
 
 kubectl get service
-  TYPE         CLUSTER-IP     EXTERNAL-IP
-  LoadBalancer 10.80.13.230   <pending>
+    TYPE                 CLUSTER-IP         EXTERNAL-IP
+    LoadBalancer 10.80.13.230     <pending>
 
 k get svc --watch
-  TYPE         CLUSTER-IP     EXTERNAL-IP
-  LoadBalancer 10.80.13.230   35.184.204.214
+    TYPE                 CLUSTER-IP         EXTERNAL-IP
+    LoadBalancer 10.80.13.230     35.184.204.214
 
 curl 35.184.204.214:8080/hello-world
 ```
@@ -1213,14 +1213,14 @@ curl 35.184.204.214:8080/hello-world
 ### docker image tag
 
 - in Kubernetes
-  - fe-nginx-k8s
-  - be-go-k8s
-  - be-py
+    - fe-nginx-k8s
+    - be-go-k8s
+    - be-py
 
 - in docker-compose
-  - fe-nginx-docker
-  - be-go-docker
-  - be-py
+    - fe-nginx-docker
+    - be-go-docker
+    - be-py
 
 
 [↑ Back to top](#)
