@@ -1,3 +1,7 @@
+## Blog Posts
+
+* [`Link`](blog/index.md)
+
 ## Projects
 
 - [`Cat vs. Non-cat classifier`](blog/posts/Cat-vs.-Non-cat-Classifier.md) - k8s application for cat vs. non-cat classifier
@@ -6,10 +10,6 @@
 - [`SBS Starplanet`](blog/posts/Work-at-Rowem.md) - SBS Inkigayo voting platform Backend development
 
 <hr>
-
-## Blogs
-
-* [`Link`](blog/index.md)
 
 ## About me
 
