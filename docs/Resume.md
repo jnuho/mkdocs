@@ -1,7 +1,7 @@
 
 # Work
 
-### Kaon <small>2023.03 ~ 2024.04 </small>
+### Kaon Media <small>2023.03 ~ 2024.04 </small>
 
 - [Kubernetes](https://jnuho.github.io/project/2024/06/02/simpledl.html)
 - [CI/CD](https://jnuho.github.io/articles/cicd)

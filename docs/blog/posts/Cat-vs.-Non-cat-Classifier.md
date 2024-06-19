@@ -20,6 +20,7 @@ authors:
 [↑ Back to top](#)
 <br><br>
 
+* <i style="font-size:24px" class="fa">&#xf09b;</i> <a href="https://github.com/jnuho/simpledl" target="_blank">`github.com/jnuho/simpledl`</a>
 
 - [System overview](#system-overview)
 - [Binary classification](#binary-classification)
