@@ -12,7 +12,7 @@ authors:
 ❚ AWS 자원 조회
 
 <div>
-<img src="https://i.imgur.com/zjZAUPN.gif" height="60%" width="60%" alt="go sdk app">
+<img src="https://i.imgur.com/zjZAUPN.gif" height="80%" width="80%" alt="go sdk app">
 </div>
 
 

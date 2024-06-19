@@ -11,7 +11,7 @@ authors:
 
 ### System overview
 
-|<img src="https://i.imgur.com/w8PxxXk.png" alt="simpledl architecture" width="500">|
+|<img src="https://i.imgur.com/w8PxxXk.png" alt="simpledl architecture" width="420">|
 |:--:| 
 | *kubernetes architecture of my application* |
 
@@ -54,7 +54,7 @@ It is a basic deep learning image recognizers, one of which was covered in Andre
 I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. 🔥
 
 
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/virtualbox_NAT.drawio.png" alt="pods" width="500">|
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/virtualbox_NAT.drawio.png" alt="pods" width="520">|
 |:--:| 
 | *NAT network* |
 
@@ -67,11 +67,11 @@ I had to construct a virtualbox environment in which my kubernetes cluster and a
 
 The following image is the result of deployment on **multi-node Kuberentes cluster.**
 
-| <img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-result.gif" alt="pods" width="700"> |
+| <img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-result.gif" alt="pods" width="680"> |
 |:--:| 
 | *web application* |
 
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="700"> |
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="680"> |
 |:--:| 
 | *Kubernetes resources* |
 
@@ -941,7 +941,7 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
 |:--:| 
 | *Add node to form 3-master-node microk8s cluster* |
 
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-3-node.png" alt="3-node" width="500">|
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-3-node.png" alt="3-node" width="450">|
 |:--:| 
 | *result of a cluster* |
 
