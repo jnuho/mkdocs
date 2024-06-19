@@ -1,4 +1,4 @@
-## Blog Posts
+## Blog
 
 * [`Link`](blog/index.md)
 
