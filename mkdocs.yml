@@ -2,7 +2,7 @@ site_name: Jun Ho Lee
 
 theme:
   name: material
-  logo: https://i.imgur.com/js8tcwn.jpg
+  # logo: assets/favicon.png
 
   font:
     text: IBM Plex Sans
