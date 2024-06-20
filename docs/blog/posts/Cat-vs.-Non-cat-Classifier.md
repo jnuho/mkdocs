@@ -289,6 +289,7 @@ The basic operations for forward and backward propagations in deep learning algo
 - cat vs.non-cat image classification and hand-written digits recognition
 - https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon
 - https://detexify.kirelabs.org/classify.html
+- https://mco-mnist-draw-rwpxka3zaa-ue.a.run.app/
 
 
 
@@ -1225,3 +1226,4 @@ curl 35.184.204.214:8080/hello-world
 
 [↑ Back to top](#)
 <br><br>
+
