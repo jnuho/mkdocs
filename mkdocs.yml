@@ -48,7 +48,6 @@ plugins:
 
 nav:
   - Home: index.md
-  - About me 🧊: aboutme.md
-  - Resume : Resume.md
+  - Resume: Resume.md
   - Blog:
       - blog/index.md
