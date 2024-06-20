@@ -3,20 +3,20 @@
 
 ### Kaon Media
 
-<small>2023.03 ~ 2024.04</small>
+<small>March 2023 ~ April 2024</small>
 
-* [`Kubernetes`](../blog/2024/06/01/Kubernetes-Core-Concept)
+* [`Kubernetes`](../blog/2024/06/01/kubernetes-core-concept)
 * [`CI/CD pipeline`](../blog/2023/03/02/cicd-work)
     - Teamcity + gitlab
-* [`Helm Chart`](../blog/2024/05/30/helm)
+* [`Helm Chart`](../blog/helm.pdf)
 * `docker-compose` for managing microservices
     - backup operation every week
-- `Golang` backend (for microservices testing purposes)
+- `Golang` backend development (for microservices testing purposes)
 
 
 ### Douzone
 
-<small>2022.12 ~ 2023.03</small>
+<small>December 2022 ~ March 2023</small>
 
 - Worked as a Freelancer
     - Java backend development
@@ -25,26 +25,26 @@
 
 ### CSLEE
 
-<small>2022.03 ~ 2022.12</small>
+<small>March 2022 ~ December 2022</small>
 
-- [AWS ops](../blog/2022/11/01/aws-cli)
-- [Go AWS SDK](../blog/2022/10/01/golang-aws-dashboard)
+- [AWS operator](../blog/2022/11/01/aws-cli)
+- [Golang AWS SDK for a dashboard web app](../blog/2022/10/01/golang-aws-dashboard)
 
 
 ### Rowem
 
-<small>2019.11 ~ 2022.03</small>
+<small>November 2019 ~ March 2022</small>
 
-- [Backend dev](../blog/2022/03/01/spring-at-rowem)
-- [AWS ops](../blog/2022/03/01/aws-at-rowem)
+- [Java Spring backend](../blog/2022/03/01/spring-at-rowem)
+- [AWS operator](../blog/2022/03/01/aws-at-rowem)
 - [Database](../blog/2022/03/01/database-at-rowem)
 
 
 ### Aim Systems
 
-<small>2015.06 ~ 2016.09</small>
+<small>June 2015 ~ September 2016</small>
 
-- Java backend
+- Java Spring backend
 - Oracle DB
 
 
@@ -55,18 +55,20 @@
 
 ### University of California, Los Angeles
 
-<small>2010.09 ~ 2015.03</small>
+<small>September 2010 – March 2015</small>
 
-- Applied Mathematics B.S.
-  - GPA: 3.72/4.0 w/ honor <i>CUM LAUDE</i>
-  - Courses: CS, Mathematics, Statistics, Physics
-  - Email: jhl30@g.ucla.edu
+- B.S. in Applied Mathematics
+    - GPA: 3.72/4.0, Graduated with Cum Laude Honors
+    - Relevant Coursework: Computer Science, Mathematics, Statistics, Physics
+    - Contact: jhl30@g.ucla.edu
 
 
 ### Santa Monica College
 
-<small>2009.02 ~ 2010.05</small>
+<small>February 2009 – May 2010</small>
 
 - Statistics
-  - GPA: 3.8/4.0
-  - Courses: Math, Statistics, IGETC
+    - GPA: 3.8/4.0
+    - Relevant Coursework: Mathematics, Statistics, Intersegmental General Education Transfer Curriculum (IGETC)
+
+<hr>
