@@ -178,7 +178,7 @@ aws ec2 describe-instances \
   --profile DR
 ```
 
-### aws ecr list-image
+### aws ecr list-images
 
 ```sh
 aws ecr list-images \
@@ -249,7 +249,7 @@ aws ecs list-tags-for-resource \
 
 ```
 
-### aws ecs describe-servis
+### aws ecs describe-services
 
 ```sh
 aws ecs describe-services \

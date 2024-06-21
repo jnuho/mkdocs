@@ -2,10 +2,10 @@
 
 Intertered in `Golang`, `Kubernetes`, and `Deep learning`.
 
-* <i style="font-size:24px" class="fa">&#xf09b;</i> <a href="https://github.com/jnuho" target="_blank">`Github`</a>
-* <i style="font-size:24px" class="fa">&#xf08c;</i> <a href="https://www.linkedin.com/in/jun-ho-lee-047166273/" target="_blank">`LinkedIn`</a>
-* <i class="fa fa-envelope-o" aria-hidden="true"></i> [`e-mail`](mailto:cactoos555@gmail.com?subject=Test)
-* <i class="fa fa-id-card-o" aria-hidden="true"></i> [`Resume`](Resume.md)
+* <i class="fa fa-github"></i> <a href="https://github.com/jnuho" target="_blank">`Github`</a>
+* <i class="fa fa-linkedin-square"></i> <a href="https://www.linkedin.com/in/jun-ho-lee-047166273/" target="_blank">`LinkedIn`</a>
+* <i class="fa fa-envelope" aria-hidden="true"></i> [`e-mail`](mailto:cactoos555@gmail.com?subject=Test)
+* <i class="fa fa-id-badge" aria-hidden="true"></i> [`Resume`](Resume.md)
 
 <hr>
 

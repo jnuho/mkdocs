@@ -10,5 +10,5 @@ authors:
 ### Work at Kaon
 
 * [`Kubernetes`](Kubernetes-Core-Concept.md)
-* [`CI/CD pipeline`](cicd_work.md)
+* [`CI/CD pipeline`](CICD_Work.md)
 * [`Helm Chart`](helm.pdf)

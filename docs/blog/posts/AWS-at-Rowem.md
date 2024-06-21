@@ -14,11 +14,11 @@ authors:
 <!-- more -->
 
 - 인프라 OverView
-    - 같은 VPC 내에, 퍼블릭/프라이빗 서브넷으로 구분
+    - 같은 VPC 내에, 퍼블릭/프라이빗 Subnet으로 구분
     - 캐시 클러스터 미생성 상태. 보안그룹은 생성되어 있음(인바운드 6379)
-    - 클러스터 생성 시 VPC, 서브넷그룹 선택
+    - 클러스터 생성 시 VPC, Subnet그룹 선택
         - VPC: EC2와 같은 VPC 선택
-        - [서브넷그룹](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): 프라이빗 서브넷 선택 
+        - [Subnet그룹](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): 프라이빗 Subnet 선택 
 
 <!-- ![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png) -->
 
@@ -26,53 +26,57 @@ authors:
 
 - 인프라 구축 테스트
     1. [VPC](#vpc)
-    2. [서브넷](#서브넷)
-    3. [인터넷 게이트웨이](#인터넷-게이트웨이)
-    4. [라우트 테이블](#라우트-테이블)
-    5. [NACL](#NACL)
+    2. [Subnet](#subnet)
+    3. [Internet Gateway](#internet-gateway)
+    4. [Route Table](#route-table)
+    5. [NACL](#nacl)
     6. [EC2](#ec2)
-    7. [보안 그룹](#보안-그룹)
+    7. [Security Group](#security-group)
     8. [NAT Gateway](#nat-gateway)
     9. [VPC Endpoint](#vpc-endpoint)
     10. [ElastiCache](#elasticache)
 
 #### VPC
+
 - CIDR 10.0.0.0/16
 - e.g. 10.0.0.0 ~ 10.0.255.255
 - VPC 생성 후 자동생성 : RT, NACL, SG
 
-#### 서브넷
+#### Subnet
+
 - 퍼블릭
-    - 서브넷 : CIDR 10.0.0.0/24 (현재는 VPC 내 로컬에서만 접근 가능-private)
+    - Subnet : CIDR 10.0.0.0/24 (현재는 VPC 내 로컬에서만 접근 가능-private)
         - 작업 > 자동 할당 IP 설정 수정정보 > 퍼블릭 IPv4 주소 자동 할당 활성화
 
 - 프라이빗
-    - 서브넷 : CIDR 10.0.1.0/24
+    - Subnet : CIDR 10.0.1.0/24
 
-#### 인터넷 게이트웨이
+#### Internet Gateway
+
 - 생성 후 VPC에 연결 (Attach)
 ```sh
 aws ec2 attach-internet-gateway --vpc-id "vpc-0e02ef59133d3b5a7" --internet-gateway-id "igw-0a871cc54507807f4" --region ap-northeast-2
 ```
 
 
-#### 라우트 테이블
+#### Route Table
+
 - 퍼블릭 rt 생성 후
-    - 작업 > '서브넷연결' > 퍼플릭 서브넷 연결
+    - 작업 > 'Subnet연결' > 퍼플릭 Subnet 연결
     - '라우팅' > 편집 > 추가 '0.0.0.0/0','igw-071ed7e5e7b2b8385'
         - 디폴트 10.0.0.0/16 범위 이외 ip 요청을 igw로 연결
 
 - 프라이빗 rt (VPC 생성시 디폴트 생성 됨)
-    - '서브넷연결' > 프라이빗 서브넷 연결 (명시연결 필요 X)
-        - 명시적 연결이 없는 서브넷: 다음 서브넷은 어떤 라우팅 테이블과도 명시적으로 연결되어 있지 않고 기본 라우팅 테이블에 연결되어 있는 상태
+    - 'Subnet연결' > 프라이빗 Subnet 연결 (명시연결 필요 X)
+        - 명시적 연결이 없는 Subnet: 다음 Subnet은 어떤 라우팅 테이블과도 명시적으로 연결되어 있지 않고 기본 라우팅 테이블에 연결되어 있는 상태
 
 #### NACL
 
 인스턴스 보안 설정 방법
 - NACL - stateless
-- 보안 그룹 - stateful
-- 프라이빗 nacl (VPC 생성시 디폴트 생성 됨) > 서브넷 연결
-- 퍼블릭 nacl > 서브넷 연결
+- Security Group - stateful
+- 프라이빗 nacl (VPC 생성시 디폴트 생성 됨) > Subnet 연결
+- 퍼블릭 nacl > Subnet 연결
     - 인바운드 22번포트는 Allow
     - 규칙 낮은순 우선순위, 만약 99규칙 22번포트 Deny이면 Deny
 
@@ -98,7 +102,8 @@ aws ec2 attach-internet-gateway --vpc-id "vpc-0e02ef59133d3b5a7" --internet-gate
 
 
 #### EC2
-바스티온 EC2인스턴스 생성 - 퍼블릭 서브넷 지정
+
+바스티온 EC2인스턴스 생성 - 퍼블릭 Subnet 지정
 
 - 단계 3: 인스턴스 세부정보 구성
     - 고급세부정보 > 사용자데이터
@@ -108,8 +113,9 @@ yum install httpd -y
 service httpd start
 ```
 
-#### 보안 그룹
-같은 VPC내 보안 그룹 구분
+#### Security Group
+
+같은 VPC내 Security Group 구분
 
 - sg-bastion
     - 인바운드: SSH 오피스ip:22
@@ -123,11 +129,12 @@ service httpd start
 #### NAT Gateway
 
 - 프라이빗 EC2에서 외부 인터넷 막혀있어서, yum으로 소프트웨어 (mysql, apache,...) 설치 안됨
-- (VPC) NAT Gateway 만들어 외부와 연결: 퍼블릭 서브넷 내에 생성
+- (VPC) NAT Gateway 만들어 외부와 연결: 퍼블릭 Subnet 내에 생성
 - 프라이빗 RT수정 : 라우팅 > 추가 0.0.0.0/0    (대상: nat-...)
 
 
 #### VPC Endpoint
+
 - 프라이빗 EC2 에서 S3접근하고 싶을때 NAT게이트웨이 대신 VPC Endpoint 사용: 보안상 이유
 - IAM 역할 > 추가 > EC2 > 'AmazonS3FullAccess' > 'test-01-s3-fullaccess'
 - 프라이빗 EC2 생성 시 IAM역할 선택 또는 [ATTACH IAM역할.](https://aws.amazon.com/blogs/security/easily-replace-or-attach-an-iam-role-to-an-existing-ec2-instance-by-using-the-ec2-console/)
@@ -143,7 +150,7 @@ aws s3 ls --region ap-northeast-2
 - VPC Endpoint 설정 이후 S3 연결 시도
     - VPC > 엔드포인트 > 생성
         - 'S3'검색 > com.amazonaws.ap-northeast-2.s3 서비스선택, Gateway유형 선택
-        - VPC 및 프라이빗 서브넷 선택
+        - VPC 및 프라이빗 Subnet 선택
     - 프라이빗 RT > 라우팅 > 대상에 VPC Endpoint 추가됨 확인
         - S3관련된 트래픽을 S3로 보내는 정책
         - VPC Endpoint 밑에 라우팅 추가 > NAT Gateway추가하여 위의 두개 IP이외는 NAT Gateway로 보내도록 함
@@ -152,12 +159,14 @@ aws s3 ls --region ap-northeast-2
 aws s3 ls --region ap-northeast-2
 ```
 
-#### 운영환경 - ElastiCache
-- redis 선택
-- 노드유형: r5,m5,r4,m4,r3,m3,t3,t2 메모리 및 네트워크 성능 선택
-- 서브넷그룹 '생성' starpass-was-00, starpass-bastion와 같은 VPC, 프라이빗 서브넷 선택
-- 보안그룹 sg-starpass-redis 선택 
-- 자동 백업 활성화 체크해제
+#### ElastiCache
+
+- 운영환경 ElastiCache
+    - redis 선택
+    - 노드유형: r5,m5,r4,m4,r3,m3,t3,t2 메모리 및 네트워크 성능 선택
+    - Subnet그룹 '생성' starpass-was-00, starpass-bastion와 같은 VPC, 프라이빗 Subnet 선택
+    - 보안그룹 sg-starpass-redis 선택 
+    - 자동 백업 활성화 체크해제
 
 ```
 vpc-0b4163a5f741002f8 (starpass-vpc) 
@@ -197,6 +206,7 @@ redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 
 ```
 
 #### EC2
+
 - redis서버 설정 수정
     - 서버(EC2또는 아이넷호스트 머신)에 설치된 redis서버를 외부에서 접근할 수 있도록 설정 변경
         - EC2: 보안그룹의 인바운드규칙 TCP 7379 127.0.0.1
@@ -271,6 +281,7 @@ keys *
 ```
 
 #### 테스트
+
 - ElastiCache접근은 보안그룹에 인바운드 규칙에 정의된 EC2(private subnet) 이외 ip에서는 접근 불가
 - 개발/운영 환경 분리하여 캐시 관리
     - 개발: 개발서버에 redis-server 설치하여 캐시저장
@@ -304,4 +315,3 @@ winpty docker run -it --network redis-net \
     --rm redis:alpine redis-cli \
     -h my-redis
 ```
-

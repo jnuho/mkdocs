@@ -5,9 +5,10 @@
 
 <small>March 2023 ~ April 2024</small>
 
-* Implemented and managed  [`Kubernetes`](../blog/2024/06/01/kubernetes-core-concept) clusters
-* Created and maintained a  [`CI/CD pipeline`](../blog/2023/03/02/cicd-work) using TeamCity and GitLab
-* Created and deployed applications using  [`Helm Chart`](../blog/helm.pdf)
+<!-- * Implemented and managed  [`Kubernetes`](../blog/2024/06/01/kubernetes-core-concept) clusters -->
+* Implemented and managed  [`Kubernetes`](blog/posts/Kubernetes-Core-Concept.md) clusters
+* Created and maintained a  [`CI/CD pipeline`](blog/posts/CICD_Work.md) using TeamCity and GitLab
+* Created and deployed applications using  [`Helm Chart`](blog/posts/helm.pdf)
 * Utilized `docker-compose` for managing microservices, including weekly backup operations
 * Backend development in `Golang` for microservices testing purposes
 
@@ -26,17 +27,17 @@
 
 <small>March 2022 ~ December 2022</small>
 
-- AWS operator ([AWS CLI](../blog/2022/11/01/aws-cli))
-- Developed a dashboard [`Web app`](../blog/2022/10/01/golang-aws-dashboard) using [`Golang AWS SDK`](https://aws.amazon.com/sdk-for-go/).
+- AWS operator ([AWS CLI](blog/posts/AWS_CLI.md))
+- Developed a dashboard [`Web app`](blog/posts/Golang-AWS-dashboard.md) using Golang AWS [`SDK`](https://aws.amazon.com/sdk-for-go/).
 
 
 ### Rowem
 
 <small>November 2019 ~ March 2022</small>
 
-- Developed backend systems using [`Java Spring`](../blog/2022/03/01/spring-at-rowem)
-- [`AWS operator`](../blog/2022/03/01/aws-at-rowem)
-- Managed [`Database`](../blog/2022/03/01/database-at-rowem)
+- Developed backend systems using [`Java Spring`](blog/posts/Spring-at-Rowem.md)
+- [`AWS operator`](blog/posts/AWS-at-Rowem.md)
+- Managed [`Database`](blog/posts/Database-at-Rowem.md)
 
 
 ### Aim Systems

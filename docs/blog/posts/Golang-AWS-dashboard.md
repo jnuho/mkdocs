@@ -18,7 +18,6 @@ authors:
 
 <!-- more -->
 
-- [Eng Ver.](doc_goproject)
 - [repository](https://github.com/jnuho/goproject)
 - [aws sdk for go](https://aws.amazon.com/sdk-for-go/)
 
