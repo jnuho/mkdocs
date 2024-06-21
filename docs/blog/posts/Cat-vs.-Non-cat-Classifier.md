@@ -834,6 +834,7 @@ minikube dashboard --url
 https://stackoverflow.com/a/73735009
 
 ```sh
+# minikube start --cpus 4 --memory 4096
 minikube start
 minikube addons enable ingress
 minikube addons enable ingress-dns
@@ -858,6 +859,83 @@ Here's a high-level overview of the traffic flow when you access `http://localho
 1. **Browser Request**: When you type `http://localhost` into your browser and hit enter, your browser sends a HTTP request to `localhost`, which is resolved to the IP address `127.0.0.1`.
 
 2. **Port Forwarding**: Since you've set up port forwarding with the command `kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80`, the request to `localhost` on port 80 is forwarded to port 80 on the `ingress-nginx-controller` service.
+
+
+```sh
+ k get svc -n ingress-nginx
+    NAME                                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)
+        AGE
+    ingress-nginx-controller             NodePort    10.109.183.14    <none>        80:31078/TCP,443:31420/TCP   6m17s
+    ingress-nginx-controller-admission   ClusterIP   10.110.101.115   <none>        443/TCP                      6m17s
+
+# k port-forward deployment/fe-nginx-deployment 80
+# localhost:8080 -> ingress controller on 80
+k port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80
+```
+
+The need for port-forwarding arises due to the way Kubernetes networking and Minikube are structured. Here's a breakdown of why you might need to use port-forwarding and why direct access might not work without it:
+
+### Why Direct Access Might Not Work
+
+2-1. **Network Isolation:**
+   - **Kubernetes Networking:** Kubernetes clusters are designed to have an isolated network. Services within the cluster communicate with each other via internal cluster IPs that are not accessible from the outside world directly.
+   - **Minikube Networking:** Minikube sets up a local virtual machine (VM) on your computer. This VM has its own network namespace, separate from your host machine's network. The services running inside Minikube are isolated from your host machine by default.
+
+2-2. **ClusterIP Services:**
+   - **ClusterIP Type:** The services you've listed (`be-go-service`, `be-py-service`, `fe-nginx-service`, and `kubernetes`) are of type `ClusterIP`. This means they are only accessible within the cluster. External traffic from your host machine cannot reach these services directly.
+
+2-3. **Minikube IP Address:**
+   - Minikube typically runs on a virtual IP address, such as `192.168.49.2` in your case. Accessing this IP directly from your host might not be straightforward due to network isolation.
+
+### Why Port-Forwarding is Needed
+
+Port-forwarding provides a bridge between your host machine and the Kubernetes cluster, allowing you to access cluster services from your local machine as if they were running locally.
+
+- **Accessing Cluster Services:**
+   - Port-forwarding allows you to map a port on your local machine to a port on a pod or service within the cluster. This makes it possible to access cluster services using `localhost` on your host machine.
+
+- **Bypassing Network Isolation:**
+   - By forwarding a port, you bypass the network isolation of the cluster, making it possible to communicate with services running inside Minikube directly from your host.
+
+### Alternative Approaches
+
+If you prefer not to use port-forwarding, there are other approaches you can consider:
+
+- **Minikube Tunnel:**
+   - Minikube provides a `minikube tunnel` command that can create a network tunnel to your cluster, making services of type `LoadBalancer` accessible from your host machine.
+
+   ```sh
+   minikube tunnel
+   ```
+
+- **NodePort Services:**
+   - Change the service type to `NodePort`, which exposes the service on a port on each node of the cluster. You can then access the service using the Minikube IP and the NodePort.
+
+   Example of changing a service to NodePort:
+   ```yaml
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: fe-nginx-service
+   spec:
+     type: NodePort
+     ports:
+       - port: 8080
+         targetPort: 8080
+         nodePort: 30080  # Example NodePort
+     selector:
+       app: fe-nginx
+   ```
+
+- **Ingress with Minikube IP:**
+   - You can use the Minikube IP address and configure your `/etc/hosts` file to point `localhost` to the Minikube IP.
+
+### Summary
+
+Using `kubectl port-forward` is a convenient and straightforward way to access your services without altering service types or cluster configurations. It helps bridge the network isolation between your host machine and the Kubernetes cluster set up by Minikube.
+
+
+
 
 3. **Ingress Controller**: The Ingress Controller, which is part of the `ingress-nginx-controller` service, receives the request. The Ingress Controller is responsible for routing the request based on the rules defined in your Ingress resource.
 
@@ -1129,11 +1207,6 @@ gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 [↑ Back to top](#)
 <br><br>
 
-- Google Cloud SDK
-    - Create Service account
-        - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
-        - Create key and download and rename `gcp-sa-key.json`
-
 
 - Google Kubernetes Engine
     - <a href="https://www.youtube.com/watch?v=P1x1Rk_TzV4" target="_blank">Ingress in 5 Minutes</a>
@@ -1207,23 +1280,36 @@ curl 35.184.204.214:8080/hello-world
 ```
 
 
-
 [↑ Back to top](#)
 <br><br>
 
-### docker image tag
 
-- in Kubernetes
-    - fe-nginx-k8s
-    - be-go-k8s
-    - be-py
+- golang cloud library to create VM
+    - Create Service account
+        - IAM & Admin > Service accounts > Create Service account
+            - Assign the `Compute Admin` role
+            - click 3 dots for 'Key Management'
+            - Create key (JSON) and download and rename `gcp-sa-key.json`
+    - Write golang code to execute to create GCP VM.
 
-- in docker-compose
-    - fe-nginx-docker
-    - be-go-docker
-    - be-py
+```
+gcp_credential="my-sa-key.json"
+gcp_vm_region="asia-northeast3"
+gcp_vm_zone="asia-northeast3-a"
+gcp_vm_machine_type="e2-medium"
+#ubuntu 24.04 50GB
+#gcp_vm_boot_disk=50GB
+#gcp_vm_identity_and_api_access="Allow full access to all Cloud APIs
+#gcp_vm_firewall="http,https,loadbalancer_health_check"
+```
 
+
+- Download Google Cloud SDK and use gcloud to access vm
+
+```sh
+gcloud init
+gcloud compute ssh instance-20240620-115251 --zone asia-northeast3-a
+```
 
 [↑ Back to top](#)
 <br><br>
-
