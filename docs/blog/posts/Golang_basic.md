@@ -1378,6 +1378,13 @@ func main() {
   - 일반적인 배열 `var array [10]int`은 일정한 길이에서 늘어나지 않는 문제
   - 동적배열 슬라이스 : `var slice []int`
 
+- [Slice Interview Questions](https://medium.com/@ninucium/go-interview-questions-part-2-slices-87f5289fb7eb)
+    1. A slice is a reference data type. Inside there is a pointer to the first element of the slice. This factor is what determines how certain operations, even when performed on copies of the slice, can affect the original slice.
+    2. A slice has a length, which describes the number of elements currently stored in the slice, and a capacity, which indicates how many elements can be added to this memory area.
+    3. If the inequality len(x) + 1 <= cap(x) is not met when adding a new element, the slice expands into a new area of memory, and capacity doubles (until it reaches the size of 1024, after which they increase by 25% with each expansion).
+    4. When you pass a slice as an argument to a function as a copy (not via a pointer), you should remember that the slice contains a pointer to the first element, which allows for modifications to the original slice.
+    5. The length and capacity values are passed by copy. If you pass a slice to a function and then the same slice is modified elsewhere in the code (e.g., by adding a new element), it will not affect the length and capacity of the copied slice within the function.
+
 ```go
 // 초기화 방법
 var slice1 = []int{1,2,3} //len:3 cap: 3
