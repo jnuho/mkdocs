@@ -7,19 +7,19 @@ authors:
   - junho
 ---
 
-### 고루틴과 동시성 프로그래밍
+### Goroutine과 동시성 프로그래밍
 
-- [고루틴](#고루틴)
+- [고루틴](#goroutine)
   - [sync.WaitGroup](#syncwaitgroup)
   - [sync.Once](#synconce)
-- [고루틴의 동작방법](#고루틴의-동작방법)
-  - [동시성 프로그래밍 주의점](#동시성-프로그래밍-주의점)
-  - [뮤텍스를 이용한 동시성 문제 해결](#뮤텍스를-이용한-동시성-문제-해결)
+- [고루틴의 동작방법](#how-goroutine-works)
+  - [동시성 프로그래밍 주의점](#concurrent-programming-precautions)
+  - [뮤텍스를 이용한 동시성 문제 해결](#solving-concurrency-problems-using-mutexes)
   - [mutex to ensure atomic access to a shared variable](#mutex-to-ensure-atomic-access-to-a-shared-variable)
     - [Using mutex and WaitGroup](#using-mutex-and-waitgroup)
     - [Using mutex and done channel](#using-mutex-and-done-channel)
     - [More done channel example](#more-done-channel-example)
-  - [뮤텍스의 문제점](#뮤텍스의-문제점)
+  - [뮤텍스의 문제점](#the-problem-with-mutexes)
   - [또 다른 자원 관리 기법](#또-다른-자원-관리-기법)
 - [채널](#채널)
   - [go channel with range and close](#go-channel-with-range-and-close)
@@ -38,7 +38,7 @@ authors:
 
 <!-- more -->
 
-### 고루틴
+### Goroutine
 
 - 스레드란?
   - 고루틴: 경량 스레드로 함수나 명령을 동시에 실행 시 사용. main()도 고루틴에 의해 실행 됨
@@ -323,7 +323,7 @@ func oneTimeOp() {
 
 
 
-### 고루틴의 동작방법
+### How Goroutine works
 
 - 고루틴은 명령을 수행하는 단일 흐름으로, OS 스레드를 이용하는 경량 스레드
 - 2-Core 컴퓨터 가정
@@ -357,7 +357,7 @@ func oneTimeOp() {
 <br><br>
 
 
-### 동시성 프로그래밍 주의점
+### Concurrent programming precautions
 
 - 문제점: `하나의/동일한 메모리 자원`에 `여러개 고루틴` 접근!
   - e.g. 입금1000, 출금1000 을 10개의 고루틴이 동시 실행 하는 상황
@@ -418,7 +418,7 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-### 뮤텍스를 이용한 동시성 문제 해결
+### Solving concurrency problems using mutexes
 
 - 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용: `mutual exclusion`
 - `mutex.Lock()`으로 mutex 획득 `mutext.Unlock()`으로 mutex 반납
@@ -643,7 +643,7 @@ func main() {
 <br><br>
 
 
-### 뮤텍스의 문제점
+### The problem with mutexes
 
 1. 뮤텍스는 동시성 프로그래밍 성능이점 감소시킴
 2. `데드락` 발생 가능
@@ -1685,6 +1685,8 @@ In summary, while not explicitly closing an unbuffered channel won't cause immed
 <br><br>
 
 ### 컨텍스트
+
+- https://go.dev/doc/database/cancel-operations
 
 - 컨텍스트 사용하기
   - 컨텍스트는 작업을 지시할때 작업가능 시간, 작업 취소 등의 조건을 지시할 수 있는 작업명세서 역할
