@@ -3,7 +3,6 @@ draft: false
 date: 2024-05-31
 categories:
   - deeplearning
-  - topics
   - project
 authors:
   - junho

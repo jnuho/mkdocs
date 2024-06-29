@@ -3,7 +3,6 @@ draft: false
 date: 2024-05-29
 categories:
   - golang
-  - topics
 authors:
   - junho
 ---

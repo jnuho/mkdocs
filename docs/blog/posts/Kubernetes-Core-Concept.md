@@ -3,7 +3,6 @@ draft: false
 date: 2024-06-01
 categories:
     - kubernetes
-    - topics
 authors:
     - junho
 ---
@@ -27,6 +26,7 @@ authors:
         - [traffic flow](#traffic-flow)
         - [Ingress Controller](#ingress-controller)
         - [Minikube ingress implementation](#minikube-ingress-implementation)
+    - [VPC-CNI](#vpc-cni)
 
 - <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
 - <a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&t=104">Kubernetes by Nana-1hr</a>
@@ -1256,3 +1256,88 @@ k get svc
 curl 172.16.6.100:8081
 ```
 
+
+### VPC-CNI
+
+
+https://www.youtube.com/watch?v=RBE3yk2UlYA
+
+- Each node has an eni that can attach multiple prefixes.
+- In certain cloud environments, such as AWS, ENIs can be associated with multiple prefixes.
+- This means you can assign IP addresses from different subnets to the same ENI.
+
+
+VPC-CNI (Virtual Private Cloud Container Network Interface) is a Kubernetes networking plugin developed by Amazon Web Services (AWS) that integrates Kubernetes pods with the Amazon VPC networking model. It is specifically designed to provide high performance and flexibility for Kubernetes clusters running on AWS.
+
+### Key Features of VPC-CNI
+
+1. **Pod Networking within VPC**:
+   - The VPC-CNI plugin allows Kubernetes pods to receive IP addresses from the VPC's IP address space, enabling direct integration with AWS networking services and features.
+
+2. **Elastic Network Interfaces (ENIs)**:
+   - VPC-CNI uses ENIs to assign IP addresses to pods. Each node in the Kubernetes cluster has one or more ENIs attached to it, and these ENIs provide IP addresses that are assigned to pods running on that node.
+
+3. **Scalability**:
+   - By leveraging ENIs and secondary IP addresses, VPC-CNI can scale to support large numbers of pods per node, limited only by the instance type and the number of ENIs it supports.
+
+4. **Security Groups**:
+   - Pods can be associated with AWS security groups, providing fine-grained control over network traffic to and from pods.
+
+5. **AWS Integration**:
+   - VPC-CNI integrates seamlessly with other AWS services, such as Elastic Load Balancers (ELBs), AWS PrivateLink, and VPC Peering.
+
+6. **Performance**:
+   - Direct integration with the VPC network ensures high performance, low latency, and high throughput for pod-to-pod and pod-to-service communication.
+
+### How VPC-CNI Works
+
+1. **Node Initialization**:
+   - When a new node joins the Kubernetes cluster, the VPC-CNI plugin automatically attaches ENIs to the node. These ENIs are allocated from the subnets defined in the VPC.
+
+2. **IP Address Management**:
+   - The plugin manages a pool of secondary IP addresses assigned to each ENI. When a pod is scheduled on a node, it receives an IP address from this pool.
+
+3. **Pod Networking**:
+   - Each pod is assigned an IP address from the VPC's IP address space, enabling it to communicate with other pods and services within the VPC using native VPC networking capabilities.
+
+4. **ENI Allocation**:
+   - VPC-CNI dynamically allocates and deallocates ENIs based on the number of pods running on a node. If a node requires more IP addresses than an ENI can provide, the plugin attaches additional ENIs to the node.
+
+### Configuration and Usage
+
+To use VPC-CNI with your Amazon EKS (Elastic Kubernetes Service) cluster, you typically follow these steps:
+
+1. **Create EKS Cluster**:
+   - Use the AWS Management Console, CLI, or SDK to create an EKS cluster.
+
+2. **Configure VPC and Subnets**:
+   - Ensure your VPC and subnets are configured to meet the requirements for your cluster, including IP address ranges and route tables.
+
+3. **Install VPC-CNI Plugin**:
+   - The VPC-CNI plugin is usually installed by default when you create an EKS cluster. However, you can also install or upgrade it manually using `kubectl` and AWS-provided manifests.
+
+4. **Manage ENI Configurations**:
+   - You can configure the VPC-CNI plugin using Kubernetes ConfigMaps to set parameters like ENI allocation, IP address limits, and logging.
+
+### Example of ConfigMap for VPC-CNI
+
+Here's an example of a ConfigMap used to configure the VPC-CNI plugin:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-node
+  namespace: kube-system
+data:
+  enable-ipv4: "true"
+  enable-ipv6: "false"
+  eni-config: "default"
+  eni-max-pods: "110"
+  log-level: "DEBUG"
+  ...
+```
+
+### Conclusion
+
+The VPC-CNI plugin for Kubernetes on AWS provides a robust and scalable networking solution that leverages native VPC capabilities. By using ENIs and integrating directly with AWS networking features, it offers high performance, security, and flexibility for managing Kubernetes pod networking within an Amazon VPC.
