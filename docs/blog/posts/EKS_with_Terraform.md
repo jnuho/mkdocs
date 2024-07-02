@@ -10,14 +10,18 @@ authors:
 ---
 
 
+|<img src="https://i.imgur.com/5Bpv5uQ.png" alt="pods" width="500">|
+|:--:| 
+| *EKS cluster example* |
+
+
+I go through AWS and terraform document to explain how it works.
+
 |<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="500">|
 |:--:| 
 | *EKS cluster example* |
 
-I go through AWS and terraform document to explain how it works.
-
 <!-- more -->
-
 
 - [`AWS document`](https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html)
 - [`Prerequisites`](#prerequisites)
@@ -30,10 +34,11 @@ I go through AWS and terraform document to explain how it works.
     - [`Terraform`](#terraform)
         - [`Check add-on compatibility`](#check-add-on-compatibility)
         - [`Create add-on`](#create-add-on)
-    - [`AWS Management Console`](#aws-management-console)
-    - [`Add-ons`](#add-ons)
-- [`Configure your computer to communicate with your cluster`](#configure-your-computer-to-communicate-with-your-cluster)
+    - [`AWS Management Console and AWS CLI`](#aws-management-console-and-aws-cli)
+  - [`OIDC`](#oidc)
+  - [`Configure your computer to communicate with your cluster`](#configure-your-computer-to-communicate-with-your-cluster)
 - [`Create nodes`](#create-nodes)
+- [`External access`](#external-access)
 
 
 [↑ Back to top](#)
@@ -71,8 +76,8 @@ aws --version
 
 ```
 # Configure Access key, Secret key, region, and etc
-aws configure
 aws configure --profile [PROFILE_NAME]
+aws configure --profile terraform
 
 # To verify the user identity
 aws sts get-caller-identity
@@ -106,7 +111,7 @@ kubectl version --client
 - After cluster is created :
 
 ```sh
-aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster --profile terraform
 ```
 
 
@@ -170,7 +175,7 @@ https://developer.hashicorp.com/terraform/install
 - Download terraform.exe
 
 시스템변수 > Path에 추가 C:\Program  Files\terraform_1.8.5_windows_amd64
-    
+
 
 ```sh
 # Navigate to your Terraform configuration directory
@@ -182,11 +187,18 @@ terraform init
 # Validate the configuration
 terraform validate
 
+# Format the Configuration
+terraform fmt
+
 # Plan the deployment
 terraform plan
 
 # Apply the configuration
 terraform apply
+
+# With DEBUGGING enabled
+TF_LOG=DEBUG terraform apply
+
 # Destroy
 # terraform destroy
 ```
@@ -201,14 +213,32 @@ terraform apply
 If an add-on requires IAM permissions, then you must have an IAM OpenID Connect (OIDC) provider for your cluster.
 
 ```sh
-aws eks describe-addon-versions --addon-name vpc-cni --kubernetes-version 1.30 | grep addonVersion
+aws eks describe-addon-versions --addon-name vpc-cni --kubernetes-version 1.30 --profile terraform | grep addonVersion
     # "addonVersion": "v1.18.2-eksbuild.1",
-aws eks describe-addon-versions --addon-name coredns --kubernetes-version 1.30 | grep addonVersion
+aws eks describe-addon-versions --addon-name coredns --kubernetes-version 1.30 --profile terraform | grep addonVersion
     # "addonVersion": "v1.11.1-eksbuild.9",
-aws eks describe-addon-versions --addon-name kube-proxy --kubernetes-version 1.30 | grep addonVersion
+aws eks describe-addon-versions --addon-name kube-proxy --kubernetes-version 1.30 --profile terraform | grep addonVersion
     # "addonVersion": "v1.30.0-eksbuild.3",
+
+aws eks describe-addon-versions --addon-name eks-pod-identity-agent --kubernetes-version 1.30 --profile terraform
+    # "v1.3.0-eksbuild.1"
 ```
 
+- Check addon is created or not
+
+```sh
+# Check the nodes have enough resources to schedule CoreDNS pods
+kubectl describe nodes
+
+# 1. vpc-cni
+kubectl get daemonset aws-node -n kube-system
+
+# 2. coredns
+kubectl get deployment coredns -n kube-system
+
+# 3. kube-proxy
+kubectl get daemonset kube-proxy -n kube-system
+```
 
 ### Create add-on
 
@@ -287,7 +317,7 @@ resource "aws_eks_addon" "addons" {
 ```
 
 
-### AWS Management Console and AWS CLI
+## AWS Management Console and AWS CLI
 
 https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html
 https://docs.aws.amazon.com/eks/latest/userguide/create-cluster.html
@@ -366,7 +396,7 @@ aws iam list-roles | grep RoleName
 4. EKS kubeconfig setting
 
 ```sh
-aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster --profile terraform
 kubectl get svc
 ```
 
@@ -622,6 +652,16 @@ If an add-on requires IAM permissions, then you must have an IAM OpenID Connect 
 
 To determine whether you have one, or to create one, see Creating an IAM OIDC provider for your cluster. You can update or delete an add-on once you've installed it.
 
+## OIDC
+
+https://www.youtube.com/watch?v=nIIxexG7_a8&list=PLiMWaCMwGJXkeBzos8QuUxiYT6j8JYGE5&index=1
+
+https://www.youtube.com/watch?v=ZfjpWOC5eoE
+
+https://github.com/antonputra/tutorials/tree/main/lessons/006
+
+- Secure way to access AWS services from Kubernetes is to use the Open ID Connect Provider, OIDC, which establish trust between the AWS IAM system and the Kubernetes RBAC system.
+
 
 ## Configure your computer to communicate with your cluster
 
@@ -634,18 +674,34 @@ https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#ek
 ```sh
 aws sts get-caller-identity
 
-aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster --profile terraform
 
 # Edit SG for EKS inbound rules:
 # All traffic 172.16.0.0/16
+
+kubectl config current-context
+    minikube
+kubectl config get-contexts
+
+kubectl config use-context arn:aws:eks:<region>:<account-id>:cluster/my-cluster
+kubectl config use-context arn:aws:eks:ap-northeast-2:094833749257:cluster/my-cluster
+
+kubectl config use-context minikube
 
 kubectl get no -o wide
 kubectl get pods -A -o wide
 ```
 
 ## Create nodes
-
 https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html
+https://docs.aws.amazon.com/eks/latest/userguide/eks-compute.html
+
+
+A Kubernetes node is a machine that runs containerized applications. Each node has the following components:
+
+- [`Container runtime`](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) – Software that's responsible for running the containers.
+- [`kubelet`](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/) – Makes sure that containers are healthy and running within their associated Pod.
+- [`kube-proxy`](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/) – Maintains network rules that allow communication to your Pods.
 
 ```sh
 cat > node-role-trust-policy.json <<-EOF
@@ -707,6 +763,117 @@ public-ap-northeast-2a
 public-ap-northeast-2b
 
 
+
+## External access
+
+1. Expose Service (`type: LoadBalancer`)
+
+Using a Service of type LoadBalancer, AWS will automatically create a NLB for you. You can get the external IP or DNS name of the LoadBalancer. Limited to basic load balancing features; does not support advanced routing features like path-based or host-based routing.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fe-nginx-service
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    # only for private load balancer; nlb!
+    service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+spec:
+  selector:
+    app: fe-nginx
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+  type: LoadBalancer
+```
+
+```sh
+kubectl apply -f service.yaml
+kubectl get svc
+```
+
+2. Ingress + Service (`type: ClusterIP`)
+
+- https://youtu.be/uiuoNToeMFE?si=TijV0fhrfUTvJ4BL
+- https://youtu.be/5XpPiORNy1o?si=YwBVGrCUzEenlomB
+
+
+- `AWS Load balancer controller`
+    - Requires a dedicated `IAM role` to interact with AWS (i.e. create ALB)
+    - https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+    - https://www.youtube.com/watch?v=ZfjpWOC5eoE
+
+https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/how-it-works/
+
+When you create a Kubernetes Service of type ClusterIP and an Ingress resource, the AWS Load Balancer Controller will provision an AWS Application Load Balancer (ALB) to manage the ingress traffic.
+
+Supports advanced routing features, SSL termination, or integration with AWS WAF.
+
+The Ingress resource will handle the external exposure and routing of traffic to your services, and the ClusterIP (only accessed from within the cluster or through an ingress controller) type is sufficient for internal communication within the cluster.
+
+```sh
+# get sg-id
+aws ec2 describe-security-groups --filters "Name=group-name,Values=alb-sg" --query "SecurityGroups[*].GroupId" --output text
+    sg-xxxxxx
+```
+
+- Edit `ingress-aws.yaml`
+    - Creating Ingress resouce will create AWS `ALB` - Application LoadBalancer
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fe-nginx-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+spec:
+  # This field is used to specify the class of the Ingress. The Ingress class is used by the Ingress Controller to determine whether or not it should act on a particular Ingress resource.
+  ingressClassName: alb
+  rules:
+  # ...
+```
+
+```sh
+# Configure kubectl to my-cluster
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster --profile terraform
+
+
+# Check AWS Loadbalancer Controller is created
+kubectl get ingressclass
+
+kubectl apply -f ingress-aws.yaml
+
+kubectl get ingress fe-nginx-ingress -w
+   NAME              CLASS    HOSTS   ADDRESS                                         PORTS   AGE
+   fe-nginx-ingress  <none>   *       abcdefg1234567890-1234567890.us-west-2.elb.amazonaws.com   80, 443   5m
+
+
+curl http://abcdefg1234567890-1234567890.us-west-2.elb.amazonaws.com
+
+
+
+
+```
+
+
+### Trouble shooting with terraform
+
+
+```sh
+kubectl get pods -n kube-system -l k8s-app=kube-dns
+NAME                       READY   STATUS    RESTARTS   AGE
+coredns-5b9dfbf96-phksv    0/1     Pending   0          6m34s
+coredns-5d99cdb6c5-64j8n   0/1     Pending   0          5m56s
+coredns-5d99cdb6c5-cbwfk   0/1     Pending   0          5m56s
+
+k describe pod coredns-5b9dfbf96-phksv -n kube-system
+k describe logs coredns-5b9dfbf96-phksv -n kube-system
+```
 
 - EKS loadbalancer controller
 
