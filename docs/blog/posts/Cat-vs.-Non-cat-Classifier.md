@@ -15,6 +15,23 @@ authors:
 |:--:| 
 | *kubernetes architecture of my application* |
 
+
+### Application demo
+
+The following image is the result of deployment on **multi-node Kuberentes cluster.**
+
+| <img src="https://imgur.com/5seKQM4.gif" alt="pods" width="680"> |
+|:--:| 
+| *web application* |
+
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="680"> |
+|:--:| 
+| *Kubernetes resources* |
+
+[↑ Back to top](#)
+<br><br>
+
+
 <!-- more -->
 
 [↑ Back to top](#)
@@ -23,9 +40,9 @@ authors:
 * <i style="font-size:24px" class="fa">&#xf09b;</i> <a href="https://github.com/jnuho/simpledl" target="_blank">`github.com/jnuho/simpledl`</a>
 
 - [System overview](#system-overview)
+- [Application demo](#application-demo)
 - [Binary classification](#binary-classification)
 - [Virtualbox network architecture](#virtualbox-network-architecture)
-- [Application demo](#application-demo)
 - [Kubernetes setup](#kubernetes-setup)
 - [Virtualbox setup](#virtualbox-setup)
 - [Microservices](#microservices)
@@ -59,22 +76,6 @@ I had to construct a virtualbox environment in which my kubernetes cluster and a
 |:--:| 
 | *NAT network* |
 
-
-[↑ Back to top](#)
-<br><br>
-
-
-### Application demo
-
-The following image is the result of deployment on **multi-node Kuberentes cluster.**
-
-| <img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-result.gif" alt="pods" width="680"> |
-|:--:| 
-| *web application* |
-
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="680"> |
-|:--:| 
-| *Kubernetes resources* |
 
 [↑ Back to top](#)
 <br><br>

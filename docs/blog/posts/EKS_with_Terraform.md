@@ -1,6 +1,6 @@
 ---
 draft: false
-date: 2024-06-25
+date: 2024-07-01
 categories:
     - aws
     - eks
@@ -206,6 +206,12 @@ TF_LOG=DEBUG terraform apply
 
 ### Check add-on compatibility
 
+```sh
+eksctl create iamserviceaccount --name aws-node --namespace kube-system \
+    --cluster my-cluster --profile terraform --role-name eks-cni-role \
+    --role-only --attach-policy-arn arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy \
+    --approve
+```
 
 - https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html#workloads-add-ons-available-eks
 - https://docs.aws.amazon.com/eks/latest/userguide/managing-add-ons.html#addon-compat
@@ -222,6 +228,28 @@ aws eks describe-addon-versions --addon-name kube-proxy --kubernetes-version 1.3
 
 aws eks describe-addon-versions --addon-name eks-pod-identity-agent --kubernetes-version 1.30 --profile terraform
     # "v1.3.0-eksbuild.1"
+```
+
+- Check vpc-cni 
+
+```sh
+# Check `aws-node` serviceaccount is associated with IAM role with AmazonEKS_CNI_Policy policy attached
+k describe sa aws-node -n kube-system
+    # Name:                aws-node
+    # Namespace:           kube-system
+    # Labels:              app.kubernetes.io/instance=aws-vpc-cni
+    #                     app.kubernetes.io/managed-by=Helm
+    #                     app.kubernetes.io/name=aws-node
+    #                     app.kubernetes.io/version=v1.18.2
+    #                     helm.sh/chart=aws-vpc-cni-1.18.2
+    #                     k8s-app=aws-node
+    # Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::094833749257:role/eks-cni-role
+    # Image pull secrets:  <none>
+    # Mountable secrets:   <none>
+    # Tokens:              <none>
+    # Events:              <none>
+
+k describe sa aws-load-balancer-controller -n kube-system
 ```
 
 - Check addon is created or not
@@ -803,6 +831,7 @@ kubectl get svc
 - `AWS Load balancer controller`
     - Requires a dedicated `IAM role` to interact with AWS (i.e. create ALB)
     - https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+    - https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html
     - https://www.youtube.com/watch?v=ZfjpWOC5eoE
 
 https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.6/how-it-works/
@@ -812,6 +841,41 @@ When you create a Kubernetes Service of type ClusterIP and an Ingress resource, 
 Supports advanced routing features, SSL termination, or integration with AWS WAF.
 
 The Ingress resource will handle the external exposure and routing of traffic to your services, and the ClusterIP (only accessed from within the cluster or through an ingress controller) type is sufficient for internal communication within the cluster.
+
+```
+Client
+  |
+  v
+ALB (DNS Name)
+  |
+  v
+AWS Load Balancer Controller (Pod in kube-system namespace)
+  |
+  v
+Ingress
+  |
+  v
+Service of type ClusterIP
+  |
+  v
+Pods
+```
+
+```sh
+# Create an IAM role with OIDC associated.
+# It automates the process of creating the IAM role,
+# setting up the trust policy for the OIDC provider,
+# and annotating the Kubernetes service account with the IAM role ARN.
+# This allows the service account to assume the IAM role and use its permissions.
+
+eksctl create iamserviceaccount \
+  --cluster=my-cluster \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name aws-lbc \
+  --approve
+```
+
 
 ```sh
 # get sg-id
