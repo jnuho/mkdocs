@@ -18,6 +18,7 @@ Intertered in `Golang`, `Kubernetes`, and `Deep learning`.
 ## Projects
 
 - [`Cat vs. Non-cat classifier`](blog/posts/Cat-vs.-Non-cat-Classifier.md) - k8s application for cat vs. non-cat classifier
+- [`AWS EKS with Terraform`](blog/posts/EKS_with_Terraform.md) - AWS EKS deployed using Terraform
 - [`Deep learning`](blog/posts/deeplearning.ai.md) - deep learning basics I learned using `numpy`
 - [`Helm Chart`](blog/posts/Helm.md) - documented on `Helm` to present to my Team while working at Kaon
 - [`Golang AWS dashboard`](blog/posts/Golang-AWS-dashboard.md) - I used golang aws sdk to create a dashboard for aws resource
