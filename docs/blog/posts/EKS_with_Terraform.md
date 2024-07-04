@@ -12,13 +12,13 @@ authors:
 
 I go through AWS and terraform document to explain how it works.
 
-|<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="400">|
+|<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="420">|
 |:--:| 
 | *EKS cluster example* |
 
 <!-- more -->
 
-|<img src="https://i.imgur.com/5Bpv5uQ.png" alt="pods" width="500">|
+|<img src="https://i.imgur.com/5Bpv5uQ.png" alt="pods" width="350">|
 |:--:| 
 | *EKS cluster example* |
 
