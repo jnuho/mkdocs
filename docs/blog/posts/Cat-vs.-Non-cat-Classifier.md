@@ -41,9 +41,9 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 
 - [System overview](#system-overview)
 - [Application demo](#application-demo)
+- [Skill Sets I used](#skill-sets-i-used)
 - [Binary classification](#binary-classification)
 - [Virtualbox network architecture](#virtualbox-network-architecture)
-- [Kubernetes setup](#kubernetes-setup)
 - [Virtualbox setup](#virtualbox-setup)
 - [Microservices](#microservices)
     - [CORS issue](#cors-issue)
@@ -57,6 +57,26 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 - [1. Minikube implementation](#minikube-implementation)
 - [2. Microk8s implemntation](#microk8s-implemntation)
 - [3. GCP implementation](#gcp-implementation)
+
+### Skill Sets I used
+
+- Kubernetes
+    - in AWS: EKS cluster with 3 worker node. Terraform to deploy EKS and AWS Load Balancer Controller and Ingress for exposing the app.
+    - in Local testing environment: 3-node cluster w/ [microk8s](https://microk8s.io/docs/getting-started).
+- Docker and `docker-compose` for intitial testing
+- Microservices architectur
+    - Frontend : Nginx (with html, css, js) as a reverse proxy server
+    - Backend : Python (uvicorn), Golang (go-gin) as backend web server
+- Deep learning algorithm for binary classification using basic `numpy`
+    - includes forward and [backward propagation](https://en.wikipedia.org/wiki/Backpropagation)
+    - TODO: `pytorch` for cat/non-cat recognizer
+- Virtualbox (cli) to create 3 master nodes (ubuntu) for k8s cluster
+
+I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io/) cluster setup using MicroK8s, with basic web service functionality. **My next goal** is to enhance the Python backend service by adding a fundamental deep learning algorithm. Specifically, the Python backend worker will perform binary classification on cat vs. non-cat images from a given image URL. For implementation, I initially explored using `numpy` for backward/forward propagation, and I am currently exploring the `PyTorch` library.
+
+
+[↑ Back to top](#)
+<br><br>
 
 
 ### Binary classification
@@ -79,25 +99,6 @@ I had to construct a virtualbox environment in which my kubernetes cluster and a
 
 [↑ Back to top](#)
 <br><br>
-
-### Kubernetes setup
-
-- Kubernetes : 3-node cluster w/ [microk8s](https://microk8s.io/docs/getting-started).
-- Docker and `docker-compose` for testing
-- Microservices architecture
-    - Frontend : Nginx (with html, css, js) as a reverse proxy server
-    - Backend : Python uvicorn, Golang go-gin as backend web server
-- Deep learning algorithm for binary classification using basic `numpy`
-    - includes forward and [backward propagation](https://en.wikipedia.org/wiki/Backpropagation)
-    - TODO: `pytorch` for cat/non-cat recognizer
-- Virtualbox (cli) to create 3 master nodes (ubuntu) for k8s cluster
-
-I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io/) cluster setup using MicroK8s, with basic web service functionality. **My next goal** is to enhance the Python backend service by adding a fundamental deep learning algorithm. Specifically, the Python backend worker will perform binary classification on cat vs. non-cat images from a given image URL. For implementation, I initially explored using `numpy` for backward/forward propagation, and I am currently exploring the `PyTorch` library.
-
-
-[↑ Back to top](#)
-<br><br>
-
 
 ### Virtualbox Setup
 
