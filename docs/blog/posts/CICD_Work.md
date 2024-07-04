@@ -8,15 +8,17 @@ authors:
 ---
 
 - Team City
-	- Project 생성
-	- Build Step 추가
-		- cli (set short hash)
-		- docker build
-		- docker push
-	- parameters 추가 'GitShortHash'
-	- Connections > Add Connections > Docker Registry (:5050)
 
 <!-- more -->
+
+- Project 생성
+- Build Step 추가
+    - cli (set short hash)
+    - docker build
+    - docker push
+- parameters 추가 'GitShortHash'
+- Connections > Add Connections > Docker Registry (:5050)
+
 
 - On-Premise-Server
 

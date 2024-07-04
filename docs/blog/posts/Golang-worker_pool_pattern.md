@@ -7,7 +7,7 @@ authors:
   - junho
 ---
 
-|<img src="https://i.imgur.com/vPEfkbp.png" alt="pods" width="550">|
+|<img src="https://i.imgur.com/vPEfkbp.png" alt="pods" width="480">|
 |:--:| 
 | *Worker pool pattern* |
 

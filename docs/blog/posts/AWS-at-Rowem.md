@@ -9,7 +9,10 @@ authors:
 
 - What I learned about AWS (EC2, VPC, ElastiCache) while I worked at Rowem. Inc.
 
-![diagram](https://imgur.com/xkNudsN.png)
+
+|<img src="https://imgur.com/xkNudsN.png" alt="pods" width="480">|
+|:--:| 
+| *AWS Architecture* |
 
 <!-- more -->
 

@@ -8,10 +8,6 @@ authors:
 ---
 
 ❒ backend Development
-```
-- Git
-  Pull Request, Code Review, Merge
-  Branch : 'main < test < develop'
 
 - Java
   API development for SBS inkigayo voting platform
@@ -21,9 +17,12 @@ authors:
   ✻ Code Optimization (e.g. for-loop)
   ✻ Refactoring for readability and reusability of codes
   ✻ Junit unit test
-```
 
 <!-- more -->
+
+- Git
+  Pull Request, Code Review, Merge
+  Branch : 'main < test < develop'
 
 <br>
 

@@ -11,7 +11,7 @@ authors:
 
 ### System overview
 
-|<img src="https://i.imgur.com/w8PxxXk.png" alt="simpledl architecture" width="400">|
+|<img src="https://i.imgur.com/w8PxxXk.png" alt="simpledl architecture" width="380">|
 |:--:| 
 | *kubernetes architecture of my application* |
 
@@ -21,7 +21,7 @@ authors:
 
 The following image is the result of deployment on **multi-node Kuberentes cluster.**
 
-| <img src="https://imgur.com/5seKQM4.gif" alt="pods" width="680"> |
+| <img src="https://imgur.com/5seKQM4.gif" alt="pods" width="600"> |
 |:--:| 
 | *web application* |
 

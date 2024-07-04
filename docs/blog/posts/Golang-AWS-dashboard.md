@@ -11,9 +11,9 @@ authors:
 
 ❚ AWS 자원 조회
 
-<div>
-<img src="https://i.imgur.com/zjZAUPN.gif" height="90%" width="90%" alt="go sdk app">
-</div>
+|<img src="https://i.imgur.com/zjZAUPN.gif" alt="pods" width="480">|
+|:--:| 
+| *Dashbaord with Go AWS SDK* |
 
 
 <!-- more -->

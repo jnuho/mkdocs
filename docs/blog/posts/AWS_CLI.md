@@ -13,6 +13,8 @@ authors:
     - [describe-target-health](#aws-elbv2-describe-target-health)
     - [describe-rules](#aws-elbv2-describe-rules)
 
+<!-- more -->
+
   - [autoscaling](#)
     - [describe-auto-scaling-groups](#aws-autoscaling-describe-auto-scaling-groups)
   - [ecr](#)
@@ -28,7 +30,6 @@ authors:
   - [ec2](#)
     - [describe-instances](#aws-ec2-describe-instances)
 
-<!-- more -->
 
 ### aws elbv2 describe-target-groups
 
