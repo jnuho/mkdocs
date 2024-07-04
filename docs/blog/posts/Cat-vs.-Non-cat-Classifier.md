@@ -2,9 +2,11 @@
 draft: false
 date: 2024-06-02
 categories:
-    - kubernetes
-    - deeplearning
-    - project
+    - Kubernetes
+    - Deep Learning
+    - Project
+    - EKS
+    - Terraform
 authors:
     - junho
 ---

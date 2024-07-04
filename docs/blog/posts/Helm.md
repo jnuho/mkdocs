@@ -2,7 +2,7 @@
 draft: false
 date: 2024-05-30
 categories:
-    - project
+    - Project
 authors:
     - junho
 ---

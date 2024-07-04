@@ -2,9 +2,9 @@
 draft: false
 date: 2024-07-01
 categories:
-    - aws
-    - eks
-    - terraform
+    - AWS
+    - EKS
+    - Terraform
 authors:
     - junho
 ---

@@ -2,7 +2,7 @@
 draft: false
 date: 2022-03-01
 categories:
-  - project
+  - Project
 authors:
   - junho
 ---

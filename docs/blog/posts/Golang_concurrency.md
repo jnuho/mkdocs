@@ -2,7 +2,7 @@
 draft: false
 date: 2024-04-01
 categories:
-  - golang
+  - Golang
 authors:
   - junho
 ---
