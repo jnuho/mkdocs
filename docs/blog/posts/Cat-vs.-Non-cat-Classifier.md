@@ -11,9 +11,10 @@ authors:
 
 ### System overview
 
-|<img src="https://i.imgur.com/w8PxxXk.png" alt="simpledl architecture" width="420">|
+|<img src="https://i.imgur.com/w8PxxXk.png" alt="simpledl architecture" width="400">|
 |:--:| 
 | *kubernetes architecture of my application* |
+
 
 
 ### Application demo
@@ -23,14 +24,6 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 | <img src="https://imgur.com/5seKQM4.gif" alt="pods" width="680"> |
 |:--:| 
 | *web application* |
-
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="680"> |
-|:--:| 
-| *Kubernetes resources* |
-
-[↑ Back to top](#)
-<br><br>
-
 
 <!-- more -->
 
@@ -73,6 +66,10 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 - Virtualbox (cli) to create 3 master nodes (ubuntu) for k8s cluster
 
 I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io/) cluster setup using MicroK8s, with basic web service functionality. **My next goal** is to enhance the Python backend service by adding a fundamental deep learning algorithm. Specifically, the Python backend worker will perform binary classification on cat vs. non-cat images from a given image URL. For implementation, I initially explored using `numpy` for backward/forward propagation, and I am currently exploring the `PyTorch` library.
+
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="400"> |
+|:--:| 
+| *Kubernetes resources* |
 
 
 [↑ Back to top](#)
