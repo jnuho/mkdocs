@@ -6,7 +6,7 @@ categories:
     - Deep Learning
     - Project
     - EKS
-    - Terraform
+    - Terraformk
 authors:
     - junho
 ---
@@ -18,6 +18,7 @@ authors:
 | *kubernetes architecture of my application* |
 
 
+<!-- more -->
 
 ### Application demo
 
@@ -27,7 +28,6 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 |:--:| 
 | *web application* |
 
-<!-- more -->
 
 [↑ Back to top](#)
 <br><br>

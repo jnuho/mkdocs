@@ -10,7 +10,7 @@ authors:
 
 ## Kubernetes Component
 
-|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="820">|
+|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="550">|
 |:--:| 
 | *components-of-kubernetes* |
 
