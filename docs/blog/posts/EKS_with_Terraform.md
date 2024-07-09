@@ -9,7 +9,7 @@ authors:
     - junho
 ---
 
-
+Explain how alb ingress works from end-to-end (AWS, EKS)
 I go through AWS and terraform document to explain how it works.
 
 |<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="420">|
@@ -39,6 +39,7 @@ I go through AWS and terraform document to explain how it works.
   - [`Configure your computer to communicate with your cluster`](#configure-your-computer-to-communicate-with-your-cluster)
 - [`Create nodes`](#create-nodes)
 - [`External access`](#external-access)
+- [`Helm Chart`](#helm-chart)
 
 
 [↑ Back to top](#)
@@ -1111,3 +1112,100 @@ kubectl label namespace <네임스페이스이름> istio-injection=enabled
 
 
 
+
+## Helm Chart
+
+- Install `helm`
+    - on the same client PC as `kubectl`
+
+```sh
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+- Create helm chart
+
+```sh
+helm create tst-chart
+```
+
+- Check validity
+
+```sh
+cd simpledl/script
+tree
+    tst-chart
+       ├── Chart.yaml
+       ├── charts
+       ├── templates
+       │   ├── _helpers.tpl
+       │   ├── deployment.yaml
+       │   ├── hpa.yaml
+       │   ├── ingress.yaml
+       │   └── service.yaml
+       ├── values.aws.yaml
+       └── values.local.yaml
+
+helm lint tst-chart
+helm template tst-chart --debug
+
+# check results without installation
+# helm install --dry-run tst-chart --generate-name
+helm install --dry-run tst-release ./tst-chart -f ./tst-chart/values.local.yaml
+```
+
+- Install
+
+```sh
+helm install tst-release ./tst-chart -f ./tst-chart/values.local.yaml
+```
+
+- Upgrade
+    - Helm will perform a rolling update for the affected resources (e.g., Deployments, StatefulSets).
+    - Pods are replaced one by one, ensuring zero-downtime during the update.
+    - Helm manages this process transparently.
+    - Edit `values.local.yaml` and apply `helm upgrade` command
+
+```yaml
+services: 
+  - name: fe-nginx
+    replicaCount: 3
+```
+
+```sh
+helm list
+    NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART              APP VERSION
+    tst-release     default         1               2024-07-09 14:25:50.410043621 +0900 KST deployed        tst-chart-0.1.0    1.16.0
+
+helm upgrade tst-release ./tst-chart -f ./tst-chart/values.local.yaml
+    Release "tst-release" has been upgraded. Happy Helming!
+    NAME: tst-release
+    LAST DEPLOYED: Tue Jul  9 14:35:35 2024
+    NAMESPACE: default
+    STATUS: deployed
+    REVISION: 2
+    TEST SUITE: None
+
+helm list
+    NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART              APP VERSION
+    tst-release     default         2               2024-07-09 14:35:35.404055879 +0900 KST deployed        tst-chart-0.1.0    1.16.0
+```
+
+- Rollback
+
+```sh
+helm rollback tst-release VERSION_NO
+```
+
+- Uninstall
+
+```sh
+helm uninstall tst-release
+```
+
+- Helm Repository
+    - While you can deploy a Helm chart directly from the filesystem,
+    - it’s recommended to use Helm repositories.
+    - Helm repositories allow versioning, collaboration, and easy distribution of charts
+    - [`LINK`](https://www.kubernet.dev/getting-started-with-helm-simplifying-kubernetes-application-deployments)
