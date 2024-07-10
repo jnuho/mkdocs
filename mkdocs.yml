@@ -2,8 +2,7 @@ site_name: Jun Ho Lee
 
 theme:
   name: material
-  # favicon: assets/icons8-mars-planet-96.png
-  favicon: 🐳
+  favicon: assets/icons8-terminal-96.png
 
   font:
     text: IBM Plex Sans

@@ -12,7 +12,7 @@ authors:
 
 |<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="550">|
 |:--:| 
-| *components-of-kubernetes* |
+| *Kubernetes as an operating system for the cluster* |
 
 <!-- more -->
 
@@ -33,6 +33,8 @@ authors:
 - <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a>
 - <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
 
+Kubernetes schedules the components of a distributed application onto individual
+computers in the underlying computer cluster and acts as an interface between the application and the cluster.
 
 ### Master node
 
@@ -47,11 +49,9 @@ authors:
         - request → api server → validates request → other processes → pod creation
     - UI (dashboard), API(script,sdk), CLI (kubectl)
 - `kube-scheduler`
-    - schedule new pod → api server → scheduler
-    - → intelligently decide which node to put the new Pods based on resource percentage of nodes being used
-    - scans for newly created pods and assigns them nodes based on a variety of factors
-        - including resource requirements, hardware/software constraints and data locality.
-    - distribute workloads across worker nodes
+    - watches for newly created Pods with no assigned node, and selects a node for them to run on.
+    - based on resource percentage of nodes being used - including resource requirements, hardware/software constraints and data locality.
+    - schedule new pod → api server → scheduler: distribute workloads across worker nodes
 - `kube-controller-manager`
     - ensures the cluster remains in the desired state
     - run controllers which run loops to ensure the configuration matches actual state of the running cluster.
@@ -63,6 +63,7 @@ authors:
     - detect cluster state changes(pods state)
     - Controller Manager(detect pod state) → Scheduler → Kublet(on worker node)
 - `cloud-controller-manager`
+    - The cloud controller manager lets you link your cluster into your cloud provider's API
 - `etcd`
     - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
     - cluster brain!
@@ -80,10 +81,11 @@ authors:
 - host multiple pods which are the components of the application workload
 - the following 3 processes must be installed on every node:
 - `kubelet`
+    - kubelet agent runs on each worker node
+    - makes sure that containers(described in PodSpecs) are running in a Pod.
     - schedules pods and containers
     - interacts with both the container and node
     - starts the pod with a container inside
-    - agent running on each node
     - watches for changes in pod spec and takes action
     - ensures the pods running on the node are running and are healthy.
 - `kube-proxy`
@@ -95,7 +97,7 @@ authors:
     - Proxy network running on the node that manage the network rules
     - and communication across pods from networks inside or outside of the cluster.
 - `Container runtime`
-    - responsible for pulling images, creating containers
+    - responsible for pulling images, creating containers and lifecyle of containers
     - e.g. containerd
 
 - https://kubernetes.io/docs/concepts/architecture/
