@@ -12,7 +12,7 @@ I'm interested in `Kubernetes`, `Golang`, and `Deep learning`.
 ## Projects
 
 - [`Cat vs. Non-cat classifier`](blog/posts/Cat-vs.-Non-cat-Classifier.md) - k8s application for cat vs. non-cat classifier
-- [`EKS with Terraform`](blog/posts/EKS_with_Terraform.md) - AWS EKS deployed using Terraform
+- [`EKS with Terraform and Helm`](blog/posts/EKS_with_Terraform_and_Helm.md) - AWS EKS deployed using Terraform
 - [`Helm Chart`](blog/posts/Helm.md) - documented on `Helm` to present to my Team while working at Kaon
 - [`Golang AWS dashboard`](blog/posts/Golang-AWS-dashboard.md) - I used golang aws sdk to create a dashboard for aws resource
 - [`Deep learning`](blog/posts/deeplearning.ai.md) - deep learning basics I learned using `numpy`

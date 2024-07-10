@@ -88,6 +88,7 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 - [1. Minikube implementation](#minikube-implementation)
 - [2. Microk8s implemntation](#microk8s-implemntation)
 - [3. GCP implementation](#gcp-implementation)
+- [`Golang ini setting`](#golang-ini-setting)
 
 
 ### Binary classification
@@ -1323,6 +1324,37 @@ gcp_vm_machine_type="e2-medium"
 gcloud init
 gcloud compute ssh instance-20240620-115251 --zone asia-northeast3-a
 ```
+
+[↑ Back to top](#)
+<br><br>
+
+## Golang ini setting
+
+In software development, managing configurations across different environments—such as development (dev), staging (stg), and production (prd)—is crucial. 
+
+Each environment often requires distinct settings, such as API endpoint URLs, database connections, and environment variables.
+
+Hard-coding these values directly into the application code can lead to maintenance challenges and potential errors during deployment.
+
+- Environment-Specific Values Files
+    - 
+
+```yaml
+# One can also set different namespace for each environment on values.xxx.yaml
+
+# 1. Development envionment
+helm install tst-release ./tst-chart -f ./tst-chart/values.dev.yaml
+
+# 2. Stage envionment
+helm install tst-release ./tst-chart -f ./tst-chart/values.stg.yaml
+
+# 3. Production envionment
+helm install tst-release ./tst-chart -f ./tst-chart/values.prd.yaml
+```
+
+
+
+
 
 [↑ Back to top](#)
 <br><br>

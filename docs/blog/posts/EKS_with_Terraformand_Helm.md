@@ -1144,28 +1144,28 @@ tree
        │   ├── hpa.yaml
        │   ├── ingress.yaml
        │   └── service.yaml
-       ├── values.aws.yaml
-       └── values.local.yaml
+       ├── values.dev.yaml
+       └── values.prd.yaml
 
 helm lint tst-chart
 helm template tst-chart --debug
 
 # check results without installation
 # helm install --dry-run tst-chart --generate-name
-helm install --dry-run tst-release ./tst-chart -f ./tst-chart/values.local.yaml
+helm install --dry-run tst-release ./tst-chart -f ./tst-chart/values.dev.yaml
 ```
 
 - Install
 
 ```sh
-helm install tst-release ./tst-chart -f ./tst-chart/values.local.yaml
+helm install tst-release ./tst-chart -f ./tst-chart/values.dev.yaml
 ```
 
 - Upgrade
     - Helm will perform a rolling update for the affected resources (e.g., Deployments, StatefulSets).
     - Pods are replaced one by one, ensuring zero-downtime during the update.
     - Helm manages this process transparently.
-    - Edit `values.local.yaml` and apply `helm upgrade` command
+    - Edit `values.dev.yaml` and apply `helm upgrade` command
 
 ```yaml
 services: 
@@ -1178,7 +1178,7 @@ helm list
     NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART              APP VERSION
     tst-release     default         1               2024-07-09 14:25:50.410043621 +0900 KST deployed        tst-chart-0.1.0    1.16.0
 
-helm upgrade tst-release ./tst-chart -f ./tst-chart/values.local.yaml
+helm upgrade tst-release ./tst-chart -f ./tst-chart/values.dev.yaml
     Release "tst-release" has been upgraded. Happy Helming!
     NAME: tst-release
     LAST DEPLOYED: Tue Jul  9 14:35:35 2024
@@ -1209,3 +1209,41 @@ helm uninstall tst-release
     - it’s recommended to use Helm repositories.
     - Helm repositories allow versioning, collaboration, and easy distribution of charts
     - [`LINK`](https://www.kubernet.dev/getting-started-with-helm-simplifying-kubernetes-application-deployments)
+
+
+fe: .init load
+fe: web/cat POST
+configmap
+/config/settings.ini in each pods
+
+
+
+- `kubectl rollout restart deployment`
+    - restarts the pods associated with the specified deployment.
+    - However, it doesn't directly remove the old replica sets (RS).
+    - The old RSs are retained for historical reasons and to support rollbacks if needed.
+    - Here's what happens when you run `kubectl rollout restart deployment`:
+
+1. **New Replica Set (RS)**:
+   - A new RS is created with the updated configuration (if any changes were made).
+   - The new RS manages the desired number of pods according to the deployment's configuration.
+
+2. **Pods Transition**:
+   - The pods transition from the old RS to the new RS.
+   - The old pods are gradually terminated, and the new pods are created.
+
+3. **Old Replica Set (RS)**:
+   - The old RS continues to exist, managing the old pods.
+   - It is not removed immediately to allow for a smooth transition.
+
+4. **Cleanup**:
+   - After the new pods are fully running and stable, you can manually delete the old RS if you no longer need it.
+
+To clean up the old RSs, you can use the following command:
+Remember to verify that the new pods are functioning correctly before deleting the old RSs.
+
+```bash
+kubectl delete rs <old-replica-set-name>
+```
+
+---

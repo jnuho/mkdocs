@@ -33,7 +33,6 @@ authors:
 - <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a>
 - <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
 
-While I've been using kubectl commands to manage services within a cluster—such as ingress, service, and pod components—I've realized that my understanding of their underlying concepts remains somewhat superficial. I'm interested in comprehending how these components interconnect and how clients access the cluster through endpoints. I've tried to delve deeper into details of each component.
 
 ### Master node
 
