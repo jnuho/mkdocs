@@ -26,7 +26,7 @@ authors:
     - AWS: EKS cluster with 3 worker nodes. Terraform to deploy EKS and AWS Load Balancer Controller and Ingress for exposing the app.
     - Local: 3-node cluster w/ [microk8s](https://microk8s.io/docs/getting-started).
 - `Terraform` iac to create:
-    - [`LINK`](blog/posts/eks-with-terraform/)
+    - [`LINK`](EKS_with_Terraform_and_Helm.md)
     - AWS network resources
     - IAM Role and policy association with serviceaccount
     - EKS cluster, node group, addons
