@@ -2,7 +2,7 @@ site_name: Jun Ho Lee
 
 theme:
   name: material
-  favicon: assets/icons8-terminal-96.png
+  favicon: assets/favicon.ico
 
   font:
     text: IBM Plex Sans
