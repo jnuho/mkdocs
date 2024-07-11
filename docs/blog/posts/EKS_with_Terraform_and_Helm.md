@@ -1047,6 +1047,9 @@ can then access any AWS service that the role has permissions to access.
 ```
 
 
+[↑ Back to top](#)
+<br><br>
+
 # Istio
 
 - Use with EKS
@@ -1110,6 +1113,9 @@ kubectl label namespace <네임스페이스이름> istio-injection=enabled
 ```
 
 
+
+[↑ Back to top](#)
+<br><br>
 
 
 
@@ -1198,7 +1204,8 @@ helm list
 helm rollback tst-release VERSION_NO
 ```
 
-- Uninstall
+- Uninstall (Helm v3)
+    - `helm delete --purge` in Helm V2
 
 ```sh
 helm uninstall tst-release
@@ -1217,6 +1224,9 @@ configmap
 /config/settings.ini in each pods
 
 
+
+[↑ Back to top](#)
+<br><br>
 
 - `kubectl rollout restart deployment`
     - restarts the pods associated with the specified deployment.
@@ -1247,3 +1257,8 @@ kubectl delete rs <old-replica-set-name>
 ```
 
 ---
+
+
+
+[↑ Back to top](#)
+<br><br>

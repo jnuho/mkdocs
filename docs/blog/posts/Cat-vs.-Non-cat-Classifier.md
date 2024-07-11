@@ -45,7 +45,42 @@ authors:
 - `Golang Concurrency`
     - used context, channel, goroutine for concurrent programming
 
-I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io/) cluster setup using MicroK8s, with basic web service functionality. **My next goal** is to enhance the Python backend service by adding a fundamental deep learning algorithm. Specifically, the Python backend worker will perform binary classification on cat vs. non-cat images from a given image URL. For implementation, I initially explored using `numpy` for backward/forward propagation, and I am currently exploring the `PyTorch` library.
+
+---
+
+I created a web application that analyzes images and determines whether they depict cats or non-cats.
+To achieve this, I utilized `EKS` (Amazon Elastic Kubernetes Service), `Terraform` for infrastructure provisioning, and `Helm` for managing Kubernetes applications.
+
+1. **Nginx Service**:
+   - Nginx serves as the static content server, handling HTML, CSS, and JavaScript files.
+   - It ensures efficient delivery of frontend resources to users' browsers.
+
+2. **Go-Gin Server**:
+   - The Go-Gin server acts as an intermediary between the frontend and backend services.
+   - It receives requests from the frontend, including requests for cat-related information.
+   - Additionally, it performs utility functions, such as fetching weather data for three cities using goroutine concurrency (3-worker).
+
+3. **Python Backend**:
+   - The Python backend worker is responsible for image classification.
+   - TODO (not complete):
+    - Given an image URL, it uses PyTorch (and possibly NumPy) to perform binary classification (cat vs. non-cat).
+    - The result of the classification is then relayed back to the Go-Gin server.
+
+4. **Flow of Data**:
+   - When a user submits an image URL via the frontend, the Go-Gin server receives the request.
+   - It forwards the request to the Python backend.
+   - The Python backend processes the image using the deep learning algorithm.
+   - Finally, the result (whether the image contains a cat or not) is sent back to the frontend.
+
+5. **Local Development Environment**:
+   - During development, I experimented with both `microk8s` (with VirtualBox) and `minikube`.
+   - These local Kubernetes environments allowed me to test and iterate on my setup before deploying to production.
+
+6. **Next Goal**:
+   - Enhance the Python backend by incorporating a deep learning algorithm.
+   - I initially did a Numpy implementation with 5-Layer and 2,500 repetition.
+   - Now, I'm exploring the use of PyTorch for training the model and performing predictions
+
 
 |<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="400"> |
 |:--:| 

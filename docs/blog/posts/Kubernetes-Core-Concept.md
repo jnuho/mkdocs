@@ -7,7 +7,6 @@ authors:
     - junho
 ---
 
-
 ## Kubernetes Component
 
 |<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="550">|
@@ -16,17 +15,21 @@ authors:
 
 <!-- more -->
 
+Kubernetes is an open-source container orchestration system for automating the deployment, scaling, and management of containerized applications.
+It was originally designed by Google, and is now maintained by the Cloud Native Computing Foundation (CNCF).
 
-- [Kubernetes Component](#kubernetes-component)
-    - [Master Node](#master-node)
-    - [Worker Node](#worker-node)
-    - [Pod](#pod)
-    - [Service](#service)
-    - [Ingress](#ingress)
-        - [traffic flow](#traffic-flow)
-        - [Ingress Controller](#ingress-controller)
-        - [Minikube ingress implementation](#minikube-ingress-implementation)
-    - [VPC-CNI](#vpc-cni)
+- [`Kubernetes Component`](#kubernetes-component)
+    - [`Control plane`](#control-plane)
+    - [`Worker Node`](#worker-node)
+    - [`Pod`](#pod)
+    - [`Workload Management`](#workload-management)
+    - [`Service`](#service)
+    - [`Ingress`](#ingress)
+        - [`traffic flow`](#traffic-flow)
+        - [`Ingress Controller`](#ingress-controller)
+        - [`Minikube ingress implementation`](#minikube-ingress-implementation)
+    - [`VPC-CNI`](#vpc-cni)
+
 
 - <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
 - <a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&t=104">Kubernetes by Nana-1hr</a>
@@ -36,11 +39,12 @@ authors:
 Kubernetes schedules the components of a distributed application onto individual
 computers in the underlying computer cluster and acts as an interface between the application and the cluster.
 
-### Master node
+### Control plane
 
+- manages the worker nodes and the Pods in the cluster
 - runs the control plane components, monitor and manage overall state of the cluster and resources
 - schedule and start pods
-- 4 processes run on every master node:
+- 4 processes run on every control plane(master node):
 - `kube-apiserver`
     - exposes the Kubernetes API and provides the front end to the Control Plane.
     - a single entrypoint (cluster gateway) for interacting with the k8s control plane
@@ -113,16 +117,49 @@ computers in the underlying computer cluster and acts as an interface between th
     - Worker node : more resources for running applications
     - can add more Master or Worker nodes
 
+
+[↑ Back to top](#)
+<br><br>
+
+
+
 ### Pod
 
-- "Pods are the smallest deployable units of computing that you can create and manage in Kubernetes."
+- <a href="https://kubernetes.io/docs/concepts/workloads/pods" target="_blank">Pods</a>
+- Pods are the smallest deployable units of computing that you can create and manage in Kubernetes.
 - abstraction over container
 - usually 1 application(container) per pod
 - each pod gets its own ip address
 - ephermeral; new (unique) ip for each re-creation
 
+- Pods and controllers
+    - You can use workload resources to create and manage multiple Pods for you.
+    - `Deployment`
+    - `StatefulSet`
+    - `DaemonSet`
+
+
+[↑ Back to top](#)
+<br><br>
+
+
+### Workload Management
+
+- `Deployments`
+    - manage stateless application workloads on your cluster, where any Pod in the Deployment is interchangeable and can be replaced if needed.
+- `ReplicaSet`
+- `StatefulSets`
+- `DaemonSet`
+
+
+
+[↑ Back to top](#)
+<br><br>
+
+
 ### Service
 
+- <a href="https://kubernetes.io/docs/concepts/services-networking" target="_blank">Service, Load Balancing, and Networking</a>
 - <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
 - Service provide stable(permanent) IP address. Each pod has its own ip address, but are ephemeral.
 - Load balancing
@@ -137,6 +174,11 @@ computers in the underlying computer cluster and acts as an interface between th
 - ClusterIP services
     - default type
     - microservice app deployed
+
+
+[↑ Back to top](#)
+<br><br>
+
 
 ### Ingress
 
@@ -163,6 +205,10 @@ Ingress is an object that allows external traffic to reach services within a clu
 - [gke ingress](https://thenewstack.io/deploy-a-multicluster-ingress-on-google-kubernetes-engine/?ref=traefik.io)
 - [load balancer and ingress duo](https://medium.com/@rehmanabdul166/explaining-load-balancers-and-ingress-controller-a-powerful-duo-bca7add558ab)
 - [load balancer vs. ingress](https://medium.com/@thekubeguy/load-balancer-vs-ingress-why-do-we-need-both-for-same-work-3ae2b9afdd5a)
+
+
+[↑ Back to top](#)
+<br><br>
 
 
 ### Traffic flow
@@ -199,6 +245,10 @@ Ingress allows fine-grained routing, and the Ingress Controller ensures that the
 2. Use `Ingress` + Internal service: https://my-app.com
     - Ingress Controller Pod → Ingress (routing rule) → Service → Pod
     - using ingress, you can configure https connection
+
+
+[↑ Back to top](#)
+<br><br>
 
 
 ### Ingress Explained
@@ -260,6 +310,12 @@ spec:
             targetPort: 8080
 ```
 
+
+[↑ Back to top](#)
+<br><br>
+
+
+
 ### Ingress controller
 
 - implementation of ingress, which is Ingress Controller (Pod)
@@ -285,6 +341,10 @@ spec:
         - e.g. Proxy Server: public ip address and open ports
             - Proxy server → Ingress Controller Pod → Ingress (checks ingress rules) → Service → Pod
             - no server in k8s cluster is publicly accessible from outside
+
+
+[↑ Back to top](#)
+<br><br>
 
 
 ### Minikube ingress implementation
@@ -1257,6 +1317,8 @@ k get svc
 curl 172.16.6.100:8081
 ```
 
+[↑ Back to top](#)
+<br><br>
 
 ### VPC-CNI
 
@@ -1342,3 +1404,7 @@ data:
 ### Conclusion
 
 The VPC-CNI plugin for Kubernetes on AWS provides a robust and scalable networking solution that leverages native VPC capabilities. By using ENIs and integrating directly with AWS networking features, it offers high performance, security, and flexibility for managing Kubernetes pod networking within an Amazon VPC.
+
+
+[↑ Back to top](#)
+<br><br>
