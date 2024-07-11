@@ -15,26 +15,26 @@ authors:
 
 <!-- more -->
 
-Kubernetes is an open-source container orchestration system for automating the deployment, scaling, and management of containerized applications.
-It was originally designed by Google, and is now maintained by the Cloud Native Computing Foundation (CNCF).
-
 - [`Kubernetes Component`](#kubernetes-component)
     - [`Control plane`](#control-plane)
     - [`Worker Node`](#worker-node)
     - [`Pod`](#pod)
     - [`Workload Management`](#workload-management)
+        - [`Deployment`](#deployment)
+        - [`ReplicaSet`](#replicaset)
+        - [`Daemonset`](#daemonset)
     - [`Service`](#service)
     - [`Ingress`](#ingress)
         - [`traffic flow`](#traffic-flow)
         - [`Ingress Controller`](#ingress-controller)
         - [`Minikube ingress implementation`](#minikube-ingress-implementation)
     - [`VPC-CNI`](#vpc-cni)
+- [`References`](#references)
 
 
-- <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
-- <a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&t=104">Kubernetes by Nana-1hr</a>
-- <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a>
-- <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
+
+Kubernetes is an open-source container orchestration system for automating the deployment, scaling, and management of containerized applications.
+It was originally designed by Google, and is now maintained by the Cloud Native Computing Foundation (CNCF).
 
 Kubernetes schedules the components of a distributed application onto individual
 computers in the underlying computer cluster and acts as an interface between the application and the cluster.
@@ -1401,9 +1401,20 @@ data:
   ...
 ```
 
-### Conclusion
-
 The VPC-CNI plugin for Kubernetes on AWS provides a robust and scalable networking solution that leverages native VPC capabilities. By using ENIs and integrating directly with AWS networking features, it offers high performance, security, and flexibility for managing Kubernetes pod networking within an Amazon VPC.
+
+
+[↑ Back to top](#)
+<br><br>
+
+
+### References
+
+- <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
+- <a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&t=104">Kubernetes by Nana-1hr</a>
+- <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a>
+- <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
+
 
 
 [↑ Back to top](#)
