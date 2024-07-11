@@ -30,6 +30,10 @@ The following image is the result of deployment on **EKS** Kuberentes cluster, a
 |:--:| 
 | *web application* |
 
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="600"> |
+|:--:| 
+| *Kubernetes resources* |
+
 
 [↑ Back to top](#)
 <br><br>
@@ -42,13 +46,13 @@ The following image is the result of deployment on **EKS** Kuberentes cluster, a
 - [`Virtualbox network architecture`](#virtualbox-network-architecture)
 - [`Virtualbox setup`](#virtualbox-setup)
 - [`Microservices`](#microservices)
-    - [`CORS issue`](#cors-issue)
     - [`Backend - Golang web server`](#backend-golang-web-server)
+        - [`CORS issue`](#cors-issue)
     - [`Backend - Python web server`](#backend-python-web-server)
         - [`Mathematical background for deep learning image recognizer`](#mathematical-background-for-deep-learning-image-recognizer)
         - [`Image Classification`](#image-classification)
         - [`Pytorch`](#pytorch)
-    - [`Frontend - local setup`](#frontend-local-setup)
+    - [`Frontend - nginx`](#frontend-nginx)
 - [`Dockerize for image build`](#dockerize)
 - [`1. Minikube implementation`](#minikube-implementation)
 - [`2. Microk8s implemntation`](#microk8s-implemntation)
@@ -93,38 +97,6 @@ I've yet to use pytorch (CNN) to create a model that can recognize Cat vs. Non-c
 - `Golang Concurrency`
     - used context, channel, goroutine for concurrent programming
 
-
----
-1. `Nginx Frontend`
-   - Nginx serves as the static content server, handling HTML, CSS, and JavaScript files.
-   - It ensures efficient delivery of frontend resources to users' browsers.
-
-2. `Go-Gin Backend`
-   - The Go-Gin server acts as an intermediary between the frontend and backend services.
-   - It receives requests from the frontend, including requests for cat-related information.
-   - Additionally, it performs utility functions, such as fetching weather data for three cities using goroutine concurrency (3-worker).
-
-3. `Python Backend`
-   - The Python backend worker is responsible for image classification.
-   - TODO (not complete):
-    - Given an image URL, it uses PyTorch (and possibly NumPy) to perform binary classification (cat vs. non-cat).
-    - The result of the classification is then relayed back to the Go-Gin server.
-
-4. `How it works?`
-   - When a user submits an image URL via the frontend(browser), the Go-Gin server receives the request.
-   - It forwards the request to the Python backend.
-   - The Python backend processes the image using the deep learning algorithm.
-   - Finally, the result (whether the image contains a cat or not) is sent back to the frontend.
-
-5. **Next Goal**:
-   - Enhance the Python backend by incorporating a deep learning algorithm using pytorch.
-   - I initially did a Numpy implementation with 5-Layer and 2,500 iterations for training parameters.
-   - Now, I'm exploring the use of PyTorch for training the model and performing predictions
-
-
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/microk8s-pods.png" alt="pods" width="400"> |
-|:--:| 
-| *Kubernetes resources* |
 
 
 [↑ Back to top](#)
@@ -223,34 +195,64 @@ sudo ip link set enp0s3 up
 
 ### Microservices
 
-1. frontend: nginx (nodejs vite in local) + javascript + html + css
-2. backend/web: golang (gin framework)
-3. backend/worker: python (fast api, numpy, scikit-learn)
-    - https://fastapi.tiangolo.com/tutorial/
+- `Frontend - Nginx`
+   - Nginx serves as the static content server, handling HTML, CSS, and JavaScript files.
+   - It ensures efficient delivery of frontend resources to users' browsers.
+- `Backend - Go-Gin web-server`
+   - The Go-Gin server acts as an intermediary between the frontend and backend services.
+   - It receives requests from the frontend, including requests for cat-related information.
+   - Additionally, it performs utility functions, such as fetching weather data for three cities using goroutine concurrency (3-worker).
 
+- `Backend - Python uvicorn + fast api web-server`
+    - The Python backend worker is responsible for image classification.
+    - TODO (not complete):
+    - Given an image URL, it uses PyTorch (and possibly NumPy) to perform binary classification (cat vs. non-cat).
+    - The result of the classification is then relayed back to the Go-Gin server.
 
-### Communication between services
+- `How it works?`
+    - When a user submits an image URL via the frontend(browser), the Go-Gin server receives the request.
+    - It forwards the request to the Python backend.
+    - The Python backend processes the image using the deep learning algorithm.
+    - Finally, the result (whether the image contains a cat or not) is sent back to the frontend.
 
-1. **HTTP/REST API**: You can expose a REST API on your Python backend and have the Golang server make HTTP requests to it. This is similar to how your JavaScript frontend communicates with the Golang server
+- `Next Goal`
+    - Enhance the Python backend by incorporating a deep learning algorithm using pytorch.
+    - I initially did a Numpy implementation with 5-Layer and 2,500 iterations for training parameters.
+    - Now, I'm exploring the use of PyTorch for training the model and performing predictions
 
-2. **gRPC/Protobuf**: gRPC is a high-performance, open-source universal RPC framework, and Protobuf (short for Protocol Buffers) is a method for serializing structured data. You can use gRPC and Protobuf for communication between your Golang and Python applications. This method is efficient and type-safe, but it might be a bit more complex to set up compared to a REST API.
-
-3. **Message Queue**: If your use case involves asynchronous processing or you want to decouple your Golang and Python applications, you can use a message queue like RabbitMQ or Apache Kafka. In this setup, your Golang application would publish messages to the queue, and your Python application would consume these messages.
-
-4. **Socket Programming**: You can use sockets for communication if both your Golang and Python applications are running on the same network. This method requires a good understanding of network programming.
-
-5. **Database**: If both applications have access to a shared database, you can use the database as a communication medium. One application writes to the database, and the other one reads from it.
 
 
 [↑ Back to top](#)
 <br><br>
 
 
-### CORS issue
+
+### Backend Golang web server
+
+- `go.mod`, `go.sum` must be in github repo root directory
+- sources:
+    - `cmd/backend-server/main.go`
+    - `backend/web/handler.go`
+    - `backend/web/server.go`
+    - `backend/web/util.go`
+    - `backend/pkg/weatherapi.go`
+
+```sh
+cd simpledl
+go mod init github.com/jnuho/simpledl
+go mod tidy
+```
+
+
+[↑ Back to top](#)
+<br><br>
+
+#### CORS issue
 
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 
-When a web application tries to make a request to a server that’s on a different domain, protocol, or port, it encounters a CORS (Cross-Origin Resource Sharing) issue. Add headers to backend server accordingly
+When a web application tries to make a request to a server that’s on a different domain, protocol, or port,
+it encounters a CORS (Cross-Origin Resource Sharing) issue. Add headers to backend server accordingly
 
 ```
 For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts.
@@ -261,30 +263,6 @@ from the same origin the application was loaded from unless the response
 from other origins includes the right CORS headers.
 
 => Add appropriate headers in golang server.
-```
-
-
-[↑ Back to top](#)
-<br><br>
-
-### Backend Golang web server
-
-- `go.mod`, `go.sum` must be in github repo root directory
-
-```sh
-cd simpledl
-go mod init github.com/jnuho/simpledl
-go mod tidy
-
-
-cd simpledl/pkg
-go mod init github.com/jnuho/simpledl/pkg
-go mod tidy
-
-
-cd simpledl/cmd/backend-web-server
-go mod init github.com/jnuho/simpledl/cmd/backend-web-server
-go mod tidy
 ```
 
 
@@ -355,9 +333,43 @@ The basic operations for forward and backward propagations in deep learning algo
 [↑ Back to top](#)
 <br><br>
 
-### Frontend - local setup
 
-- Download    & install nodejs 20.12.2
+### Pytorch
+
+https://youtu.be/EMXfZB8FVUA?si=XL8SckGQi9xQDgtc
+https://pytorch.org/get-started/locally/
+
+- CPU (Without Nvidia CUDA) only
+
+```sh
+pip3 install torch torchvision torchaudio
+
+# requirements.txt
+torch==2.3.0
+torchaudio==2.3.0
+torchvision==0.18.0
+
+# install using requirements.txt
+python install -r requirements.txt
+```
+
+```python
+import torch
+
+x = torch.rand(3)
+# tensor([.5907, .0781, .3094])
+print(x)
+
+print(torch.cuda.is_available())
+```
+
+
+[↑ Back to top](#)
+<br><br>
+
+### Frontend - nginx
+
+- Download & install nodejs 20.12.2
     - for local development using `vite`
 
 ```sh
@@ -380,7 +392,8 @@ npm create vite@latest
     }
 ```
 
-Note that I will be using nginx instead in production environment. I used nodejs vite just for local development environment.
+I used nodejs vite just for local development environment.
+I will be using nginx in production environment.
 
 ```sh
 # install dependencies specified in package.json
@@ -1182,39 +1195,7 @@ open port 3001
 [↑ Back to top](#)
 <br><br>
 
-### Pytorch
 
-https://youtu.be/EMXfZB8FVUA?si=XL8SckGQi9xQDgtc
-https://pytorch.org/get-started/locally/
-
-- CPU (Without Nvidia CUDA) only
-
-```sh
-pip3 install torch torchvision torchaudio
-
-# requirements.txt
-torch==2.3.0
-torchaudio==2.3.0
-torchvision==0.18.0
-
-# install using requirements.txt
-python install -r requirements.txt
-```
-
-```python
-import torch
-
-x = torch.rand(3)
-# tensor([.5907, .0781, .3094])
-print(x)
-
-print(torch.cuda.is_available())
-```
-
-
-
-[↑ Back to top](#)
-<br><br>
 
 
 ### golang `testing`
@@ -1234,7 +1215,6 @@ go test ./...
 
 [↑ Back to top](#)
 <br><br>
-
 
 
 
