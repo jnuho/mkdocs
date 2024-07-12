@@ -145,8 +145,21 @@ computers in the underlying computer cluster and acts as an interface between th
 
 ### Workload Management
 
-- `Deployments`
-    - manage stateless application workloads on your cluster, where any Pod in the Deployment is interchangeable and can be replaced if needed.
+#### Deployments
+
+- manage stateless application workloads on your cluster, where any Pod in the Deployment is interchangeable and can be replaced if needed.
+
+- Rollover (aka multiple updates in-flight)
+    - Each time a new Deployment is observed by the Deployment controller, a ReplicaSet is created to bring up the desired Pods. If the Deployment is updated, the existing ReplicaSet that controls Pods whose labels match .spec.selector but whose template does not match .spec.template are scaled down. Eventually, the new ReplicaSet is scaled to .spec.replicas and all old ReplicaSets is scaled to 0.
+
+    
+- Rolling Back to a Previous Revision
+
+```yaml
+kubectl rollout undo deployment/nginx-deployment --to-revision=2
+
+```
+
 - `ReplicaSet`
 - `StatefulSets`
 - `DaemonSet`
