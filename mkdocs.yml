@@ -49,6 +49,5 @@ plugins:
 
 nav:
   - Home: index.md
-  - Resume: Resume.md
   - Blog:
       - blog/index.md

@@ -19,7 +19,7 @@ I'm interested in `Kubernetes`, `Golang`, and `Deep learning`.
 
 ## Projects
 
-- [`Cat vs. Non-cat classifier`](blog/posts/Cat-vs.-Non-cat-Classifier.md) - k8s application for cat vs. non-cat classifier
+- [`Implemented Cat vs. Non-cat classifier`](blog/posts/Implement-Cat-vs.-Non-cat-Classifier-on-EKS.md) - EKS with Terraform
 - [`Golang AWS dashboard`](blog/posts/Golang-AWS-dashboard.md) - I used golang aws sdk to create a dashboard for aws resource
 - [`SBS Starplanet`](blog/posts/Work-at-Rowem.md) - SBS Inkigayo voting platform Backend development
 
@@ -28,6 +28,11 @@ I'm interested in `Kubernetes`, `Golang`, and `Deep learning`.
 * <i class="fa fa-github"></i> <a href="https://github.com/jnuho" target="_blank">`Github`</a>
 * <i class="fa fa-linkedin-square"></i> <a href="https://www.linkedin.com/in/jun-ho-lee-047166273/" target="_blank">`LinkedIn`</a>
 * <i class="fa fa-envelope" aria-hidden="true"></i> [`e-mail`](mailto:cactoos555@gmail.com?subject=Test)
+
+<hr>
+
+## Work Experience
+
 * <i class="fa fa-id-badge" aria-hidden="true"></i> [`Resume`](Resume.md)
 
 <hr>
