@@ -14,7 +14,7 @@ authors:
 
 ### System overview
 
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/AWS_EKS_arch.png?" alt="simpledl architecture" width="680">|
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/AWS_EKS.drawio.png?" alt="simpledl architecture" width="680">|
 |:--:| 
 | *kubernetes architecture (EKS)* |
 
@@ -60,6 +60,8 @@ The following image is the result of deployment on **EKS** Kuberentes cluster, a
 - [`1. Minikube implementation`](#minikube-implementation)
 - [`2. Microk8s implemntation`](#microk8s-implemntation)
 - [`3. EKS implementation`](#eks-implementation)
+    - [`AWS LoadBalancer Controller`](#aws-loadbalancer-controller)
+    - [`Traffic Flow in AWS EKS`](#traffic-flow-in-aws-eks)
 - [`Golang ini setting`](#golang-ini-setting)
 
 
@@ -1218,58 +1220,74 @@ go test ./...
 
 ### EKS implementation
 
-- Traffic Flow in AWS EKS
-    - `Client Request to ALB`
-        - The ALB serves as the entry point into the Kubernetes cluster.
-    - `ALB to AWS Load Balancer Controller`
-        - The AWS Load Balancer Controller, running as a pod within the `kube-system` namespace of the EKS cluster,
-        - intercepts the request from the ALB. Its primary role is to **manage AWS load balancers (ALBs or NLBs)** according to Kubernetes resources.
-    - `AWS Load Balancer Controller and Ingress Resource`
-        - The AWS Load Balancer Controller watches for changes in Kubernetes Ingress resources.
-        - When an Ingress resource is created or updated, the controller translates the Ingress resource into configurations for AWS ALBs or NLBs.
-        - It ensures that the ALB/NLB is configured correctly to route traffic based on the rules specified in the Ingress resource.
-        - <b>Since this k8s object has to be granted access to AWS resources (ELB), it needs IAM Role with proper policies attached.</b>
-    - `Ingress Resource`
-        - The Ingress resource in Kubernetes defines how incoming requests should be routed within the cluster.
-        - It includes **rules** for routing traffic based on hostnames, paths, or other criteria to different Kubernetes Services.
-    - `Ingress Controller (e.g., NGINX Ingress)`
-        - The Ingress Controller (e.g., NGINX Ingress Controller) is responsible for implementing the rules defined in the Ingress resource.
-        - It receives requests from the ALB via the AWS Load Balancer Controller and routes them to the appropriate Kubernetes Services based on the Ingress rules.
-    - `Service (ClusterIP)`
-        - Kubernetes Services, specifically those of type ClusterIP, provide a stable virtual IP address to access a set of Pods.
-        - The Ingress Controller routes traffic to the corresponding Service based on the Ingress rules.
-    - `Service to Pods`
-        - Finally, the Service routes the request to one or more Pods that belong to the targeted Kubernetes workload (Deployment, StatefulSet, etc.).
-        - The Pods process the request and generate responses, which flow back through the same path to reach the client.
+
+
+[↑ Back to top](#)
+<br><br>
+
+#### AWS LoadBalancer Controller
+
+- [`AWS document`](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html)
+- [`AWS LoadBalancer Controller`](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.8/how-it-works/)
+
+
+- The `AWS Load Balancer Controller` (pods in kube-system namespace) watches for changes in Kubernetes `Ingress` resources.
+    - When an Ingress resource is created or updated, the controller translates the Ingress resource into configurations for AWS ALBs or NLBs.
+    - It ensures that the ALB/NLB is configured correctly to route traffic based on the rules specified in the Ingress resource.
+
+- In order for this Kubernetes pod to be able to create AWS resources like ALBs(based on Kubernetes Ingress), and NLBs(based on Service resources),
+    - it needs `IAM Role` with proper policies attached to use AWS API to create and configure an ALB.
+    - The AWS Load Balancer Controller, running as a pod in the `kube-system` namespace,
+    - monitors for new or updated Ingress resources with the alb ingress class.
+
+
+#### Traffic Flow in AWS EKS
+
+- `Client Request to ALB`
+    - The client (e.g., browser) sends a request to the AWS Application Load Balancer (ALB).
+    - The ALB serves as the entry point into the Kubernetes cluster.
+- `ALB to Ingress Controller`
+    - The ALB forwards the request directly to the Kubernetes cluster based on the rules defined in the ALB's configuration.
+    - The AWS Load Balancer Controller is responsible for creating and configuring the ALB based on the Ingress resource
+    - It is deployed in your cluster and runs in the kube-system namespace.
+    - It watches for Ingress resources that are annotated to use an AWS ALB and automatically creates and configures the ALB based on these resources.
+- `Ingress Controller (e.g., NGINX Ingress)`
+    - The Ingress Controller (e.g., NGINX Ingress Controller) is responsible for implementing the rules defined in the Ingress resource.
+    - It receives requests from the ALB via the AWS Load Balancer Controller and routes them to the appropriate Kubernetes Services(ClusterIP) based on the Ingress rules.
+- `Service to Pods`
+    - Finally, the Service routes the request to one or more Pods that belong to the targeted Kubernetes workload (Deployment, StatefulSet, etc.).
+    - The Pods process the request and generate responses, which flow back through the same path to reach the client.
+    - The Service forwards the request to the appropriate Pods, which are the application instances.
+    - The Pods process the request and generate a response, which is sent back through the same path.
+    - Kubernetes Services, specifically those of type ClusterIP, provide a stable virtual IP address to access a set of Pods.
+    - The Ingress Controller routes traffic to the corresponding Service based on the Ingress rules.
 
 - Recap
     - **Client** sends requests to the AWS ALB.
-    - **AWS Load Balancer Controller** manages AWS ALB/NLB configurations based on Kubernetes Ingress resources.
-    - **Ingress Resource** defines traffic routing rules within the Kubernetes cluster.
-    - **Ingress Controller (e.g., NGINX)** implements Ingress rules and directs traffic to Kubernetes Services.
-    - **Service (ClusterIP)** provides internal load balancing across Pods.
-    - **Pods** are the actual instances of your application that handle requests and generate responses.
+
+    - **AWS ALB**: This is created and managed by the AWS Load Balancer Controller based on the Ingress resource definitions. It handles incoming traffic from clients.
+    - **Ingress Controller**: It interprets the Ingress resource rules and routes the traffic to the appropriate Kubernetes backend services.
+    - **Service (ClusterIP)**: It provides a stable IP address and DNS name to access the Pods and internal load balancing across Pods.
+    - **Pods**: These are the application instances that handle the actual processing of requests.
+
+The AWS Load Balancer Controller's role is to manage the lifecycle and configuration of AWS ALBs/NLBs based on Kubernetes Ingress resources. It does not handle the traffic directly. Instead, it ensures that the ALB is correctly set up to route traffic to the Kubernetes cluster, where the Ingress Controller then takes over to route the traffic within the cluster to the appropriate services and pods.actual instances of your application that handle requests and generate responses.
+
 
 ```
 Client (Browser)
    |
    v
-AWS ALB (Application Load Balancer)
+AWS ALB (Application Load Balancer)  <-- Created and managed by AWS Load Balancer Controller
    |
    v
-AWS Load Balancer Controller (Pod)
-   |
-   v
-Ingress Resource (Kubernetes)
-   |
-   v
-Ingress Controller (e.g., NGINX)
+Ingress Controller (e.g., NGINX)     <-- Routes traffic within the cluster based on Ingress rules
    |
    v
 Service (ClusterIP)
    |
    v
 Pods (Application Instances)
+
 ```
 
 Requests from clients are efficiently routed to the appropriate Kubernetes workloads
@@ -1279,6 +1297,7 @@ and Ingress resources within an AWS EKS cluster.
 
 [↑ Back to top](#)
 <br><br>
+
 
 
 
@@ -1312,3 +1331,5 @@ helm install tst-release ./tst-chart -f ./tst-chart/values.prd.yaml
 
 [↑ Back to top](#)
 <br><br>
+
+
