@@ -221,8 +221,10 @@ kubectl scale deployment/nginx-deployment --replicas=10
 
 ### Service
 
+
 - <a href="https://kubernetes.io/docs/concepts/services-networking" target="_blank">Service, Load Balancing, and Networking</a>
 - <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
+- The Service API, part of Kubernetes, is an abstraction to help you expose groups of Pods over a network. 
 - Service provide stable(permanent) IP address. Each pod has its own ip address, but are ephemeral.
 - Load balancing
 - loose coupling
