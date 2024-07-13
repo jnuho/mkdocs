@@ -156,13 +156,62 @@ computers in the underlying computer cluster and acts as an interface between th
 - Rolling Back to a Previous Revision
 
 ```yaml
-kubectl rollout undo deployment/nginx-deployment --to-revision=2
+# History
+kubectl rollout history deployment/nginx-deployment
+# History details
+kubectl rollout history deployment/nginx-deployment --revision=2
 
+
+# Rollback to previous version
+kubectl rollout undo deployment/nginx-deployment
+
+# Rollback to revision=2
+kubectl rollout undo deployment/nginx-deployment --to-revision=2
+```
+
+- Scaling a Deployment
+
+```sh
+kubectl scale deployment/nginx-deployment --replicas=10
 ```
 
 - `ReplicaSet`
 - `StatefulSets`
 - `DaemonSet`
+
+- Clean up Policy
+    - You can set .spec.revisionHistoryLimit field in a Deployment to specify how many old ReplicaSets for this Deployment you want to retain.
+    - The rest will be garbage-collected in the background. By default, it is 10.
+
+
+- Writing a Deployment Spec
+    - `.spec.template` and `.spec.selector` are the only required fields of the .spec.
+    - `.spec.selector` is a required field that specifies a label selector for the Pods targeted by this Deployment.
+    - .spec.selector must match .spec.template.metadata.labels, or it will be rejected by the API.
+
+
+- Strategy
+    - .spec.strategy specifies the strategy used to replace old Pods by new ones.
+    - .spec.strategy.type can be "Recreate" or "RollingUpdate"(default)
+    - RollingUpdate: You can specify maxUnavailable and maxSurge to control the rolling update process.
+
+#### ReplicaSet
+
+- A ReplicaSet's purpose is to maintain a stable set of replica Pods running at any given time.
+- As such, it is often used to guarantee the availability of a specified number of identical Pods.
+- Use deployment instead which is a higher-level concept that manages ReplicaSets and provides declarative updates to Pods along with a lot of other useful features.
+
+
+#### StatefulSet
+
+- StatefulSet is the workload API object used to manage stateful applications.
+
+
+
+
+
+
+
 
 
 
@@ -207,6 +256,9 @@ Ingress is an object that allows external traffic to reach services within a clu
     - SSL/TLS Termination: Ingress can terminate SSL/TLS connections.
     - Virtual Hosting: It offers name-based virtual hosting.
 - Controller: An Ingress controller (usually backed by a load balancer) fulfills the Ingress rules.
+
+- The `host: myapp.com` must be a valid domain address
+- map domain name to Node's IP address, which is the entrypoint
 
 - [ibm technology](https://www.youtube.com/watch?v=NPFbYpb0I7w&ab_channel=IBMTechnology)
 - [youtube LINK1](https://youtu.be/80Ew_fsV4rM?si=xAS60zSQzhhAEcnb)

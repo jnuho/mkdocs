@@ -1130,6 +1130,18 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
+- Configure `kubectl`
+    - Check context : `kubectl config current-context`
+    - Update `.kube/config`
+
+```sh
+# TO LOCAL
+kubectl config use-context minikube
+
+# TO EKS
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster --profile terraform
+```
+
 - Create helm chart
 
 ```sh
