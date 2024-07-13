@@ -31,7 +31,7 @@ The final architecture of my application, which I will be explaining in the foll
 [↑ Back to top](#)
 <br><br>
 
-* <i style="font-size:24px" class="fa">&#xf09b;</i> <a href="https://github.com/jnuho/simpledl" target="_blank">`simpledl`</a>
+* <img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" style="width:22px"> <a href="https://github.com/jnuho/simpledl" target="_blank">`simpledl`</a>
 
 - [`Why Kuberenetes`](#why-kubernetes)
 - [`Skill Sets`](#skill-sets)
