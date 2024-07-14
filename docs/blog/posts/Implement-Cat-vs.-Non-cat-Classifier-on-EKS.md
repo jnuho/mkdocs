@@ -61,10 +61,9 @@ For local development, I opted for <img src="https://blog.radwell.codes/wp-conte
 Scalability              | Limited to a single host             | Simulates multi-node scaling
 Load Balancing           | Requires manual setup (e.g., HAProxy)| Built-in Kubernetes Service load balancing
 Cloud-Native Integration | Minimal cloud integration      | Supports Kubernetes-native cloud integrations
-Kubernetes Consistency   | Not applicable                     | Mirrors production Kubernetes environments
 
 
-| <img src="https://imgur.com/j0RI7lF.png" alt="simpledl architecture" width="550"> |
+| <img src="https://imgur.com/qqDsoa2.png" alt="simpledl architecture" width="550"> |
 | :--: |
 |  *docker-compose vs. Kubernetes* |
 
