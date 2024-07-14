@@ -7561,7 +7561,7 @@ By adjusting weights based on gradients, the model gradually improves its predic
 <p>$$, where \hspace{3mm} dZ^{[L]} = A^{[L]}-Y$$</p>
 
 <p>Also, we have a Loss function $L = -YlogA -(1-Y)log(1-A)$</p>
-<img alt="No description has been provided for this image" src="https://d17pwbfgewyq5y.cloudfront.net/2layerNN_kiank.png" style="width:650px;height:400px;"/>
+<img alt="No description has been provided for this image" src="https://imgur.com/XPElFUZ" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 2</u>: 2-layer neural network. <br/> The model can be summarized as: ***INPUT -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID -&gt; OUTPUT***. </center></caption>
 <img alt="No description has been provided for this image" src="https://i.imgur.com/XPElFUZ.png" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 3</u>: L-layer neural network. <br/> The model can be summarized as: ***[LINEAR -&gt; RELU] $\times$ (L-1) -&gt; LINEAR -&gt; SIGMOID***</center></caption>
@@ -7866,7 +7866,7 @@ test_y shape: (1, 50)
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>As usual, you reshape and standardize the images before feeding them to the network. The code is given in the cell below.</p>
-<img alt="No description has been provided for this image" src="https://d17pwbfgewyq5y.cloudfront.net/imvectorkiank.png" style="width:450px;height:300px;"/>
+<img alt="No description has been provided for this image" src="https://imgur.com/aVjL192.png" style="width:450px;height:300px;"/>
 <caption><center> <u>Figure 1</u>: Image to vector conversion. <br/> </center></caption>
 </div>
 </div>
@@ -7945,7 +7945,7 @@ test_x's shape: (12288, 50)
 </ul>
 <p>You will then compare the performance of these models, and also try out different values for $L$.</p>
 <p>Let's look at the two architectures.</p>
-<h3 id="3.1---2-layer-neural-network">3.1 - 2-layer neural network<a class="anchor-link" href="#3.1---2-layer-neural-network">¶</a></h3><img alt="No description has been provided for this image" src="https://d17pwbfgewyq5y.cloudfront.net/2layerNN_kiank.png" style="width:650px;height:400px;"/>
+<h3 id="3.1---2-layer-neural-network">3.1 - 2-layer neural network<a class="anchor-link" href="#3.1---2-layer-neural-network">¶</a></h3><img alt="No description has been provided for this image" src="https://imgur.com/XPElFUZ" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 2</u>: 2-layer neural network. <br/> The model can be summarized as: ***INPUT -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID -&gt; OUTPUT***. </center></caption>
 <p><u>Detailed Architecture of figure 2</u>:</p>
 <ul>
