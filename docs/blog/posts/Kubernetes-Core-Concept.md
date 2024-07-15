@@ -65,7 +65,7 @@ computers in the underlying computer cluster and acts as an interface between th
         - Endpoints Controller — Populates endpoints and joins services and pods.
         - Service Account and Token Controller — Creation of accounts and API Access tokens.
     - detect cluster state changes(pods state)
-    - Controller Manager(detect pod state) → Scheduler → Kublet(on worker node)
+    - Controller Manager(detect pod state) → Scheduler → Kubelet(on worker node)
 - `cloud-controller-manager`
     - The cloud controller manager lets you link your cluster into your cloud provider's API
 - `etcd`
