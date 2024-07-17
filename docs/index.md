@@ -25,6 +25,6 @@ I'm interested in `EKS`, `Kubernetes`, and `Deep learning`.
 
 ## [Experience](resume)
 
-* <i class="fa fa-id-badge" aria-hidden="true"></i> [`Resume`](resume.md)
+* <i class="fa fa-id-badge" aria-hidden="true"></i> [`Resume`](resume)
 
 <hr>
