@@ -9,14 +9,13 @@ authors:
     - junho
 ---
 
-Explain how alb ingress works from end-to-end (AWS, EKS)
-I go through AWS and terraform document to explain how it works.
-
-|<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="420">|
-|:--:| 
-| *EKS cluster example* |
+Used terraform and helm to create cloud infrastructure and deploy applications.
 
 <!-- more -->
+
+|<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="700">|
+|:--:| 
+| *EKS cluster example* |
 
 |<img src="https://i.imgur.com/5Bpv5uQ.png" alt="pods" width="350">|
 |:--:| 

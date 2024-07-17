@@ -7,14 +7,15 @@ authors:
     - junho
 ---
 
-- What I learned about AWS (EC2, VPC, ElastiCache) while I worked at Rowem. Inc.
 
-
-|<img src="https://imgur.com/xkNudsN.png" alt="pods" width="380">|
+|<img src="https://imgur.com/xkNudsN.png" alt="pods" width="350">|
 |:--:| 
 | *AWS Architecture* |
 
 <!-- more -->
+
+- What I learned about AWS (EC2, VPC, ElastiCache) while I worked at Rowem. Inc.
+
 
 - 인프라 OverView
     - 같은 VPC 내에, 퍼블릭/프라이빗 Subnet으로 구분

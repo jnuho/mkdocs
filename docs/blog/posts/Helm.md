@@ -7,11 +7,6 @@ authors:
     - junho
 ---
 
-- I wrote a document on `Helm` as a guide for my team
-    - [`LINK HERE`](helm.pdf)
-
-|<img src="https://helm.sh/img/helm.svg" alt="add-node" width="100">|
-|:--:| 
-| *Helm* |
+- I wrote a [`document`](helm.pdf) on `Helm` as a guide for my team
 
 <!-- more -->

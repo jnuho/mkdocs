@@ -7,8 +7,6 @@ authors:
   - junho
 ---
 
-### Work at Kaon
-
-* [`Kubernetes`](Kubernetes-Core-Concept.md)
+* `EKS`, `docker-compose`, `Terraform`, `Helm`
 * [`CI/CD pipeline`](CICD_Work.md)
 * [`Helm Chart`](helm.pdf)

@@ -8,7 +8,9 @@ authors:
   - junho
 ---
 
+I use numpy to train a Neural Network, build a prediction model, and classfiy a Cat image.
 
+<!-- more -->
 
 <!-- ### [Deep Learning](https://jnuho.github.io/articles/deep_learning.html -->
 
@@ -7527,7 +7529,6 @@ a.anchor-link {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="Deep-Neural-Network-for-Image-Classification:-Application">Deep Neural Network for Image Classification: Application<a class="anchor-link" href="#Deep-Neural-Network-for-Image-Classification:-Application">¶</a></h1><p>I will use a list of functions to build a deep network, and apply it to cat vs non-cat classification. More accuracy is expected relative to previous logistic regression implementations. <strong>I will build and apply a deep neural network to supervised learning.</strong></p>
 
-<!-- more -->
 
 <h3 id="Abstract">Abstract<a class="anchor-link" href="#Abstract">¶</a></h3><p>Deep learning, a subset of machine learning and artificial intelligence, is a learning algorithm that mimic how human brain (neurological system) works. It can recognize complex patterns like image, text and sound.</p>
 <p>As an analogy, in neurological system, a neuron receives input from other neurons or external sources, processes these inputs, and generates an output. In the context of deep learning, a neuron can be seen as a function that takes inputs, weights and bias, to compute linear function ($Z^{[l]}=W^{[l]}A^{[l-1]}+b^{[l]}$) and applies activation function ($g(Z^{[l]})$).</p>

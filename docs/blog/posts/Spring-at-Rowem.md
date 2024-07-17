@@ -7,26 +7,29 @@ authors:
   - junho
 ---
 
-❒ backend Development
-
-- Java
-  API development for SBS inkigayo voting platform
-  SDKs used : AWS SNS, AWS S3
-  APIs used : Payletter, Apple login
-  Scheduling (Spring Framework) for Batch Job
-  ✻ Code Optimization (e.g. for-loop)
-  ✻ Refactoring for readability and reusability of codes
-  ✻ Junit unit test
+Backend development while at Rowem Inc.
 
 <!-- more -->
 
+### backend Development
+
+- Java
+
+- API development for SBS inkigayo voting platform
+- SDKs used : AWS SNS, AWS S3
+- APIs used : Payletter, Apple login
+- Scheduling (Spring Framework) for Batch Job
+    - Code Optimization (e.g. for-loop)
+    - Refactoring for readability and reusability of codes
+    - Junit unit test
+
+
 - Git
-  Pull Request, Code Review, Merge
-  Branch : 'main < test < develop'
+    - Pull Request, Code Review, Merge
+    - Branch : 'main < test < develop'
 
-<br>
+### Code Optimization
 
-✻ Code Optimization
 ```java
 /**
  * Limit fetch size (query limit count) for each sql query execution
@@ -54,10 +57,9 @@ for (int ii = 0; ii < limit;) {
 // ...
 ```
 
-<br>
-<br>
 
-✻ Refactoring
+### Refactoring
+
 ```java
 /**
  * API for executing voting process includes updating and retrieving from database
@@ -125,7 +127,8 @@ public ResultVO insertVote(VoteInsertVO param) throws Exception {
 <br>
 <br>
 
-✻ Unit test
+### Unit test
+
 ```java
 package com.oo.ooo.home;
 

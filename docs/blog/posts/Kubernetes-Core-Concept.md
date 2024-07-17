@@ -7,11 +7,7 @@ authors:
     - junho
 ---
 
-## Kubernetes Component
-
-|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="550">|
-|:--:| 
-| *Kubernetes as an operating system for the cluster* |
+I explore Kuberentes components and their roles.
 
 <!-- more -->
 
@@ -31,6 +27,12 @@ authors:
     - [`VPC-CNI`](#vpc-cni)
 - [`References`](#references)
 
+
+## Kubernetes Component
+
+|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="700">|
+|:--:| 
+| *Kubernetes as an operating system for the cluster* |
 
 
 Kubernetes is an open-source container orchestration system for automating the deployment, scaling, and management of containerized applications.

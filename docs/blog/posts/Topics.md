@@ -7,14 +7,14 @@ authors:
   - junho
 ---
 
-<!-- **Topics** -->
-
-- [Kubernetes Core Concept](https://jnuho.github.io/project/2024/06/01/k8s.html)
-  - [EKS](https://jnuho.github.io/articles/eks)
-  - [Kubernetes](https://jnuho.github.io/articles/doc_k_in_actions)
+Topics I covered on [`jnuho.github.io`](https://jnuho.github.io/)
 
 <!-- more -->
 
+<!-- **Topics** -->
+- [Kubernetes Core Concept](https://jnuho.github.io/project/2024/06/01/k8s.html)
+  - [EKS](https://jnuho.github.io/articles/eks)
+  - [Kubernetes](https://jnuho.github.io/articles/doc_k_in_actions)
 - [Golang](https://jnuho.github.io/articles/golang)
   - [Concurrency](https://jnuho.github.io/articles/golang_concurrency)
   - [Worker-pool pattern](https://jnuho.github.io/project/2024/05/30/golang_worker_pool_pattern.html)

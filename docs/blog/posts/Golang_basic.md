@@ -7,6 +7,10 @@ authors:
   - junho
 ---
 
+Fundamentals of Golang.
+
+<!-- more -->
+
 ## Learn Golang
 
 ```sh
@@ -18,9 +22,6 @@ apt-get update && apt-get install vim -y
 echo $GOPATH
   /go
 ```
-
-<!-- more -->
-
 
 ```sh
 # GOPATH 가 아닌 디렉토리에서 실행 /root/TestApp

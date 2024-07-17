@@ -7,13 +7,14 @@ authors:
   - junho
 ---
 
+Network programming with Go.
+
+<!-- more -->
+
 ### Network programming With Go
 
 - Choosing a Network Topology
 	- hybrid topology
-
-<!-- more -->
-
 - Bandwidth vs. Latency
 	- Bandwidth : amount of data we can send over a network connection in an interval of time
 	- Latency : a measure of the time that passes between

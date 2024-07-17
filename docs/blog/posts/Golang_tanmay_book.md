@@ -7,11 +7,13 @@ authors:
   - junho
 ---
 
+Book on Golang from Tanmay.
+
+<!-- more -->
+
 - Go 설계 목표
 	- 대규모 코드베이스 빠르게 처리할 수 있는 컴파이러
 	- 최적화 활용하여 빠르게 코드를 생성 할 수 있는 컴파일러
-
-<!-- more -->
 
 - Go 특징
 	- 코드문법에 엄격 (strict)

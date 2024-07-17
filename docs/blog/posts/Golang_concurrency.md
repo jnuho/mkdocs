@@ -7,14 +7,15 @@ authors:
   - junho
 ---
 
+Golang concurrency with goroutine, context, channel, sync, mutex, etc.
+
+<!-- more -->
+
 ### Goroutine과 동시성 프로그래밍
 
 - [고루틴](#goroutine)
   - [sync.WaitGroup](#syncwaitgroup)
   - [sync.Once](#synconce)
-
-<!-- more -->
-
 - [고루틴의 동작방법](#how-goroutine-works)
   - [동시성 프로그래밍 주의점](#concurrent-programming-precautions)
   - [뮤텍스를 이용한 동시성 문제 해결](#solving-concurrency-problems-using-mutexes)
