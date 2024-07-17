@@ -9,7 +9,7 @@ authors:
     - junho
 ---
 
-|<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="720">|
+|<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="550">|
 |:--:| 
 | *EKS cluster example* |
 

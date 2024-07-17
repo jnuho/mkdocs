@@ -5,8 +5,8 @@ theme:
   favicon: assets/favicon.ico
 
   font:
-    text: IBM Plex Sans
-    code: IBM Plex Mono
+    text: Ubuntu
+    code: Ubuntu Mono
 
   features:
     - navigation.top
@@ -38,14 +38,24 @@ theme:
 
 extra_css:
   - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css
+  
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 plugins:
   - search
   - blog:
       blog_dir: blog
       authors_file: "{blog}/.authors.yml"
-      archive_name: Archive
+      archive_name: Year
+      categories_name: Topics
       pagination_per_page: 10
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
 
 nav:
   - Home: index.md

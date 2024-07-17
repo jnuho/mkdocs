@@ -7,7 +7,10 @@ authors:
   - junho
 ---
 
-Network programming with Go.
+|<img src="https://m.media-amazon.com/images/I/516bIK4UMVL._SY445_SX342_.jpg" alt="pods" width="150">|
+|:--:| 
+| *Network programming with Go* |
+
 
 <!-- more -->
 

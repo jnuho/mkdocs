@@ -8,10 +8,6 @@ authors:
   - junho
 ---
 
-I use numpy to train a Neural Network, build a prediction model, and classfiy a Cat image.
-
-<!-- more -->
-
 <!-- ### [Deep Learning](https://jnuho.github.io/articles/deep_learning.html -->
 
 <head><meta charset="utf-8"/>
@@ -7527,7 +7523,10 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Deep-Neural-Network-for-Image-Classification:-Application">Deep Neural Network for Image Classification: Application<a class="anchor-link" href="#Deep-Neural-Network-for-Image-Classification:-Application">¶</a></h1><p>I will use a list of functions to build a deep network, and apply it to cat vs non-cat classification. More accuracy is expected relative to previous logistic regression implementations. <strong>I will build and apply a deep neural network to supervised learning.</strong></p>
+<!-- <h1 id="Deep-Neural-Network-for-Image-Classification:-Application">Deep Neural Network for Image Classification: Application<a class="anchor-link" href="#Deep-Neural-Network-for-Image-Classification:-Application">¶</a></h1> -->
+<p>I will use numpy and a list of functions to build a Deep Neural Network, and apply it to cat vs non-cat classification. More accuracy is expected relative to previous logistic regression implementations. <strong>I will build and apply a deep neural network to supervised learning.</strong></p>
+
+<!-- more -->
 
 
 <h3 id="Abstract">Abstract<a class="anchor-link" href="#Abstract">¶</a></h3><p>Deep learning, a subset of machine learning and artificial intelligence, is a learning algorithm that mimic how human brain (neurological system) works. It can recognize complex patterns like image, text and sound.</p>
@@ -7562,10 +7561,7 @@ By adjusting weights based on gradients, the model gradually improves its predic
 <p>$$, where \hspace{3mm} dZ^{[L]} = A^{[L]}-Y$$</p>
 
 <p>Also, we have a Loss function $L = -YlogA -(1-Y)log(1-A)$</p>
-<img alt="No description has been provided for this image" src="https://imgur.com/XPElFUZ" style="width:650px;height:400px;"/>
-<caption><center> <u>Figure 2</u>: 2-layer neural network. <br/> The model can be summarized as: ***INPUT -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID -&gt; OUTPUT***. </center></caption>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/XPElFUZ.png" style="width:650px;height:400px;"/>
-<caption><center> <u>Figure 3</u>: L-layer neural network. <br/> The model can be summarized as: ***[LINEAR -&gt; RELU] $\times$ (L-1) -&gt; LINEAR -&gt; SIGMOID***</center></caption>
+
 <h3 id="Objective">Objective<a class="anchor-link" href="#Objective">¶</a></h3><p>In the following Jupyter notebook, I go through what I've learned from Andrew Ng's deep learning specialization course.</p>
 <p>I revisit the model for training L-layer deep neural network that can identify cats as binary ouput of 0(non-cat) and 1(cat). The training and test data are provided from the lecture. Here are the list of methods that I'm going to implement:</p>
 <div class="highlight"><pre><span></span><span class="c1"># 1. initialize</span>
@@ -7946,7 +7942,7 @@ test_x's shape: (12288, 50)
 </ul>
 <p>You will then compare the performance of these models, and also try out different values for $L$.</p>
 <p>Let's look at the two architectures.</p>
-<h3 id="3.1---2-layer-neural-network">3.1 - 2-layer neural network<a class="anchor-link" href="#3.1---2-layer-neural-network">¶</a></h3><img alt="No description has been provided for this image" src="https://imgur.com/XPElFUZ" style="width:650px;height:400px;"/>
+<h3 id="3.1---2-layer-neural-network">3.1 - 2-layer neural network<a class="anchor-link" href="#3.1---2-layer-neural-network">¶</a></h3><img alt="No description has been provided for this image" src="https://imgur.com/XPElFUZ.png" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 2</u>: 2-layer neural network. <br/> The model can be summarized as: ***INPUT -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID -&gt; OUTPUT***. </center></caption>
 <p><u>Detailed Architecture of figure 2</u>:</p>
 <ul>
@@ -7958,7 +7954,7 @@ test_x's shape: (12288, 50)
 <li>Finally, you take the sigmoid of the result. If it is greater than 0.5, you classify it to be a cat.</li>
 </ul>
 <h3 id="3.2---L-layer-deep-neural-network">3.2 - L-layer deep neural network<a class="anchor-link" href="#3.2---L-layer-deep-neural-network">¶</a></h3><p>It is hard to represent an L-layer deep neural network with the above representation. However, here is a simplified network representation:</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/XPElFUZ.png" style="width:650px;height:400px;"/>
+<img alt="No description has been provided for this image" src="https://imgur.com/IzQKi3g.png" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 3</u>: L-layer neural network. <br/> The model can be summarized as: ***[LINEAR -&gt; RELU] $\times$ (L-1) -&gt; LINEAR -&gt; SIGMOID***</center></caption>
 <p><u>Detailed Architecture of figure 3</u>:</p>
 <ul>

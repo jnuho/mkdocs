@@ -7,7 +7,10 @@ authors:
   - junho
 ---
 
-Golang concurrency with goroutine, context, channel, sync, mutex, etc.
+
+|<img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*OOCsWxmdJIQEZelF1sp4WA.png" alt="pods" width="550">|
+|:--:| 
+| *Golang concurrency* |
 
 <!-- more -->
 

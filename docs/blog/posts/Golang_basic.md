@@ -7,7 +7,7 @@ authors:
   - junho
 ---
 
-Fundamentals of Golang.
+- [go.dev/wiki](https://go.dev/wiki/)
 
 <!-- more -->
 

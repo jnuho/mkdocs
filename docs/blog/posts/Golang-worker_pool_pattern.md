@@ -7,21 +7,17 @@ authors:
   - junho
 ---
 
-Worker pool pattern is one of the golang concurrency patterns.
+|<img src="https://i.imgur.com/vPEfkbp.png" alt="pods" width="500">|
+|:--:| 
+| *Worker pool pattern is one of the golang concurrency patterns* |
 
 <!-- more -->
-
-|<img src="https://i.imgur.com/vPEfkbp.png" alt="pods" width="520">|
-|:--:| 
-| *Worker pool pattern* |
-
 
 - The worker pool pattern involves creating a group of worker goroutines to process tasks concurrently,
 - limiting the number of simultaneous operations. This pattern is valuable when you have a large number of tasks to execute.
 - Some examples of using the Worker Pool Pattern in Real-world Applications
     - Handling incoming HTTP requests in a web server.
     - Processing images concurrently.
-
 
 ```go
 package main

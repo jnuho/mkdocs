@@ -1,27 +1,19 @@
 # About me
 
-I'm interested in `Kubernetes`, `Golang`, and `Deep learning`.
+I'm interested in `EKS`, `Kubernetes`, and `Deep learning`.
 
 <!-- [![jnuho GitHub stats](https://github-readme-stats.vercel.app/api?username=jnuho&show_icons=true&rank_icon=percentile&show=reviews,prs_merged,prs_merged_percentage)](https://github.com/jnuho) -->
 [![jnuho GitHub Streak](https://streak-stats.demolab.com?user=jnuho&theme=github-light)](https://github.com/jnuho)
 
 <hr>
 
-## Blog
-
-- [`Kubernetes Core Concept`](blog/posts/Kubernetes-Core-Concept.md)
-- [`EKS with Terraform and Helm`](blog/posts/EKS_with_Terraform_and_Helm.md) - AWS EKS deployed using Terraform
-- [`Helm Chart`](blog/posts/Helm.md)
-- [`Deep learning`](blog/posts/deeplearning.ai.md) - deep learning basics.
-
-<hr>
-
-
-## Projects
+## [Blog](blog)
 
 - [`Implemented Cat vs. Non-cat classifier`](blog/posts/Implement-Cat-vs.-Non-cat-Classifier-on-EKS.md) - EKS with Terraform
+- [`Kubernetes Core Concept`](blog/posts/Kubernetes-Core-Concept.md)
+- [`Helm Chart`](blog/posts/Helm.md)
+- [`Deep learning`](blog/posts/deeplearning.ai.md) - deep learning basics.
 - [`Golang AWS dashboard`](blog/posts/Golang-AWS-dashboard.md) - I used golang aws sdk to create a dashboard for aws resource
-- [`SBS Starplanet`](blog/posts/Work-at-Rowem.md) - SBS Inkigayo voting platform Backend development
 
 <hr>
 
@@ -31,8 +23,8 @@ I'm interested in `Kubernetes`, `Golang`, and `Deep learning`.
 
 <hr>
 
-## Work Experience
+## [Experience](resume)
 
-* <i class="fa fa-id-badge" aria-hidden="true"></i> [`Resume`](Resume.md)
+* <i class="fa fa-id-badge" aria-hidden="true"></i> [`Resume`](resume.md)
 
 <hr>

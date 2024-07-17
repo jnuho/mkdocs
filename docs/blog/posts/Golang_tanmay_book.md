@@ -7,7 +7,10 @@ authors:
   - junho
 ---
 
-Book on Golang from Tanmay.
+
+|<img src="https://m.media-amazon.com/images/I/61-CGxIKSXL._SL1000_.jpg" alt="pods" width="150">|
+|:--:| 
+| *Book on Golang from Tanmay.* |
 
 <!-- more -->
 
