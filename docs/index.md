@@ -23,8 +23,8 @@ I'm interested in `EKS`, `Kubernetes`, and `Deep learning`.
 
 <hr>
 
-## [Experience](resume)
+## [Experience](https://www.linkedin.com/in/jun-ho-lee-047166273)
 
-* <i class="fa fa-id-badge" aria-hidden="true"></i> [`Resume`](resume)
+* <i class="fa fa-linkedin-square"></i> <a href="https://www.linkedin.com/in/jun-ho-lee-047166273/" target="_blank">`LinkedIn`</a>
 
 <hr>
