@@ -9,13 +9,13 @@ authors:
     - junho
 ---
 
-Used terraform and helm to create cloud infrastructure and deploy applications.
+|<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="720">|
+|:--:| 
+| *EKS cluster example* |
 
 <!-- more -->
 
-|<img src="https://docs.aws.amazon.com/images/eks/latest/userguide/images/k8sinaction.png" alt="pods" width="700">|
-|:--:| 
-| *EKS cluster example* |
+Used terraform and helm to create cloud infrastructure and deploy applications.
 
 |<img src="https://i.imgur.com/5Bpv5uQ.png" alt="pods" width="350">|
 |:--:| 
