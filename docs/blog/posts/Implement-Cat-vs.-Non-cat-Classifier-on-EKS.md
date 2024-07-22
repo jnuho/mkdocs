@@ -12,31 +12,27 @@ authors:
     - junho
 ---
 
-## System overview
+<img src="https://imgur.com/DwRBYMd.png" alt="EKS architecture" width="550">
 
-| <img src="https://imgur.com/DwRBYMd.png" alt="EKS architecture" width="550"> |
-| :--: |
-| *<b>NLB</b> with Nginx Ingress Controller* |
+<p style="text-align: center;"><b>NLB</b> with Nginx Ingress Controller</p>
+
+# CatVsNonCat
+
+The CatVsNonCat image classifier uses a trained deep learning model and `numpy` to determine whether an image, specified by a requested URL, contains a cat or not. It processes the image and displays the result of the prediction. `pytorch` integration is on progress.
+
+I documented **`Kubernetes`** implementation, in which I configured external access into the application on serveral environments, Cloud and On-premise. I used Nginx Ingress Controller, AWS Load Balancer Controller, NLB, ALB, and Service.
+
 
 <!-- more -->
 
-There are several ways to configure external access into the application, which I will be explaining in details.
 
-## Demo
-
-| <img src="https://imgur.com/VbKBWdO.gif" alt="demo" width="550"> |
-|:--:| 
-| *application demo* |
-
-| <img src="https://imgur.com/tbG85hA.png" alt="demo" width="450"> |
-|:--:| 
-| *applications diagram* |
-
+<img src="https://imgur.com/VbKBWdO.gif" alt="demo" width="720"> | <img src="https://imgur.com/b69kvRA.png" alt="demo" width="250">
+--|--
 
 [↑ Back to top](#)
-<br><br>
+<br>
 
-* <a href="https://github.com/jnuho/CatVsNonCat" target="_blank">:link: Github Repository</a>
+Github Repository : github.com/jnuho/CatVsNonCat
 
 - [`Motivation`](#motivation)
 - [`Why Kuberenetes?`](#why-kubernetes)
@@ -50,6 +46,8 @@ There are several ways to configure external access into the application, which 
     - [`2. Backend - Golang`](#backend-golang-web-server)
     - [`3. Backend - Python`](#backend-python-web-server)
 - [`Dockerize`](#dockerize)
+    - [`Multi-stage builds`](multi-stage-builds)
+    - [`minikube docker-env`](#minikube-docker-env)
 - [`IaC`](#iac)
     - [`Terraform`](#terraform)
     - [`Helm`](#helm)
@@ -62,7 +60,7 @@ There are several ways to configure external access into the application, which 
 
 My initial goal was to **revisit** the [`skills`](#skills-used) I've acquired during my work experiences.
 
-I have a **great interest** in deep learning. So I decided to implement a Cat vs. Non-cat image classifier for URL images from user inputs. The prediction model uses the following steps to train a Neural Network:
+I have a **great interest** in deep learning. So I decided to implement a Cat vs. Non-cat image classifier. The prediction model uses the following steps to train a Neural Network:
 
 - Forward Propagation
     - <small>$a^{[l]}  = ReLU(z^{[l]})$ for $l=1,...L-1$</small>
@@ -71,9 +69,9 @@ I have a **great interest** in deep learning. So I decided to implement a Cat vs
 - Backward Propagation
 - Gradient descent (Update parameters -  $\omega$, $b$)
 
-| <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*iNPHcCxIvcm7RwkRaMTx1g.jpeg" alt="gradient descent" width="300"> |
-| :--: |
-| *gradient descent* |
+<img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*iNPHcCxIvcm7RwkRaMTx1g.jpeg" alt="gradient descent" width="300">
+
+<sub>Original image credited to towardsdatascience.com</sub>
 
 - jupyter [notebook](https://blogd.org/blog/2024/05/31/deep-neural-network-for-image-classification)
 
@@ -84,17 +82,10 @@ def L_layer_model(
         Y: np.ndarray,
         layers_dims: List[int],
         learning_rate: float = 0.0075,
-        num_iterations: int = 2500)
+        num_iterations: int = 3000)
     # RETURNS Updated `parameters` and `costs`
     -> Tuple[dict, List[float]]:
 ```
-
-- `TODO`: 
-    - I've yet to explore Pytorch implementation to classify Cat vs. Non-cat.
-
-
-I tried to focus on **`Kubernetes`** implementation, which I consider myself to be more competent. I configured `external access` into the application in several different ways depending on Kubernetes environments - Cloud(EKS), On-premise (microk8s, minikube, docker-compoise)
-
 
 
 [↑ Back to top](#)
@@ -103,10 +94,9 @@ I tried to focus on **`Kubernetes`** implementation, which I consider myself to 
 
 ## Why Kubernetes?
 
-- While docker-compose <img src="https://i0.wp.com/codeblog.dotsandbrackets.com/wp-content/uploads/2016/10/compose-logo.jpg?w=28"> can be a reasonable choice for local development, it falls short in terms of `scalability`, `load balancing`, `IaC support`(Terraform, Helm), and seamless `cloud-native integration`.
-- docker-compose docker processes can be affected by its operating system it is running. Restart policy didn't work in case of OOM of the OS: Kuberentes as the new OS.
+- While docker-compose <img src="https://i0.wp.com/codeblog.dotsandbrackets.com/wp-content/uploads/2016/10/compose-logo.jpg?w=27"> can be a reasonable choice for local development, it falls short in terms of scalability, load balancing, IaC support (Terraform, Helm), and seamless cloud-native integration.
 - Kubernetes offers a rich set of APIs to address these challenges.
-- For local development, I chose <img src="https://blog.radwell.codes/wp-content/uploads/2021/05/minikube-logo-full.png" alt="minikube logo" width="75"> over docker-compose to align with Kuberentes best practices. This `consistency` ensures a smoother transition to <img src="https://diagrams.mingrammer.com/img/resources/aws/compute/elastic-kubernetes-service.png" alt="EKS logo" width="28"> EKS production.
+- For local development, I chose <img src="https://blog.radwell.codes/wp-content/uploads/2021/05/minikube-logo-full.png" alt="minikube logo" width="75"> to align with Kuberentes best practices. This `consistency` ensures a smoother transition to <img src="https://diagrams.mingrammer.com/img/resources/aws/compute/elastic-kubernetes-service.png" alt="EKS logo" width="25"> EKS production.
 
 
 | | docker-compose | Kubernetes
@@ -116,7 +106,7 @@ Load Balancing           | Requires manual setup (e.g., HAProxy)| Support [Load 
 IaC Support | Resticted to docker compose cli | Terraform, Helm for fast and reliable resource provisioning (*< ~15 minutes*)
 
 
-| <img src="https://imgur.com/qqDsoa2.png" alt="dc vs k8s" width="600"> |
+| <img src="https://imgur.com/qqDsoa2.png" alt="dc vs k8s" width="500"> |
 | :--: |
 |  *docker-compose vs. Kubernetes* |
 
@@ -128,15 +118,16 @@ IaC Support | Resticted to docker compose cli | Terraform, Helm for fast and rel
 Kubernetes offers orchestration of containerized applications across a cluster of nodes, ensuring scalability and high availability.
 
 
-| <img src="https://imgur.com/KxETYaG.png" alt="ingress" width="750"> |
-| :--: |
+<img src="https://imgur.com/KxETYaG.png" alt="ingress" width="720">
 
-| <img src="https://imgur.com/rvtBRlL.png" alt="metric-server" width="600"> |
-| :--: |
-|  *HPA and metric-server* |
+#### Horizonal Pod Autoscaling
+
+HPA control loop checks `CPU` and `Memory` usage via api-server's metric api  and scales accordingly.
+
+<img src="https://imgur.com/rvtBRlL.png" alt="metric-server" width="500">
 
 
-- `Horizonal Pod Autoscaling` control loop checks `CPU` and `Memory` usage via api-server's metric api  and scales accordingly.
+- Pre-requisite to implement HPA:
     - Install `metric-server` on the worker nodes (kube-system namespace) with helm!
         - → scrapes metrics from kublet
         - → publish to `metrics.k8s.io/v1beta` Kuberentes API
@@ -191,14 +182,13 @@ spec:
               memory: 256Mi
 ```
 
-| <img src="https://imgur.com/7RHqdu8.png" alt="hpa" width="720"> |
-| :--: |
-|  *metric-server* |
+#### Metric server
 
+<img src="https://imgur.com/7RHqdu8.png" alt="hpa" width="720">
 
-| <img src="https://imgur.com/1EiedmA.png" alt="hpa" width="720"> |
-| :--: |
-|  *HPA monitoring* |
+#### HPA monitoring
+
+<img src="https://imgur.com/1EiedmA.png" alt="hpa" width="720">
 
 
 
@@ -237,8 +227,9 @@ Nginx Ingress Controller is a 3rd party implementation of Ingress controller.
 | *<b>NLB</b> with Nginx Ingress Controller* |
 
 
-| <img src="https://kubernetes.io/docs/images/ingress.svg" alt="ingress" width="520"> |
-| :--: |
+<img src="https://kubernetes.io/docs/images/ingress.svg" alt="ingress" width="520">
+
+<sub>Original image credited to kubernetes.io</sub>
 
 ```sh
 kubectl get ingressclass -A
@@ -257,8 +248,9 @@ kubectl get ingressclass -A
     - A pure software solution: MetalLB
     - Over a NodePort Service
 
-| <img src="https://kubernetes.github.io/ingress-nginx/images/baremetal/baremetal_overview.jpg" alt="ingress" width="500"> |
-| :--: |
+<img src="https://kubernetes.github.io/ingress-nginx/images/baremetal/baremetal_overview.jpg" alt="ingress" width="500">
+
+<sub>Original image credited to kubernetes.github.io</sub>
 
 
 #### AWS Load Balancer Controller
@@ -329,12 +321,10 @@ Kubernetes natively supports cloud environments, enabling seamless integration w
 - Kubelet configures Pods' DNS so that running containers can lookup Services by name rather than IP.
 
 
-| <img src="https://imgur.com/tbG85hA.png" alt="demo" width="600"> |
-|:--:| 
-| *applications diagram* |
 
-| <img src="https://imgur.com/KxETYaG.png" alt="ingress" width="750"> |
-| :--: |
+| <img src="https://imgur.com/KxETYaG.png" alt="ingress" width="680"> |<img src="https://imgur.com/b69kvRA.png" alt="demo" width="300"> |
+|--| --
+| *applications diagram* |
     
 - `Frontend - Nginx`
    - Nginx serves as the static content server, handling HTML, CSS, and JavaScript files.
@@ -462,12 +452,36 @@ EXPOSE 3001
 CMD ["backend-web-server", "-web-host=:3001"]
 ```
 
-
-
 [↑ Back to top](#)
 <br><br>
 
 
+### minikube docker-env
+
+- To point your shell to minikube's docker-daemon, run:
+- Build docker images in local and minikube Pods can refer to it
+
+```sh
+eval $(minikube -p minikube docker-env)
+```
+
+- To Unset
+
+```sh
+# unset DOCKER_TLS_VERIFY
+# unset DOCKER_HOST
+# unset DOCKER_CERT_PATH
+# unset MINIKUBE_ACTIVE_DOCKERD
+eval $(minikube -p minikube docker-env --unset)
+```
+
+- Apply changes in local development
+1. Edit file
+2. build image - `./build-nginx.sh`
+3. restart pod - `./rstart-nginx.sh`
+
+[↑ Back to top](#)
+<br><br>
 
 
 ## IaC
@@ -666,12 +680,13 @@ The difference between a CA certificate and a self-signed certificate is the iss
 ## Kubernetes for MLOps
 
 
-| <img src="https://coffeewhale.com/assets/images/mlops/hidden-model.png" alt="pods" width="580"> |
-|:--:| 
+<img src="https://coffeewhale.com/assets/images/mlops/hidden-model.png" alt="pods" width="580">
 
+<sub>Original image credited to papers.nips.cc/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf and coffeewhale.com</sub>
 
-| <img src="https://www.determined.ai/assets/images/blogs/kubernetes-bad/kubeflow-unicorns.png" alt="pods" width="480"> |
-|:--:| 
+<img src="https://www.determined.ai/assets/images/blogs/kubernetes-bad/kubeflow-unicorns.png" alt="pods" width="480">
+
+<sub>Original image credited to .determined.ai</sub>
 
 
 - Challenges of Using Kubernetes-Based ML Tools
@@ -700,6 +715,9 @@ The difference between a CA certificate and a self-signed certificate is the iss
 - [`Golang ini setting`](#golang-ini-setting)
 - [`AWS LoadBalancer Controller`](#aws-loadbalancer-controller)
 - [`MariaDB](#mariadb)
+- [`Train a Neural Network`](#train-a-neural-network)
+- [`Predict using a Neural Network`](#predict-using-a-neural-network)
+
 
 
 ### Exposing external service
@@ -862,14 +880,10 @@ go mod tidy
 I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. 🔥
 
 
-|<img src="https://i.imgur.com/w8PxxXk.png" alt="CatVsNonCat architecture" width="400">|
-|:--:| 
-| *kubernetes architecture (Local VirtualBox)* |
+<img src="https://i.imgur.com/w8PxxXk.png" alt="CatVsNonCat architecture" width="400">
 
 
-|<img src="https://imgur.com/tyhjPsG.png" alt="pods" width="520">|
-|:--:| 
-| *NAT network* |
+<img src="https://imgur.com/tyhjPsG.png" alt="pods" width="520">
 
 
 
@@ -1631,9 +1645,10 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
         - in result, two pods have different images: one from local repository, another from public docker repository.
 
 
-|<img src="https://imgur.com/KAUbhcq.png" alt="pods" width="700">|
-|:--:| 
-| *pod resources* |
+<img src="https://imgur.com/KAUbhcq.png" alt="pods" width="700">
+
+<p style="text-align: center;"><i>pod resources</i></p>
+
 
 
 
@@ -2026,6 +2041,21 @@ WHERE
 [↑ Back to top](#)
 <br><br>
 
+### Train a Neural Network
+
+```python
+
+cd CatVsNonCat
+python -m backend.worker.cats.train
+# ls parameters.npz
+```
+
+### Predict using a Neural Network
+
+```python
+cd CatVsNonCat
+python -m backend.worker.cats.predict
+```
 
 ### References
 
@@ -2035,4 +2065,3 @@ WHERE
 
 [↑ Back to top](#)
 <br><br>
-
