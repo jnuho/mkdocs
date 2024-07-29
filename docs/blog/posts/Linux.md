@@ -7,7 +7,7 @@ authors:
   - junho
 ---
 
-A Linux Primer. I try to learn Linux and try Ubuntu server set-up.
+A Linux Primer. I try to learn Linux and Ubuntu server.
 
 
 <!-- more -->
@@ -19,11 +19,11 @@ A Linux Primer. I try to learn Linux and try Ubuntu server set-up.
   - [curl](#curl)
   - [terminology](#terminology)
   - [Subnetting](#subnetting)
-- [Ubuntu 24.04](ubuntu-24-04)
+- [Ubuntu](ubuntu)
   - [Time sync](#time-sync)
-  - [SSH Access](#ssh-access)
+  - [SSH access](#ssh-access)
   - [Initial Settings](#initial-settings)
-
+  - [Docker](#docker)
 
 
 
@@ -197,9 +197,9 @@ Suppose I have 4 teams to get assigned IP ranges.
 
 
 
-## Ubuntu 24.04
+## Ubuntu
 
-- install Ubuntu server 24.04 on raspberry pi 5
+- install Ubuntu 24.04 LTS server on Raspberry Pi 5
 
 ### time sync
 
@@ -278,13 +278,136 @@ systemctl restart ssh
 
 ### Initial Settings
 
+- (01) Add User Accounts
+- (02) Enable root User Account
+- (03) Network Settings
+- (04) Service Settings
+- (05) Update System
+- (06) Vim Settings
+- (07) Sudo Settings
+
+
 ```sh
+#----------------------
+# (01) Add User Accounts
+sudo adduser mobb
+sudo usermod -aG sudo mobb
+su - mobb
+cd /home/mobb
+mkdir .ssh
+chmod 700 ~/.ssh
+
+sudo chmod 600 ~/.ssh/authorized_keys
+sudo chown mobb:mobb ~/.ssh/authorized_keys
+
+sudo ls -al /home/mobb/.ssh
+
+
+
+#----------------------
+# (02) Enable root User Account
+# To use root priviledges, basically it's better to use the sudo command with administrative accounts.
+
+
+
+#----------------------
+# (03) Network Settings
+# Change to static IP addres if you use Ubuntu as a server.
+
+sudo su -
+cd /etc/netplan
+mv /etc/netplan/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml.orig
+touch /etc/netplan/01-netcfg.yaml
+chmod 600 /etc/netplan/01-netcfg.yaml
+
+network:
+  ethernets:
+    # interface name
+    eth0:
+      dhcp4: false
+      # IP address/subnet mask
+      addresses: [192.168.0.11/24]
+      # default gateway
+      # [metric] : set priority (specify it if multiple NICs are set)
+      # lower value is higher priority
+      routes:
+        - to: default
+          via: 192,168.0.1
+          metric: 100
+      nameservers:
+        # name server to bind
+        addresses: [8.8.8.8, 8.8.4.4]
+        # DNS search base
+        #search: [srv.world,server.education]
+      dhcp6: false
+  version: 2
+
+sudo netplan apply
+sudo journalctl -u systemd-networkd
+
+ip addr
+
+
+
+#----------------------
+# (04) Service Settings
+# Display services.
+systemctl -t service
+
+# If there are some unnecessary services,
+# it's possible to Stop and turn OFF auto-start setting like follows.
+# (possible to omit [.service] words)
+systemctl list-unit-files -t service
+
+
+
+#----------------------
+# (07) Sudo Settings
+
 ```
 
+### Docker
 
+- Install Docker engine
+- Post installation
+
+The docker user group exists but contains no users, which is why you’re required to use sudo to run Docker commands.
+
+#### Manage Docker as a non-root user
+
+The Docker daemon always runs as the root.
+
+You can allow non-privileged users to run Docker commands.
+
+```sh
+# Create a Unix group called docker and add users to it
+# it's likely that `docker` group exists after docker installation
+sudo groupadd docker
+
+# Add your user to the docker group.
+sudo usermod -aG docker $USER
+
+# Check `mobb` user is now in group `docker`
+groups mobb
+  mobb : mobb sudo users docker
+
+# To activate the changes to groups you must logout and login or simply run the following command:
+newgrp docker
+```
+
+### minikube
+
+```sh
+# install in ARM 64 system
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_arm64.deb
+sudo dpkg -i minikube_latest_arm64.deb
+
+minikube start --cpus 4 --memory 4g
+```
 
 ## Referecne
 
+- [server world](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=download)
 - [networking-terminology](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
 - [understanding-ip-subnets-and-cidr](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
-- [server world](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=download)
+
