@@ -1,18 +1,22 @@
 ---
 draft: true
-date: 2024-04-01
+date: 2024-08-01
 categories:
+  - Kubernetes
   - Linux
 authors:
   - junho
 ---
 
-A Linux Primer. I try to learn Linux and Ubuntu server.
+Kubernetes the Hard way.
 
+I read through [`kubernetes.io`](https://kubernetes.io/docs/home/) documentation to set-up local Kubernetes cluster with 1-master and 2-worker nodein Raspberry pi 5 cluster.
+
+<img src="https://imgur.com/YZT2OTv.png" alt="pi-cluster" width="650">
 
 <!-- more -->
 
-# Linux Primer
+# Kubernetes the Hard way
 
 - [Linux Primer](#linux-primer)
   - [File Permissions](#file-permissions)
@@ -30,6 +34,8 @@ A Linux Primer. I try to learn Linux and Ubuntu server.
 - [Reference](#reference)
 
 
+
+# Linux Primer
 
 ## File Permissions
 
@@ -734,8 +740,13 @@ sudo systemctl enable --now kubelet
 - Initializing your `control-plane node` (master node)
 
 ```sh
+# --pod-network-cidr
+# your Pod network must not overlap with any of the host networks
+
 # on master node
-sudo kubeadm init --config kubeadm-config.yaml
+# sudo kubeadm init --config kubeadm-config.yaml
+sudo kubeadm init --pod-network-cidr=10.100.0.0/16 -v=5
+
 # [init] Using Kubernetes version: v1.30.3
 # [preflight] Running pre-flight checks
 # [preflight] Pulling images required for setting up a Kubernetes cluster
@@ -810,10 +821,171 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 #   https://kubernetes.io/docs/concepts/cluster-administration/addons/
 
 # Then you can join any number of worker nodes by running the following on each as root:
-sudo kubeadm join 192.168.0.10:6443 --token cc66r1.w7i0ydntja56y49x \
-        --discovery-token-ca-cert-hash sha256:7e5c98f1d3be9095cb78e2d856595de5efb79574fa700ba1dfed210511d731f3
+sudo kubeadm join 192.168.0.10:6443 --token dirh1v.jde74l3q3sy7xwhv \
+        --discovery-token-ca-cert-hash sha256:718b98c04f0c5adff8b6af285bf11b6b5bc965141e54f383172d433f799edcd5
 ```
 
+### Controlling your cluster from machines other than the control-plane node
+
+```sh
+scp root@<control-plane-host>:/etc/kubernetes/admin.conf .
+scp mobb@192.168.0.10:/home/mobb/.kube/config .
+
+# `cluster` `context` `user` -> add this to existing `~/.kube/config`
+# change names to 'pi' which can be identified by you...
+kubectl --kubeconfig ./config get nodes
+  clusters:
+  - cluster: ...
+  contexts:
+  - context: ...
+  users:
+  - name: ...
+
+kubectl config get-contexts
+kubectl config use-context pi
+
+
+kubectl get no
+  NAME      STATUS     ROLES           AGE     VERSION
+  master    NotReady   control-plane   5h17m   v1.30.3
+  worker1   NotReady   <none>          5h12m   v1.30.3
+  worker2   NotReady   <none>          5h12m   v1.30.3
+```
+
+
+### Troubleshooting kubeadm
+
+`coredns` is stuck in the Pending state. This is expected and part of the design. 
+
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/troubleshooting-kubeadm/
+
+```sh
+k get pod -n kube-system
+  NAME                             READY   STATUS    RESTARTS        AGE
+  coredns-7db6d8ff4d-sv6bv         0/1     Pending   0               4h54m
+  coredns-7db6d8ff4d-vtc4p         0/1     Pending   0               4h54m
+
+k describe pod coredns-7db6d8ff4d-sv6bv -n kube-system
+    # Warning  FailedScheduling  7m50s (x6 over 4h45m)  default-scheduler  0/3 nodes are available: 3 node(s) had untolerated taint {node.kubernetes.io/not-ready: }. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+
+```
+
+### CNI (Container Network Interface)
+
+
+Without CNI, the coredns pods are `pending` and `podSubnet` is not specified in the cluster configuration..
+
+Use `Calico` as a Container Network Interface implementation!
+
+
+```sh
+# Check Pod Sunet is missing
+kubectl get configmap -n kube-system kubeadm-config -o yaml
+  networking:
+        dnsDomain: cluster.local
+        # ---> podSubnet is MISSING............
+        serviceSubnet: 10.96.0.0/12
+      scheduler: {}
+```
+
+1. Calico Operator - tigera-operator
+
+```sh
+# Install the operator on your cluster.
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/tigera-operator.yaml
+
+```
+
+- `custom-resources.yaml`
+
+```yaml
+# This section includes base Calico installation configuration.
+# For more information, see: https://docs.tigera.io/calico/latest/reference/installation/api#operator.tigera.io/v1.Installation
+apiVersion: operator.tigera.io/v1
+kind: Installation
+metadata:
+  name: default
+spec:
+  # Configures Calico networking.
+  calicoNetwork:
+    ipPools:
+    - name: default-ipv4-ippool
+      blockSize: 26
+      cidr: 10.100.0.0/16
+      encapsulation: VXLANCrossSubnet
+      natOutgoing: Enabled
+      nodeSelector: all()
+
+---
+
+# This section configures the Calico API server.
+# For more information, see: https://docs.tigera.io/calico/latest/reference/installation/api#operator.tigera.io/v1.APIServer
+apiVersion: operator.tigera.io/v1
+kind: APIServer
+metadata:
+  name: default
+spec: {}
+```
+
+2. Custom Resource
+
+```sh
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml -O
+kubectl create -f custom-resources.yaml
+
+# Verify Calico installation in your cluster.
+watch kubectl get pods -n calico-system
+
+NAME                                       READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-5857c9dccf-f6bh2   1/1     Running   0          6m43s
+calico-node-l65nq                          1/1     Running   0          6m43s
+calico-node-wtftp                          1/1     Running   0          6m43s
+calico-node-xj2kn                          1/1     Running   0          6m43s
+calico-typha-68cbb57dc7-752ch              1/1     Running   0          6m43s
+calico-typha-68cbb57dc7-b49rn              1/1     Running   0          6m40s
+csi-node-driver-5pt8r                      2/2     Running   0          6m43s
+csi-node-driver-gqps8                      2/2     Running   0          6m43s
+csi-node-driver-lkthq                      2/2     Running   0          6m43s
+```
+
+
+- To determine the pod network CIDR, you can inspect the configuration of the CNI plugin installed in your cluster.
+- Here’s how you can check for some common CNI plugins:
+
+```sh
+# 1. `calico` CNI plugin
+kubectl get ippools.crd.projectcalico.org -o yaml
+
+apiVersion: v1
+items:
+- apiVersion: crd.projectcalico.org/v1
+  kind: IPPool
+  metadata:
+    annotations:
+      projectcalico.org/metadata: '{"generation":1,"creationTimestamp":"2024-08-02T15:05:43Z","labels":{"app.kubernetes.io/managed-by":"tigera-operator"}}'
+    creationTimestamp: "2024-08-02T15:05:43Z"
+    generation: 1
+    name: default-ipv4-ippool
+    resourceVersion: "2656"
+    uid: f26e7d00-fbac-414b-a275-9b82b8615d9c
+  spec:
+    allowedUses:
+    - Workload
+    - Tunnel
+    blockSize: 26
+    cidr: 10.100.0.0/16
+    ipipMode: Never
+    natOutgoing: true
+    nodeSelector: all()
+    vxlanMode: CrossSubnet
+kind: List
+metadata:
+  resourceVersion: ""
+```
+
+### Installing a Pod network add-on
+
+You must deploy a Container Network Interface (CNI) based Pod network add-on so that your Pods can communicate with each other. Cluster DNS (CoreDNS) will not start up before a network is installed.
 
 [↑ Back to top](#)
 <br><br>
@@ -824,3 +996,6 @@ sudo kubeadm join 192.168.0.10:6443 --token cc66r1.w7i0ydntja56y49x \
 - [server world](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=download)
 - [networking-terminology](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
 - [understanding-ip-subnets-and-cidr](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
+- [Calico](https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises#install-calico)
+- [Argo CD](https://argo-cd.readthedocs.io/en/stable/)
+
