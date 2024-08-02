@@ -8,27 +8,26 @@ authors:
   - junho
 ---
 
-Kubernetes the Hard way.
 
-I read through [`kubernetes.io`](https://kubernetes.io/docs/home/) documentation to set-up local Kubernetes cluster with 1-master and 2-worker nodein Raspberry pi 5 cluster.
+I read through [`kubernetes.io`](https://kubernetes.io/docs/home/) documentation to set-up local Kubernetes cluster with 1-master and 2-worker node in Raspberry pi 5 cluster.
 
-<img src="https://imgur.com/YZT2OTv.png" alt="pi-cluster" width="650">
+<img src="https://imgur.com/YZT2OTv.png" alt="pi-cluster" width="500">
 
 <!-- more -->
 
 # Kubernetes the Hard way
 
 - [Linux Primer](#linux-primer)
-  - [File Permissions](#file-permissions)
-  - [curl](#curl)
-  - [terminology](#terminology)
-  - [Subnetting](#subnetting)
+    - [File Permissions](#file-permissions)
+    - [curl](#curl)
+    - [terminology](#terminology)
+    - [Subnetting](#subnetting)
 - [Raspberry Pi](#raspberry-pi)
 - [Ubuntu](ubuntu)
-  - [Time sync](#time-sync)
-  - [SSH access](#ssh-access)
-  - [Initial Settings](#initial-settings)
-  - [minikube](#minikube)
+    - [Time sync](#time-sync)
+    - [SSH access](#ssh-access)
+    - [Initial Settings](#initial-settings)
+    - [minikube](#minikube)
 - [Ansible](#ansible)
 - [Kubernetes](#kubernetes)
 - [Reference](#reference)
