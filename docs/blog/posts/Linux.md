@@ -1,6 +1,6 @@
 ---
 draft: true
-date: 2024-04-05
+date: 2024-04-01
 categories:
   - Linux
 authors:
@@ -19,11 +19,15 @@ A Linux Primer. I try to learn Linux and Ubuntu server.
   - [curl](#curl)
   - [terminology](#terminology)
   - [Subnetting](#subnetting)
+- [Raspberry Pi](#raspberry-pi)
 - [Ubuntu](ubuntu)
   - [Time sync](#time-sync)
   - [SSH access](#ssh-access)
   - [Initial Settings](#initial-settings)
-  - [Docker](#docker)
+  - [minikube](#minikube)
+- [Ansible](#ansible)
+- [Kubernetes](#kubernetes)
+- [Reference](#reference)
 
 
 
@@ -154,6 +158,10 @@ curl -o jules.txt https://assets.digitalocean.com/articles/command-line-intro/ve
 Use Subnet Mask to determine which ip class is for a given IP.
 
 
+[↑ Back to top](#)
+<br><br>
+
+
 ## Subnetting
 
 Internet Service Provider (ISP) provides a IPv4 range e.g. 200.100.100.0/24.
@@ -196,12 +204,55 @@ Suppose I have 4 teams to get assigned IP ranges.
     - Host 11100000
 
 
+[↑ Back to top](#)
+<br><br>
+
+## Raspberry Pi
+
+- NVMe SSD boot : https://www.jeffgeerling.com/blog/2023/nvme-ssd-boot-raspberry-pi-5
+
+### Enable the external PCI Express port
+
+
+```sh
+sudo vim /boot/firmware/config.txt
+
+# Add to bottom of /boot/firmware/config.txt
+dtparam=pciex1
+
+# Note: You could also just add the following (it is an alias to the above line)
+# dtparam=nvme
+
+# Optionally, you can control the PCIe lane speed using this parameter
+# dtparam=pciex1_gen=3
+```
+
+### Set NVMe early in the boot order
+
+```sh
+# Edit the EEPROM on the Raspberry Pi 5.
+sudo EDITOR=vim rpi-eeprom-config --edit
+
+# Change the BOOT_ORDER line to the following:
+BOOT_ORDER=0xf416
+
+# Add the following line if using a non-HAT+ adapter:
+PCIE_PROBE=1
+
+# Press Ctrl-O, then enter, to write the change to the file.
+# Press Ctrl-X to exit nano (the editor).
+```
+
+
+[↑ Back to top](#)
+<br><br>
+
 
 ## Ubuntu
 
 - install Ubuntu 24.04 LTS server on Raspberry Pi 5
 
-### time sync
+### Time sync
 
 - Use `timedatectl` and `timesyncd` instead of `ntp` for time synchronization
     - https://askubuntu.com/a/1418563
@@ -223,18 +274,21 @@ sudo apt update
 sudo apt install systemd-timesyncd -y
 
 # The server from which to fetch time for timedatectl and timesyncd can be specified
-vim /etc/systemd/timesyncd.conf
-    [Time]
-    NTP=time.bora.net
-    PollIntervalMinSec=32
-    PollIntervalMaxSec=600
+sudo vim /etc/systemd/timesyncd.conf
+[Time]
+NTP=time.bora.net
+PollIntervalMinSec=32
+PollIntervalMaxSec=600
 
 sudo systemctl enable systemd-timesyncd
-sudo systemctl start systemd-timesyncd
+sudo systemctl restart systemd-timesyncd
 
 timedatectl timesync-status
 date
 ```
+
+[↑ Back to top](#)
+<br><br>
 
 ### SSH access
 
@@ -276,6 +330,9 @@ vim /etc/ssh/sshd_config.d/50-cloud-init.conf
 systemctl restart ssh
 ```
 
+[↑ Back to top](#)
+<br><br>
+
 ### Initial Settings
 
 - (01) Add User Accounts
@@ -285,6 +342,7 @@ systemctl restart ssh
 - (05) Update System
 - (06) Vim Settings
 - (07) Sudo Settings
+- (08) Hostname
 
 
 ```sh
@@ -332,7 +390,7 @@ network:
       # lower value is higher priority
       routes:
         - to: default
-          via: 192,168.0.1
+          via: 192.168.0.1
           metric: 100
       nameservers:
         # name server to bind
@@ -364,36 +422,15 @@ systemctl list-unit-files -t service
 #----------------------
 # (07) Sudo Settings
 
+#----------------------
+# (08) Hostname
+sudo hostnamectl set-hostname master
+sudo hostnamectl set-hostname worker1
+sudo hostnamectl set-hostname worker2
 ```
 
-### Docker
-
-- Install Docker engine
-- Post installation
-
-The docker user group exists but contains no users, which is why you’re required to use sudo to run Docker commands.
-
-#### Manage Docker as a non-root user
-
-The Docker daemon always runs as the root.
-
-You can allow non-privileged users to run Docker commands.
-
-```sh
-# Create a Unix group called docker and add users to it
-# it's likely that `docker` group exists after docker installation
-sudo groupadd docker
-
-# Add your user to the docker group.
-sudo usermod -aG docker $USER
-
-# Check `mobb` user is now in group `docker`
-groups mobb
-  mobb : mobb sudo users docker
-
-# To activate the changes to groups you must logout and login or simply run the following command:
-newgrp docker
-```
+[↑ Back to top](#)
+<br><br>
 
 ### minikube
 
@@ -403,11 +440,387 @@ curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest
 sudo dpkg -i minikube_latest_arm64.deb
 
 minikube start --cpus 4 --memory 4g
+
+
+# Minikube recommends building images inside the Minikube environment,
+# and to do that, set your local docker CLI to use Minikube’s Docker daemon:
+eval $(minikube docker-env)
+docker build -t hello-go .
+
+kubectl create deployment hello-go --image=hello-go
+kubectl edit deployment hello-go
+    containers:
+    - image: hello-go
+      imagePullPolicy: IfNotPresent
+      name: hello-go
+
+# Note that, when running Minikube, a LoadBalancer service won’t acquire an external IP address
+# Locally, Minikube doesn’t integrate with another service to run external load balancers.
+# in most other environments, when you use a Kubernetes LoadBalancer,
+# it will provision a load balancer external to your cluster, for example
+# an Elastic Load Balancer (ELB) in AWS, or a Cloud Load Balancer in GKE.
+
+kubectl expose deployment hello-go --type=LoadBalancer --port=8180
+kubectl get service hello-go
+    NAME      TYPE          CLUSTER-IP    EXTERNAL-IP     PORT(S)
+    hello-go  LoadBalancer  10.110.50.96  <pending>       8180:31565/TCP
+
+minikube service hello-go
+    http://192.168.64.31:31565
+
+kubectl logs -l app=hello-go -f
+kubectl scale deployments/hello-go --replicas=4
+kubectl get deployment hello-go
+
+# CLEAN UP
+kubectl delete service hello-go
+kubectl delete deployment hello-go
+eval $(minikube docker-env)
+docker rmi hello-go
+
+# To conserve your workstation’s CPU and memory, it’s a good idea to at least stop
+# Minikube (minikube stop) when you’re not using it.
+minikube stop
 ```
 
-## Referecne
 
+[↑ Back to top](#)
+<br><br>
+
+## Ansible
+
+We can automate some aspects of the Cloud Native application lifecycle using Ansible.
+
+```sh
+# install python
+sudo apt install python3 python3-venv python3-pip -y
+python3 -V
+
+echo -e "import sys\nprint(sys.version)" > python3_test.py
+python3 python3_test.py
+  3.12.3 (main, Apr 10 2024, 05:33:47) [GCC 13.2.0]
+rm python3_test.py
+
+
+cd ~
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip install ansible
+ansible --version
+pip install --upgrade ansible
+```
+
+- inventory
+
+```
+# Before writing the playbook, create a file named inventory to tell Ansible how to connect to localhost:
+[localhost]
+127.0.0.1   ansible_connection=local
+```
+
+- playbook
+
+```yml
+# main.yml
+---
+- hosts: localhost
+```
+
+Now Run the ansible playbook!
+
+```sh
+ansible-playbook -i inventory main.yml
+```
+
+The best Ansible playbooks are idempotent, meaning you can run them more than one time,
+and assuming the system hasn’t been changed outside of Ansible,
+you’ll see no changes reported after the first time the playbook is run.
+This is helpful for ensuring a consistent state across your application deployments,
+and to verify there are no changes (intended or not) happening outside of your automation.
+
+
+- install go
+
+```
+wget https://go.dev/dl/go1.22.5.linux-arm64.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.5.linux-arm64.tar.gz
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.zshrc
+source ~/.zshrc
+```
+
+[↑ Back to top](#)
+<br><br>
+
+## Kubernetes
+
+We will configure Kubernetes v1.30.
+
+- [Prerequisite](#prerequisite)
+- [Container runtime](#container-runtime)
+- [Installing kubeadm, kubelet and kubectl](#installing-kubeadm-kubelet-and-kubectl)
+- [Creating a cluster with kubeadm](#creating-a-cluster-with-kubeadm)
+
+### Prerequisite
+
+- Swap memory off
+  - The default behavior of a kubelet was to fail to start if swap memory was detected on a node. 
+  - You MUST disable swap if the kubelet is not properly configured to use swap.
+
+```sh
+# disable swapping temporarily.
+sudo swapoff -a
+# To make this change persistent across reboots, make sure swap is disabled in config files. Comment out swap
+vim /etc/fstab
+```
+
+- Required ports
+  - Check required ports for both control plane and worker nodes
+  - https://kubernetes.io/docs/reference/networking/ports-and-protocols/
+
+```sh
+nc 127.0.0.1 6443 -v
+```
+
+- Configuring a cgroup driver
+  - https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/
+
+```sh
+#   On Linux, control groups are used to constrain resources that are allocated to processes.
+#   Both the `KUBELET` and the underlying `CONTAINER RUNTIME` need to interface with control groups
+#   to enforce resource management for pods and containers and set resources such as cpu/memory requests and limits.
+#   There are two cgroup drivers available: cgroupfs-default cgroup driver in the kubelet, systemd.
+#   The Container runtimes page explains that the systemd driver is recommended for kubeadm based setups
+#   instead of the kubelet's default cgroupfs driver, because kubeadm manages the kubelet as a systemd service.
+
+cat <<EOF > kubeadm-config.yaml
+kind: ClusterConfiguration
+apiVersion: kubeadm.k8s.io/v1beta3
+kubernetesVersion: v1.30.3
+---
+kind: KubeletConfiguration
+apiVersion: kubelet.config.k8s.io/v1beta1
+cgroupDriver: systemd
+EOF
+```
+
+[↑ Back to top](#)
+<br><br>
+
+
+### Container runtime
+
+Kubernetes 1.30 requires that you use a runtime that conforms with the Container Runtime Interface (CRI); containerd, CRI-O, Docker Engine.
+
+I will be using [`containerd!`](https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
+
+- Install and configure prerequisites
+  - 1. Enable IPv4 packet forwarding
+  - 2. cgroup drivers: systemd
+  - 3. container runetime - containerd
+
+```sh
+# 1. Enable IPv4 packet forwarding
+#   By default, the Linux kernel does not allow IPv4 packets to be routed between interfaces.
+#   sysctl params required by setup, params persist across reboots
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.ipv4.ip_forward = 1
+EOF
+
+# Apply sysctl params without reboot
+sudo sysctl --system
+
+# Verify that net.ipv4.ip_forward is set to 1 with:
+sysctl net.ipv4.ip_forward
+
+# 2. cgroup drivers
+#   On Linux, control groups are used to constrain resources that are allocated to processes.
+#   LATER DO:
+# kubeadm init --config kubeadm-config.yaml
+
+# 3. container runetime - containerd
+# https://github.com/containerd/containerd/blob/main/docs/getting-started.md
+# Step 3-1: Installing containerd
+wget https://github.com/containerd/containerd/releases/download/v1.7.20/containerd-1.7.20-linux-arm64.tar.gz
+sudo tar Cxzvf /usr/local containerd-1.7.20-linux-arm64.tar.gz
+
+# If you intend to start containerd via systemd, you should also download
+#   the containerd.service unit file into /usr/local/lib/systemd/system/containerd.service
+sudo mkdir -p /usr/local/lib/systemd/system/
+sudo wget -O /usr/local/lib/systemd/system/containerd.service https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now containerd
+sudo systemctl status containerd
+
+# Step 3-2: Installing runc
+wget https://github.com/opencontainers/runc/releases/download/v1.1.13/runc.arm64
+sudo install -m 755 runc.arm64 /usr/local/sbin/runc
+
+
+# Step 3-3: Installing CNI plugins
+wget https://github.com/containernetworking/plugins/releases/download/v1.5.1/cni-plugins-linux-arm64-v1.5.1.tgz
+sudo mkdir -p /opt/cni/bin
+sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-arm64-v1.5.1.tgz
+
+# 4. You can find this file under the path /etc/containerd/config.toml.
+# generate default config
+sudo mkdir -p /etc/containerd
+sudo su -
+containerd config default > /etc/containerd/config.toml
+cat /etc/containerd/config.toml
+
+# 5. Configuring the systemd cgroup driver
+#   To use the systemd cgroup driver in /etc/containerd/config.toml with runc, set
+sudo vim /etc/containerd/config.toml
+
+[plugins]
+  # ...
+  [plugins."io.containerd.grpc.v1.cri"]
+    sandbox_image = "registry.k8s.io/pause:3.8"
+
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          # ...
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            SystemdCgroup = true
+
+
+sudo systemctl restart containerd
+```
+
+[↑ Back to top](#)
+<br><br>
+
+
+### Installing kubeadm, kubelet and kubectl
+
+- For Kubernetes v1.30, you will install these packages on <b>ALL OF YOUR MACHINES</b>:
+  - `kubeadm`: the command to bootstrap the cluster.
+  - `kubelet`: the component that runs on all of the machines in your cluster and does things like starting pods and containers.
+  - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
+  <!-- - [`helm`](https://helm.sh/docs/intro/install/) -->
+
+```sh
+# 1. Update the apt package index and install packages needed to use the Kubernetes apt repository:
+sudo apt-get update
+# apt-transport-https may be a dummy package; if so, you can skip that package
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+
+# 2. Download the public signing key for the Kubernetes package repositories. The same signing key is used for all repositories so you can disregard the version in the URL:
+# If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
+# sudo mkdir -p -m 755 /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# 3. Add the appropriate Kubernetes apt repository. 
+# This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# 4. Update the apt package index, install kubelet, kubeadm and kubectl, and pin their version:
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
+# 5. (Optional) Enable the kubelet service before running kubeadm:
+sudo systemctl enable --now kubelet
+```
+
+[↑ Back to top](#)
+<br><br>
+
+
+### Creating a cluster with kubeadm
+
+- Initializing your `control-plane node` (master node)
+
+```sh
+# on master node
+sudo kubeadm init --config kubeadm-config.yaml
+# [init] Using Kubernetes version: v1.30.3
+# [preflight] Running pre-flight checks
+# [preflight] Pulling images required for setting up a Kubernetes cluster
+# [preflight] This might take a minute or two, depending on the speed of your internet connection
+# [preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
+# W0802 17:25:33.748578    2514 checks.go:844] detected that the sandbox image "registry.k8s.io/pause:3.8" of the container runtime is inconsistent with that used by kubeadm.It is recommended to use "registry.k8s.io/pause:3.9" as the CRI sandbox image.
+
+# [certs] Using certificateDir folder "/etc/kubernetes/pki"
+# [certs] Generating "ca" certificate and key
+# [certs] Generating "apiserver" certificate and key
+# [certs] apiserver serving cert is signed for DNS names [kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local master] and IPs [10.96.0.1 192.168.0.10]
+# [certs] Generating "apiserver-kubelet-client" certificate and key
+# [certs] Generating "front-proxy-ca" certificate and key
+# [certs] Generating "front-proxy-client" certificate and key
+# [certs] Generating "etcd/ca" certificate and key
+# [certs] Generating "etcd/server" certificate and key
+# [certs] etcd/server serving cert is signed for DNS names [localhost master] and IPs [192.168.0.10 127.0.0.1 ::1]
+# [certs] Generating "etcd/peer" certificate and key
+# [certs] etcd/peer serving cert is signed for DNS names [localhost master] and IPs [192.168.0.10 127.0.0.1 ::1]
+# [certs] Generating "etcd/healthcheck-client" certificate and key
+# [certs] Generating "apiserver-etcd-client" certificate and key
+# [certs] Generating "sa" key and public key
+# [kubeconfig] Using kubeconfig folder "/etc/kubernetes"
+# [kubeconfig] Writing "admin.conf" kubeconfig file
+# [kubeconfig] Writing "super-admin.conf" kubeconfig file
+# [kubeconfig] Writing "kubelet.conf" kubeconfig file
+# [kubeconfig] Writing "controller-manager.conf" kubeconfig file
+# [kubeconfig] Writing "scheduler.conf" kubeconfig file
+# [etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
+# [control-plane] Using manifest folder "/etc/kubernetes/manifests"
+# [control-plane] Creating static Pod manifest for "kube-apiserver"
+# [control-plane] Creating static Pod manifest for "kube-controller-manager"
+# [control-plane] Creating static Pod manifest for "kube-scheduler"
+# [kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+# [kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+# [kubelet-start] Starting the kubelet
+# [wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests"
+# [kubelet-check] Waiting for a healthy kubelet. This can take up to 4m0s
+# [kubelet-check] The kubelet is healthy after 1.501769125s
+# [api-check] Waiting for a healthy API server. This can take up to 4m0s
+# [api-check] The API server is healthy after 7.002740784s
+# [upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
+# [kubelet] Creating a ConfigMap "kubelet-config" in namespace kube-system with the configuration for the kubelets in the cluster
+# [upload-certs] Skipping phase. Please see --upload-certs
+# [mark-control-plane] Marking the node master as control-plane by adding the labels: [node-role.kubernetes.io/control-plane node.kubernetes.io/exclude-from-external-load-balancers]
+# [mark-control-plane] Marking the node master as control-plane by adding the taints [node-role.kubernetes.io/control-plane:NoSchedule]
+# [bootstrap-token] Using token: cc66r1.w7i0ydntja56y49x
+# [bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
+# [bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
+# [bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
+# [bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
+# [bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
+# [bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
+# [kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+# [addons] Applied essential addon: CoreDNS
+# [addons] Applied essential addon: kube-proxy
+
+# Your Kubernetes control-plane has initialized successfully!
+
+# To start using your cluster, you need to run the following as a regular user:
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Alternatively, if you are the root user, you can run:
+
+#   export KUBECONFIG=/etc/kubernetes/admin.conf
+
+# You should now deploy a pod network to the cluster.
+# Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
+#   https://kubernetes.io/docs/concepts/cluster-administration/addons/
+
+# Then you can join any number of worker nodes by running the following on each as root:
+sudo kubeadm join 192.168.0.10:6443 --token cc66r1.w7i0ydntja56y49x \
+        --discovery-token-ca-cert-hash sha256:7e5c98f1d3be9095cb78e2d856595de5efb79574fa700ba1dfed210511d731f3
+```
+
+
+[↑ Back to top](#)
+<br><br>
+
+## Reference
+
+- [kubernetes.io](https://kubernetes.io/docs/home/)
 - [server world](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=download)
 - [networking-terminology](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
 - [understanding-ip-subnets-and-cidr](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
-
