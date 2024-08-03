@@ -30,11 +30,14 @@ I read through [`kubernetes.io`](https://kubernetes.io/docs/home/) documentation
     - [minikube](#minikube)
 - [Ansible](#ansible)
 - [Kubernetes](#kubernetes)
+- [Docker Registry](#docker-registry)
 - [Reference](#reference)
 
 
 
 # Linux Primer
+
+Before 
 
 ## File Permissions
 
@@ -985,6 +988,88 @@ metadata:
 ### Installing a Pod network add-on
 
 You must deploy a Container Network Interface (CNI) based Pod network add-on so that your Pods can communicate with each other. Cluster DNS (CoreDNS) will not start up before a network is installed.
+
+[↑ Back to top](#)
+<br><br>
+
+
+## Docker Registry
+
+### Local Docker Registry
+
+Set up local docker registry that Kubernetes Pods will pull images from. I used `worker1` node to set up a temporary docker registry. I will set-up another raspberry-pi machine in the future.
+
+- Self-signed Certificate
+
+```sh
+mkdir -p certs
+# Generate SSL Certificates:
+openssl req -newkey rsa:4096 -nodes -sha256 -x509 \
+  -keyout certs/domain.key \
+  -days 365 \
+  -out certs/domain.crt \
+  -subj "/CN=192.168.0.11"
+
+
+# Run the Registry Container with HTTPS:
+docker run -d -p 5000:5000 \
+  --restart=always \
+  --name registry \
+  -v $(pwd)/certs:/certs \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+  registry:2
+
+# Distribute the CA Certificate:
+sudo mkdir -p /etc/docker/certs.d/192.168.0.11:5000
+sudo cp certs/domain.crt /etc/docker/certs.d/192.168.0.11:5000/ca.crt
+
+docker tag your-image 192.168.0.11:5000/your-image
+docker push 192.168.0.11:5000/your-image
+```
+
+- Configure Containerd to Use the Secure Registry
+
+```
+# Edit the containerd Configuration:
+sudo vim /etc/containerd/config.toml
+
+[plugins."io.containerd.grpc.v1.cri".registry]
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."192.168.0.10:5000"]
+      endpoint = ["https://192.168.0.10:5000"]
+  [plugins."io.containerd.grpc.v1.cri".registry.configs]
+    [plugins."io.containerd.grpc.v1.cri".registry.configs."192.168.0.10:5000".tls]
+      ca_file = "/etc/docker/certs.d/192.168.0.10:5000/ca.crt"
+
+sudo systemctl restart containerd
+```
+
+[↑ Back to top](#)
+<br><br>
+
+### Dockerhub
+
+- Authenticate to dockerhub to increase image pull rate limit.
+- https://www.docker.com/increase-rate-limits/
+
+
+```sh
+sudo vim /etc/containerd/config.toml
+      [plugins."io.containerd.grpc.v1.cri".registry.configs]
+        [plugins."io.containerd.grpc.v1.cri".registry.configs."registry-1.docker.io/v2".auth]
+          username = "jnuho"
+          password = "******"
+
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry-1.docker.io/v2"]
+          endpoint = ["https://registry-1.docker.io/v2"]
+
+sudo systemctl restart containerd
+```
+
+
 
 [↑ Back to top](#)
 <br><br>
