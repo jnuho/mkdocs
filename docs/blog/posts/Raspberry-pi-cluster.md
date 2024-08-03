@@ -7,7 +7,7 @@ authors:
   - junho
 ---
 
-Raspberry-pi 5 Kubernetes cluster setup.
+Raspberry-pi 5 cluster for a Kubernetes cluster
 
 <img src="https://imgur.com/YZT2OTv.png" alt="pi-cluster" width="500">
 
@@ -20,6 +20,7 @@ Raspberry-pi 5 Kubernetes cluster setup.
     - [Set NVMe early in the boot order](#set-nvme-early-in-the-boot-order)
 - [Ansible](#ansible)
 - [Kubernetes](#kubernetes)
+- [containerd](#containerd)
 - [Docker Registry](#docker-registry)
 - [Reference](#reference)
 
@@ -199,7 +200,7 @@ I will be using [`containerd!`](https://github.com/containerd/containerd/blob/ma
 - Install and configure prerequisites
   - 1. Enable IPv4 packet forwarding
   - 2. cgroup drivers: systemd
-  - 3. container runetime - containerd
+  - 3. container runtime - containerd
 
 ```sh
 # 1. Enable IPv4 packet forwarding
@@ -220,7 +221,7 @@ sysctl net.ipv4.ip_forward
 #   LATER DO:
 # kubeadm init --config kubeadm-config.yaml
 
-# 3. container runetime - containerd
+# 3. container runtime - containerd
 # https://github.com/containerd/containerd/blob/main/docs/getting-started.md
 # Step 3-1: Installing containerd
 wget https://github.com/containerd/containerd/releases/download/v1.7.20/containerd-1.7.20-linux-arm64.tar.gz
@@ -446,12 +447,13 @@ k describe pod coredns-7db6d8ff4d-sv6bv -n kube-system
 
 ```
 
-### CNI (Container Network Interface)
+### CNI
 
+You must deploy a `Container Network Interface` (CNI) based Pod network add-on so that your Pods can communicate with each other. Cluster DNS (CoreDNS) will not start up before a network is installed. Without CNI, the coredns pods are `pending` and `podSubnet` is not specified in the cluster configuration.
 
-Without CNI, the coredns pods are `pending` and `podSubnet` is not specified in the cluster configuration..
+: Use `Calico` as a Container Network Interface implementation!
 
-Use `Calico` as a Container Network Interface implementation!
+#### Calico
 
 
 ```sh
@@ -559,17 +561,20 @@ metadata:
   resourceVersion: ""
 ```
 
-### Installing a Pod network add-on
-
-You must deploy a Container Network Interface (CNI) based Pod network add-on so that your Pods can communicate with each other. Cluster DNS (CoreDNS) will not start up before a network is installed.
-
 [↑ Back to top](#)
 <br><br>
 
 
+## containerd
+
+
+Why NERDCTL?
+
+nerdctl is a Docker-compatible CLI for containerd
+
 ## Docker Registry
 
-### Local Docker Registry
+### Local Registry
 
 Set up local docker registry that Kubernetes Pods will pull images from. I used `worker1` node to set up a temporary docker registry. I will set-up another raspberry-pi machine in the future.
 
@@ -632,17 +637,16 @@ sudo systemctl restart containerd
 ```sh
 sudo vim /etc/containerd/config.toml
       [plugins."io.containerd.grpc.v1.cri".registry.configs]
-        [plugins."io.containerd.grpc.v1.cri".registry.configs."registry-1.docker.io/v2".auth]
+        [plugins."io.containerd.grpc.v1.cri".registry.configs."registry-1.docker.io".auth]
           username = "jnuho"
           password = "******"
 
       [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
-        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry-1.docker.io/v2"]
-          endpoint = ["https://registry-1.docker.io/v2"]
+        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry-1.docker.io"]
+          endpoint = ["https://registry-1.docker.io"]
 
 sudo systemctl restart containerd
 ```
-
 
 
 [↑ Back to top](#)
