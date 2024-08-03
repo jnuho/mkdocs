@@ -1,6 +1,6 @@
 ---
 draft: false
-date: 2024-08-01
+date: 2024-07-01
 categories:
   - Kubernetes
   - Linux
@@ -8,10 +8,7 @@ authors:
   - junho
 ---
 
-
-I read through [`kubernetes.io`](https://kubernetes.io/docs/home/) to set-up Raspberry-pi Kubernetes cluster with 1-master and 2-worker node.
-
-<img src="https://imgur.com/YZT2OTv.png" alt="pi-cluster" width="500">
+Over the course of the Raspberry-pi cluster setup, I tried to record Linux knowledge I learned.
 
 <!-- more -->
 
@@ -33,7 +30,7 @@ I read through [`kubernetes.io`](https://kubernetes.io/docs/home/) to set-up Ras
 
 # Linux Primer
 
-Over the course of the Raspberry-pi cluster setup, I tried to record Linux knowledge I learned.
+Linux basics.
 
 ## File Permissions
 
