@@ -9,7 +9,7 @@ authors:
 
 Raspberry-pi 5 cluster for a Kubernetes cluster
 
-<img src="https://imgur.com/YZT2OTv.png" alt="pi-cluster" width="500">
+<img src="https://imgur.com/Av7PzuR.png" alt="pi-cluster" width="500">
 
 <!-- more -->
 
