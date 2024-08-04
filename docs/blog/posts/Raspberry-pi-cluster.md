@@ -280,8 +280,14 @@ sudo systemctl restart containerd
 - Pre-requisite
   - containerd is installed, enabled, and running
   - cni plugins is installed (previously `cni-plugins-linux-arm64-v1.5.1.tgz`)
+  - Configure [rootlesskit](https://rootlesscontaine.rs/getting-started/containerd/)
 
 ```sh
+# RootlessKit
+mkdir -p ~/bin
+curl -sSL https://github.com/rootless-containers/rootlesskit/releases/download//rootlesskit-$(uname -m).tar.gz | tar Cxzv ~/bin
+
+
 wget https://github.com/containerd/nerdctl/releases/download/v2.0.0-rc.0/nerdctl-2.0.0-rc.0-linux-arm64.tar.gz
 sudo tar Cxzvvf /usr/local/bin nerdctl-2.0.0-rc.0-linux-arm64.tar.gz
 
