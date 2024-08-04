@@ -8,7 +8,7 @@ authors:
     - junho
 ---
 
-# Appendix
+# CatVsNonCat Appendix
 
 Some extra stuffs from [CatVsNonCat](https://blogd.org/blog/2024/07/11/implement-cat-vs-non-cat-classifier-on-eks/) project.
 

@@ -20,7 +20,6 @@ Raspberry-pi 5 cluster for a Kubernetes cluster
     - [Set NVMe early in the boot order](#set-nvme-early-in-the-boot-order)
 - [Ansible](#ansible)
 - [Kubernetes](#kubernetes)
-- [containerd](#containerd)
 - [Docker Registry](#docker-registry)
 - [Reference](#reference)
 
@@ -193,7 +192,7 @@ EOF
 
 ### Container runtime
 
-Kubernetes 1.30 requires that you use a runtime that conforms with the Container Runtime Interface (CRI); containerd, CRI-O, Docker Engine.
+Kubernetes 1.30 requires that you use a runtime that conforms with the Container Runtime Interface (CRI); containerd, CRI-O, Docker Engine. You need to install a container runtime into each node in the cluster so that Pods can run there. (kubelet deprecated Docker support since Kubernetes>=1.24)
 
 I will be using [`containerd!`](https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
 
@@ -201,6 +200,7 @@ I will be using [`containerd!`](https://github.com/containerd/containerd/blob/ma
   - 1. Enable IPv4 packet forwarding
   - 2. cgroup drivers: systemd
   - 3. container runtime - containerd
+
 
 ```sh
 # 1. Enable IPv4 packet forwarding
@@ -270,6 +270,39 @@ sudo vim /etc/containerd/config.toml
 
 sudo systemctl restart containerd
 ```
+
+### nerdctl
+
+"`nerdctl` is a Docker-compatible CLI for `containerd`"
+
+[Why nerdctl?](https://blog.devgenius.io/k8s-why-use-nerdctl-for-containerd-f4ea49bcf900)
+
+- Pre-requisite
+  - containerd is installed, enabled, and running
+  - cni plugins is installed (previously `cni-plugins-linux-arm64-v1.5.1.tgz`)
+
+```sh
+wget https://github.com/containerd/nerdctl/releases/download/v2.0.0-rc.0/nerdctl-2.0.0-rc.0-linux-arm64.tar.gz
+sudo tar Cxzvvf /usr/local/bin nerdctl-2.0.0-rc.0-linux-arm64.tar.gz
+
+mkdir -p ~/.local/bin && cd ~/.local/bin
+ln -s /usr/local/bin/containerd-rootless.sh  containerd-rootless.sh
+ln -s /usr/local/bin/containerd-rootless-setuptool.sh containerd-rootless-setuptool.sh
+ln -s /usr/local/bin/nerdctl nerdctl
+
+
+which nerdctl
+  /usr/local/bin/nerdctl
+
+sudo vim /etc/sysctl.d/99-rootless.conf
+kernel.unprivileged_userns_clone=1
+
+sudo apt install genometools
+
+sudo sh -c "echo 1 &gt; /proc/sys/kernel/unprivileged_userns_clone"
+sudo sysctl --system
+```
+
 
 [↑ Back to top](#)
 <br><br>
@@ -565,12 +598,6 @@ metadata:
 <br><br>
 
 
-## containerd
-
-
-Why NERDCTL?
-
-nerdctl is a Docker-compatible CLI for containerd
 
 ## Docker Registry
 
