@@ -9,7 +9,7 @@ I'm interested in `EKS`, `Kubernetes`, and `Deep learning`.
 
 ## [Blog](blog)
 
-- [Cat vs. Non-cat classifier](blog/posts/Implement-Cat-vs.-Non-cat-Classifier-on-EKS.md) - AWS EKS with Terraform
+- [Cat vs. Non-cat classifier](blog/posts/Cat-vs.-Non-cat-Classifier-on-EKS.md) - AWS EKS with Terraform
 - [PI cluster](blog/posts/Raspberry-pi-cluster.md) - Kubernetes on Raspberry-pi cluster
 - [Deep learning](blog/posts/Deep-Neural-Network-for-Image-Classification.md) - deep learning basics.
 - [Golang AWS dashboard](blog/posts/Golang-AWS-dashboard.md) - I used Golang AWS SDK to create a dashboard for AWS resources
