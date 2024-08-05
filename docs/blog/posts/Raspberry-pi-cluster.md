@@ -21,8 +21,20 @@ Raspberry-pi 5 cluster for a Kubernetes cluster
 - [Raspberry Pi](#raspberry-pi)
     - [Enable the external PCI Express port](#enable-the-external-pci-express-port)
     - [Set NVMe early in the boot order](#set-nvme-early-in-the-boot-order)
+    - [Network settings](#network-settings)
 - [Ansible](#ansible)
 - [Kubernetes](#kubernetes)
+    - [Prerequisite](#prerequisite)
+    - [Container runtime](#container-runtime)
+    - [nerdctl](#nerdctl)
+    - [Installing kubeadm, kubelet and kubectl](#installing-kubeadm-kubelet-and-kubectl)
+    - [Creating a cluster with kubeadm](#creating-a-cluster-with-kubeadm)
+    - [Controlling your cluster from machines other than the control-plane node](#controlling-your-cluster-from-machines-other-than-the-control-plane-node)
+    - [Troubleshooting kubeadm](#troubleshooting-kubeadm)
+    - [CNI](#cni)
+    - [Calico](#calico)
+    - [Nginx Ingress Controller](#nginx-ingress-controller)
+    - [Metallb](#metallb)
 - [Docker Registry](#docker-registry)
 - [Argo CD](#argo-cd)
 - [Reference](#reference)
@@ -187,7 +199,7 @@ nc 127.0.0.1 6443 -v
 #   The Container runtimes page explains that the systemd driver is recommended for kubeadm based setups
 #   instead of the kubelet's default cgroupfs driver, because kubeadm manages the kubelet as a systemd service.
 
-cat <<EOF > kubeadm-config.yaml
+cat << EOF > kubeadm-config.yaml
 kind: ClusterConfiguration
 apiVersion: kubeadm.k8s.io/v1beta3
 kubernetesVersion: v1.30.3
@@ -218,7 +230,7 @@ I will be using [`containerd!`](https://github.com/containerd/containerd/blob/ma
 # 1. Enable IPv4 packet forwarding
 #   By default, the Linux kernel does not allow IPv4 packets to be routed between interfaces.
 #   sysctl params required by setup, params persist across reboots
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+cat << EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.ipv4.ip_forward = 1
 EOF
 
@@ -622,7 +634,6 @@ metadata:
 
 ### Nginx Ingress Controller
 
-
 - install `helm`
 
 ```sh
@@ -632,7 +643,9 @@ $ ./get_helm.sh
 ```
 
 - install `nginx ingress controller`
+    - [quick start](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
     - [Guide](#https://medium.com/@tonylixu/devops-in-k8s-nginx-ingress-controller-0a09f48458e2)
+
 
 ```sh
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -647,6 +660,90 @@ helm install ingress-nginx ingress-nginx/ingress-nginx \
 kubectl get pods --namespace ingress-nginx
 kubectl get service ingress-nginx-controller --namespace=ingress-nginx
 ```
+
+### Metallb
+
+<img src="https://kubernetes.github.io/ingress-nginx/images/baremetal/baremetal_overview.jpg" alt="A pure software solution: MetalLB" width="400">
+
+- [A pure software solution for Nginx ingress controller: MetalLB](https://kubernetes.github.io/ingress-nginx/deploy/baremetal/)
+- [installation](https://metallb.universe.tf/installation/)
+
+- Preparation
+    - If you’re using kube-proxy in IPVS mode, since Kubernetes v1.14.2 you have to enable strict ARP mode.
+
+```sh
+# kubectl edit configmap -n kube-system kube-proxy
+# OR
+# see what changes would be made, returns nonzero returncode if different
+kubectl get configmap kube-proxy -n kube-system -o yaml | \
+    sed -e "s/strictARP: false/strictARP: true/" | \
+    kubectl diff -f - -n kube-system
+
+# actually apply the changes, returns nonzero returncode on errors only
+kubectl get configmap kube-proxy -n kube-system -o yaml | \
+    sed -e "s/strictARP: false/strictARP: true/" | \
+    kubectl apply -f - -n kube-system
+```
+
+- Installation with Helm
+
+```sh
+helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb
+# A values file may be specified on installation. This is recommended for providing configs in Helm values:
+# helm install metallb metallb/metallb -f values.yaml
+
+```
+
+- Configuration
+    - https://metallb.universe.tf/configuration/
+
+```sh
+k get no
+    NAME      STATUS   ROLES           AGE     VERSION
+    master    Ready    control-plane   2d17h   v1.30.3
+    worker1   Ready    <none>          2d17h   v1.30.3
+    worker2   Ready    <none>          2d17h   v1.30.3
+
+k get svc -ningress-nginx
+    NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+    ingress-nginx-controller             LoadBalancer   10.106.139.9    <pending>     80:30777/TCP,443:30936/TCP   4h23m
+    ingress-nginx-controller-admission   ClusterIP      10.110.127.70   <none>        443/TCP                      4h23m
+
+k get ingress
+    NAME               CLASS   HOSTS       ADDRESS   PORTS   AGE
+    fe-nginx-ingress   nginx   localhost             80      81m
+
+
+
+# apply metallb.yaml
+cat << EOF > metallb.yaml
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.0.10-192.168.0.20
+  autoAssign: true
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: default
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - default
+EOF
+
+
+k apply -f metallb.yaml
+```
+
+
 
 ## Docker Registry
 
@@ -738,7 +835,7 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 - argocd CLI
 
 ```sh
-cat <<EOF > install-argocd-cli.sh
+cat << EOF > install-argocd-cli.sh
 VERSION=$(curl -L -s https://raw.githubusercontent.com/argoproj/argo-cd/stable/VERSION)
 curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/v$VERSION/argocd-linux-amd64
 sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
