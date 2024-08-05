@@ -9,7 +9,10 @@ authors:
 
 Raspberry-pi 5 cluster for a Kubernetes cluster
 
-<img src="https://imgur.com/Av7PzuR.png" alt="pi-cluster" width="500">
+<img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="40">
+<img src="https://kubernetes.io/images/kubeadm-stacked-color.png" alt="kubeadm" width="50">
+<img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/containerd/horizontal/color/containerd-horizontal-color.png" alt="containerd" width="70">
+<img src="https://imgur.com/Av7PzuR.png" alt="pi-cluster" width="180">
 
 <!-- more -->
 
@@ -25,10 +28,15 @@ Raspberry-pi 5 cluster for a Kubernetes cluster
 
 
 ## Raspberry Pi
-- m.2 NVME SSD (2242) + m.2 Hat
-- Cooling Fan
-- Ethernet Cable (internet connection)
-- Usb-C Power Cable (5A x 5V = 25W ideally)
+
+- Raspberry pi 5 (3EA = 1 master, 2 workers)
+    - 8GB Memory, 4-core CPU
+- Raspberry Pi M.2 HAT+  (3EA = 1 master, 2 workers)
+- Raspberry Pi Active Cooler
+- SSD: SK Hynix BC901 256GB
+- TP LINK Switch Hub TL-SG105
+- Ethernet cable
+- Usb-C cable (power adapter ideally >= 25W = 5A x 5V)
 
 In order to configure the pi to boot from NVME SSD, I referred to [LINK](https://www.jeffgeerling.com/blog/2023/nvme-ssd-boot-raspberry-pi-5).
 
@@ -623,7 +631,7 @@ $ ./get_helm.sh
 ```
 
 - install `nginx ingress controller`
-  - [Guide](#https://medium.com/@tonylixu/devops-in-k8s-nginx-ingress-controller-0a09f48458e2)
+    - [Guide](#https://medium.com/@tonylixu/devops-in-k8s-nginx-ingress-controller-0a09f48458e2)
 
 ```sh
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
