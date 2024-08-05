@@ -393,6 +393,94 @@ sudo hostnamectl set-hostname worker2
 [↑ Back to top](#)
 <br><br>
 
+### Password policy
+
+- [Set Password Rules](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=pam&f=1)
+
+```sh
+# [1] Install password quality checking library.
+sudo apt -y install libpam-pwquality
+
+# [2] Set password policy
+
+sudo vim /etc/login.defs
+
+# line 165 : set password Expiration days (example below means 60 days)
+PASS_MAX_DAYS 60
+
+# line 166 : minimum number of days available (example below means 1 day)
+PASS_MIN_DAYS 1
+
+# line 167 : set number of days for warnings (example below means 7 day)
+PASS_WARN_AGE 7
+
+
+# [3] Limit using a password that was used in past.
+sudo vim /etc/pam.d/common-password
+# line 26 : add
+# here are the per-package modules (the "Primary" block)
+password        requisite                       pam_pwquality.so retry=3 minlen=6 dictcheck=0
+password        requisite                       pam_pwhistory.so
+password        [success=1 default=ignore]      pam_unix.so obscure use_authtok
+try_first_pass yescrypt
+
+sudo vim /etc/security/pwhistory.conf
+# add [remember=*] to last line (example below means 8 gen)
+remember = 8
+
+
+# [4] Password quality
+
+sudo vim /etc/security/pwquality.conf
+
+# line 11 : uncomment and set minimum length (example below means 8 char)
+minlen = 6
+
+# Set minimum number of required classes of characters for the new password.
+# (kinds ⇒ UpperCase / LowerCase / Digits / Others)
+minclass = 2
+
+# Set maximum number of allowed consecutive same characters in the new password.
+maxrepeat = 2
+
+# Set maximum number of allowed consecutive characters of the same class in the new password.
+maxclassrepeat = 4
+
+# Require at least one lowercase character in the new password.
+lcredit = -1
+
+# Require at least one uppercase character in the new password.
+ucredit = -1
+
+# Require at least one digit in the new password.
+dcredit = -1
+
+# Require at least one other character in the new password.
+ocredit = -1
+
+# Set maximum length of monotonic character sequences in the new password.  (ex ⇒ '12345', 'fedcb')
+maxsequence = 2
+
+# Set number of characters in the new password that must not be present in the old password.
+difok = 5
+
+# Check whether the words longer than 3 characters from the GECOS field of the user's passwd entry are contained in the new password.
+gecoscheck = 1
+
+# Set space separated list of words that must not be contained in the password.
+# add to last line
+badwords = admin master password pass secret
+
+# Check dictionary words
+dictcheck = 0
+
+passwd user
+adm123
+```
+
+[↑ Back to top](#)
+<br><br>
+
 ## Reference
 
 - [server world](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=download)

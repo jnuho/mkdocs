@@ -63,6 +63,9 @@ PCIE_PROBE=1
 # Press Ctrl-X to exit nano (the editor).
 ```
 
+### Network settings
+
+Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/)
 
 
 [↑ Back to top](#)
@@ -281,32 +284,36 @@ sudo systemctl restart containerd
   - containerd is installed, enabled, and running
   - cni plugins is installed (previously `cni-plugins-linux-arm64-v1.5.1.tgz`)
   - Configure [rootlesskit](https://rootlesscontaine.rs/getting-started/containerd/)
+  - [Install Guide](https://www.techrepublic.com/article/deploy-container-nerdctl/)
 
 ```sh
-# RootlessKit
-mkdir -p ~/bin
-curl -sSL https://github.com/rootless-containers/rootlesskit/releases/download//rootlesskit-$(uname -m).tar.gz | tar Cxzv ~/bin
+# uidmap
+sudo apt-get install uidmap -y
 
+# RootlessKit
+sudo apt-get install rootlesskit -y
 
 wget https://github.com/containerd/nerdctl/releases/download/v2.0.0-rc.0/nerdctl-2.0.0-rc.0-linux-arm64.tar.gz
 sudo tar Cxzvvf /usr/local/bin nerdctl-2.0.0-rc.0-linux-arm64.tar.gz
 
-mkdir -p ~/.local/bin && cd ~/.local/bin
-ln -s /usr/local/bin/containerd-rootless.sh  containerd-rootless.sh
-ln -s /usr/local/bin/containerd-rootless-setuptool.sh containerd-rootless-setuptool.sh
-ln -s /usr/local/bin/nerdctl nerdctl
-
-
 which nerdctl
   /usr/local/bin/nerdctl
 
+#sudo sh -c "echo 1 > /proc/sys/kernel/unprivileged_userns_clone"
 sudo vim /etc/sysctl.d/99-rootless.conf
 kernel.unprivileged_userns_clone=1
 
-sudo apt install genometools
-
-sudo sh -c "echo 1 &gt; /proc/sys/kernel/unprivileged_userns_clone"
+# apply in 99-rootless.conf to system
 sudo sysctl --system
+# check if it is applied to system
+sudo sysctl kernel.unprivileged_userns_clone
+
+# DO NOT RUN AS `root` !!!
+containerd-rootless-setuptool.sh install
+
+# Now, you can run without root privilege!
+nerdctl version
+nerdctl
 ```
 
 
@@ -604,6 +611,33 @@ metadata:
 <br><br>
 
 
+### Nginx Ingress Controller
+
+
+- install `helm`
+
+```sh
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+$ chmod 700 get_helm.sh
+$ ./get_helm.sh
+```
+
+- install `nginx ingress controller`
+  - [Guide](#https://medium.com/@tonylixu/devops-in-k8s-nginx-ingress-controller-0a09f48458e2)
+
+```sh
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+kubectl create namespace ingress-nginx
+
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx \
+  --set controller.replicaCount=2
+
+kubectl get pods --namespace ingress-nginx
+kubectl get service ingress-nginx-controller --namespace=ingress-nginx
+```
 
 ## Docker Registry
 
@@ -664,8 +698,7 @@ sudo systemctl restart containerd
 ### Dockerhub
 
 - Authenticate to dockerhub to increase image pull rate limit.
-- https://www.docker.com/increase-rate-limits/
-
+- [increase-rate-limits](https://www.docker.com/increase-rate-limits/)
 
 ```sh
 sudo vim /etc/containerd/config.toml
