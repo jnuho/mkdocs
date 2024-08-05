@@ -24,6 +24,7 @@ Raspberry-pi 5 cluster for a Kubernetes cluster
 - [Ansible](#ansible)
 - [Kubernetes](#kubernetes)
 - [Docker Registry](#docker-registry)
+- [Argo CD](#argo-cd)
 - [Reference](#reference)
 
 
@@ -722,6 +723,45 @@ sudo vim /etc/containerd/config.toml
 sudo systemctl restart containerd
 ```
 
+[↑ Back to top](#)
+<br><br>
+
+## Argo CD
+
+- install argocd
+
+```sh
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+- argocd CLI
+
+```sh
+cat <<EOF > install-argocd-cli.sh
+VERSION=$(curl -L -s https://raw.githubusercontent.com/argoproj/argo-cd/stable/VERSION)
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/v$VERSION/argocd-linux-amd64
+sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm argocd-linux-amd64
+EOF
+
+chmod +x install-argocd-cli.sh
+./install-argocd-cli.sh
+
+# NOTE: INITIAL PASSWORD!
+argocd admin initial-password -n argocd
+
+argocd account update-password --server "https://localhost:8080"
+```
+
+- ingress to EXPOSE argocd 
+
+https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/
+
+```sh
+# test with port-forward just for testing..
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
 
 [↑ Back to top](#)
 <br><br>
