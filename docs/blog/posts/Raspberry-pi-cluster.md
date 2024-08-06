@@ -33,10 +33,10 @@ I try to configure the Control plane myself. Kubernetes is a complex distributed
     - [Creating a cluster with kubeadm](#creating-a-cluster-with-kubeadm)
     - [Troubleshooting kubeadm](#troubleshooting-kubeadm)
     - [CNI: Calico](#cni-calico)
-    - [Controlling your cluster from machines other than the control-plane node](#controlling-your-cluster-from-machines-other-than-the-control-plane-node)
-    - [Metrics server](#metrics-server)
-    - [Nginx Ingress Controller](#nginx-ingress-controller)
-    - [Metallb](#metallb)
+    - [Control your cluster from other machines](#controlling-your-cluster-from-other-machines)
+- [Metrics server](#metrics-server)
+- [Nginx Ingress Controller](#nginx-ingress-controller)
+- [Metallb](#metallb)
 - [Docker Registry](#docker-registry)
 - [Argo CD](#argo-cd)
 - [Reference](#reference)
@@ -564,7 +564,7 @@ kubectl get ippools.crd.projectcalico.org -o yaml
 <br><br>
 
 
-### Controlling your cluster from machines other than the control-plane node
+### Control your cluster from other machines
 
 ```sh
 scp root@<control-plane-host>:/etc/kubernetes/admin.conf .
@@ -585,10 +585,10 @@ kubectl config use-context pi
 
 
 kubectl get no
-  NAME      STATUS     ROLES           AGE     VERSION
-  master    NotReady   control-plane   5h17m   v1.30.3
-  worker1   NotReady   <none>          5h12m   v1.30.3
-  worker2   NotReady   <none>          5h12m   v1.30.3
+    NAME      STATUS   ROLES           AGE   VERSION
+    master    Ready    control-plane   36m   v1.30.3
+    worker1   Ready    worker          33m   v1.30.3
+    worker2   Ready    worker          33m   v1.30.3
 
 kubectl top no
     NAME      CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
@@ -619,7 +619,7 @@ kubectl top pod -nkube-system
 <br><br>
 
 
-### Metrics server
+## Metrics server
 
 ```sh
 curl -L https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml -o metrics-server.yaml
@@ -641,7 +641,7 @@ k get pod -nkube-system
 [↑ Back to top](#)
 <br><br>
 
-### Nginx Ingress Controller
+## Nginx Ingress Controller
 
 - Install `helm`
 
@@ -670,7 +670,7 @@ kubectl get svc -ningress-nginx
 ```
 
 
-### Metallb
+## Metallb
 
 <img src="https://kubernetes.github.io/ingress-nginx/images/baremetal/baremetal_overview.jpg" alt="A pure software solution: MetalLB" width="400">
 
@@ -694,45 +694,57 @@ kubectl get configmap kube-proxy -n kube-system -o yaml | \
     kubectl apply -f - -n kube-system
 ```
 
-- Installation with Helm
+- Installation by manifest
 
 ```sh
-helm repo add metallb https://metallb.github.io/metallb
-helm install metallb metallb/metallb -n metallb-system
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.8/config/manifests/metallb-native.yaml
+
+kubectl get pod -nmetallb-system
+    NAME                          READY   STATUS    RESTARTS   AGE
+    controller-6dd967fdc7-xwmnn   1/1     Running   0          40s
+    speaker-876fv                 1/1     Running   0          40s
+    speaker-s6xzp                 1/1     Running   0          40s
+    speaker-wwtrm                 1/1     Running   0          40s
+
 ```
+
 
 - Configuration
     - https://metallb.universe.tf/configuration/
 
 ```sh
 k get no
-    NAME      STATUS   ROLES           AGE     VERSION
-    master    Ready    control-plane   2d17h   v1.30.3
-    worker1   Ready    <none>          2d17h   v1.30.3
-    worker2   Ready    <none>          2d17h   v1.30.3
+
+NAME      STATUS   ROLES           AGE   VERSION
+master    Ready    control-plane   41m   v1.30.3
+worker1   Ready    worker          38m   v1.30.3
+worker2   Ready    worker          38m   v1.30.3
 
 k get svc -ningress-nginx
-    NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-    ingress-nginx-controller             LoadBalancer   10.106.139.9    <pending>     80:30777/TCP,443:30936/TCP   4h23m
-    ingress-nginx-controller-admission   ClusterIP      10.110.127.70   <none>        443/TCP                      4h23m
+    NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+    ingress-nginx-controller             LoadBalancer   10.102.120.211   <pending>     80:31362/TCP,443:32684/TCP   26m
+    ingress-nginx-controller-admission   ClusterIP      10.99.130.218    <none>        443/TCP                      26m
 
 k get ingress
     NAME               CLASS   HOSTS       ADDRESS   PORTS   AGE
     fe-nginx-ingress   nginx   localhost             80      81m
 
 
+# NOTE: Setting no IPAddressPool selector in an L2Advertisement instance is interpreted
+#       as that instance being associated to all the IPAddressPools available.
 
-# apply metallb.yaml
+# DO NOT MAKE IP RANGE TO OVERLAP with POD_CIDR, AND NODE_IPS (master and worker nodes)
+
 cat << EOF > metallb.yaml
 ---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: default
+  name: first-pool
   namespace: metallb-system
 spec:
   addresses:
-  - 192.168.0.10-192.168.0.20
+  - 172.16.0.100-172.16.0.110
   autoAssign: true
 ---
 apiVersion: metallb.io/v1beta1
@@ -742,9 +754,8 @@ metadata:
   namespace: metallb-system
 spec:
   ipAddressPools:
-  - default
+  - first-pool
 EOF
-
 
 k apply -f metallb.yaml
 ```
