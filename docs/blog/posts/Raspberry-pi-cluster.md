@@ -733,7 +733,7 @@ k get ingress
 # NOTE: Setting no IPAddressPool selector in an L2Advertisement instance is interpreted
 #       as that instance being associated to all the IPAddressPools available.
 
-# DO NOT MAKE IP RANGE TO OVERLAP with POD_CIDR, AND NODE_IPS (master and worker nodes)
+# DO NOT OVERLAP with POD_CIDR (10.100.0.0/16), and NODE_IPs (192.168.0.10 ~ 12) (master and worker nodes)
 
 cat << EOF > metallb.yaml
 ---
@@ -744,7 +744,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - 172.16.0.100-172.16.0.110
+  - 192.168.0.10-192.168.0.20
   autoAssign: true
 ---
 apiVersion: metallb.io/v1beta1
@@ -757,7 +757,12 @@ spec:
   - first-pool
 EOF
 
-k apply -f metallb.yaml
+kubectl apply -f metallb.yaml
+
+kubectl get svc -ningress-nginx
+    NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
+    ingress-nginx-controller             LoadBalancer   10.102.120.211   192.168.0.100   80:31362/TCP,443:32684/TCP   164m
+    ingress-nginx-controller-admission   ClusterIP      10.99.130.218    <none>          443/TCP                      164m
 ```
 
 
