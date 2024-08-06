@@ -126,9 +126,9 @@ HPA control loop checks `CPU` and `Memory` usage via api-server's metric api  an
 
 - Pre-requisite to implement HPA:
     - Install `metric-server` on the worker nodes (kube-system namespace) with helm!
-        - → scrapes metrics from kublet
-        - → publish to `metrics.k8s.io/v1beta` Kuberentes API
-        - → consumed by HPA!
+        - →  scrapes metrics from kublet
+        - →  publish to `metrics.k8s.io/v1beta` Kuberentes API
+        - →  consumed by HPA!
     - deployment.yaml: `spec.template.spec.containers[i].resources` must be specified.
     - deployment.yaml: `spec.replicas` is to be omitted.
 
@@ -556,7 +556,7 @@ git push origin main --tags
 ### Helm Chart
 
 
-- [helm chart scripts in repository](https://github.com/jnuho/CatVsNonCat/tree/main/script/tst-chart)
+- [helm chart scripts in repository](https://github.com/jnuho/CatVsNonCat/tree/main/script/cat-chart)
 
 - Configure `kubectl`
     - Check context : `kubectl config current-context`
@@ -582,7 +582,7 @@ chmod 700 get_helm.sh
 
 ```sh
 # Create helm chart
-helm create tst-chart
+helm create cat-chart
 ```
 
 
@@ -591,7 +591,7 @@ helm create tst-chart
 ```sh
 cd CatVsNonCat/script
 tree
-    tst-chart
+    cat-chart
        ├── Chart.yaml
        ├── charts
        ├── templates
@@ -605,17 +605,18 @@ tree
        ├── values.prd.AWS.L7.lbc.yaml
        └── values.prd.AWS.L4.ingress.controller.yaml
 
-helm lint tst-chart
-helm template tst-chart --debug
+helm lint cat-chart
+helm template cat-chart --debug
 # check results without installation
-# helm install --dry-run tst-chart --generate-name
-helm install --dry-run tst-release ./tst-chart -f ./tst-chart/values.prd.AWS.L4.ingress.controller.yaml
+# helm install --dry-run cat-chart --generate-name
+helm install --dry-run cat-release ./cat-chart -f ./cat-chart/values.pi.yaml
+helm install --dry-run cat-release ./cat-chart -f ./cat-chart/values.prd.AWS.L4.ingress.controller.yaml
 ```
 
 - Install
 
 ```sh
-helm install tst-release ./tst-chart -f ./tst-chart/values.prd.AWS.L4.ingress.controller.yaml
+helm install cat-release ./cat-chart -f ./cat-chart/values.prd.AWS.L4.ingress.controller.yaml
 ```
 
 - Upgrade
@@ -635,11 +636,11 @@ services:
 ```sh
 helm list
     NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART              APP VERSION
-    tst-release     default         1               2024-07-09 14:25:50.410043621 +0900 KST deployed        tst-chart-0.1.0    1.16.0
+    cat-release     default         1               2024-07-09 14:25:50.410043621 +0900 KST deployed        cat-chart-0.1.0    1.16.0
 
-helm upgrade tst-release ./tst-chart -f ./tst-chart/values.prd.AWS.L4.ingress.controller.yaml
-    Release "tst-release" has been upgraded. Happy Helming!
-    NAME: tst-release
+helm upgrade cat-release ./cat-chart -f ./cat-chart/values.prd.AWS.L4.ingress.controller.yaml
+    Release "cat-release" has been upgraded. Happy Helming!
+    NAME: cat-release
     LAST DEPLOYED: Tue Jul  9 14:35:35 2024
     NAMESPACE: default
     STATUS: deployed
@@ -648,20 +649,20 @@ helm upgrade tst-release ./tst-chart -f ./tst-chart/values.prd.AWS.L4.ingress.co
 
 helm list
     NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART              APP VERSION
-    tst-release     default         2               2024-07-09 14:35:35.404055879 +0900 KST deployed        tst-chart-0.1.0    1.16.0
+    cat-release     default         2               2024-07-09 14:35:35.404055879 +0900 KST deployed        cat-chart-0.1.0    1.16.0
 ```
 
 - Rollback
 
 ```sh
-helm rollback tst-release VERSION_NO
+helm rollback cat-release VERSION_NO
 ```
 
 - Uninstall (Helm v3)
     - `helm delete --purge` in Helm V2
 
 ```sh
-helm uninstall tst-release
+helm uninstall cat-release
 ```
 
 - Helm Repository

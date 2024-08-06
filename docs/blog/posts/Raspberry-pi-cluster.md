@@ -7,7 +7,9 @@ authors:
   - junho
 ---
 
-Raspberry-pi 5 cluster for a Kubernetes cluster
+Kubernetes the Hard way: Raspberry-pi 5 cluster.
+
+I try to configure the Control plane myself. Kubernetes is a complex distributed system. By setting it up by hand, I hope to learn more about Kubernetes components.
 
 <img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="40">
 <img src="https://kubernetes.io/images/kubeadm-stacked-color.png" alt="kubeadm" width="50">
@@ -16,23 +18,23 @@ Raspberry-pi 5 cluster for a Kubernetes cluster
 
 <!-- more -->
 
-# Raspberry pi 5 cluster
+# Table of Contents
 
-- [Raspberry Pi](#raspberry-pi)
+- [Raspberry Pi Setup](#raspberry-pi-setup)
     - [Enable the external PCI Express port](#enable-the-external-pci-express-port)
     - [Set NVMe early in the boot order](#set-nvme-early-in-the-boot-order)
     - [Network settings](#network-settings)
-- [Ansible](#ansible)
 - [Kubernetes](#kubernetes)
     - [Prerequisite](#prerequisite)
     - [Container runtime](#container-runtime)
-    - [nerdctl](#nerdctl)
+        - [CRI-O](#cri-o)
+        - [containerd](#containerd)
     - [Installing kubeadm, kubelet and kubectl](#installing-kubeadm-kubelet-and-kubectl)
     - [Creating a cluster with kubeadm](#creating-a-cluster-with-kubeadm)
-    - [Controlling your cluster from machines other than the control-plane node](#controlling-your-cluster-from-machines-other-than-the-control-plane-node)
     - [Troubleshooting kubeadm](#troubleshooting-kubeadm)
-    - [CNI](#cni)
-    - [Calico](#calico)
+    - [CNI: Calico](#cni-calico)
+    - [Controlling your cluster from machines other than the control-plane node](#controlling-your-cluster-from-machines-other-than-the-control-plane-node)
+    - [Metrics server](#metrics-server)
     - [Nginx Ingress Controller](#nginx-ingress-controller)
     - [Metallb](#metallb)
 - [Docker Registry](#docker-registry)
@@ -40,20 +42,22 @@ Raspberry-pi 5 cluster for a Kubernetes cluster
 - [Reference](#reference)
 
 
-## Raspberry Pi
+## Raspberry Pi Setup
 
-- Raspberry pi 5 (3EA = 1 master, 2 workers)
-    - 8GB Memory, 4-core CPU
-- Raspberry Pi M.2 HAT+  (3EA = 1 master, 2 workers)
-- Raspberry Pi Active Cooler
-- SSD: SK Hynix BC901 256GB
-- TP LINK Switch Hub TL-SG105
-- Ethernet cable
-- Usb-C cable (power adapter ideally >= 25W = 5A x 5V)
+- Hardware
+    - 3 x Raspberry pi 5 (1 Master node, 2 Worker nodes;)
+        - 8GB Memory, 4-core CPU
+    - 3 x Raspberry Pi M.2 HAT+  (1 master, 2 workers)
+    - 3 x Raspberry Pi Active Cooler
+    - 3 x SSD: SK Hynix BC901 256GB
+    - 3 x Ethernet cable
+    - 3 x Usb-C cable (power adapter ideally >= 25W = 5A x 5V)
+    - 1 x TP LINK Switch Hub TL-SG105
 
-In order to configure the pi to boot from NVME SSD, I referred to [LINK](https://www.jeffgeerling.com/blog/2023/nvme-ssd-boot-raspberry-pi-5).
+Now, configure NVMD SSD Boot! [LINK](https://www.jeffgeerling.com/blog/2023/nvme-ssd-boot-raspberry-pi-5).
 
 ### Enable the external PCI Express port
+
 
 ```sh
 sudo vim /boot/firmware/config.txt
@@ -93,71 +97,6 @@ Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/)
 <br><br>
 
 
-## Ansible
-
-We can automate some aspects of the Cloud Native application lifecycle using Ansible.
-
-```sh
-# install python
-sudo apt install python3 python3-venv python3-pip -y
-python3 -V
-
-echo -e "import sys\nprint(sys.version)" > python3_test.py
-python3 python3_test.py
-  3.12.3 (main, Apr 10 2024, 05:33:47) [GCC 13.2.0]
-rm python3_test.py
-
-
-cd ~
-python3 -m venv .venv
-source .venv/bin/activate
-
-pip install ansible
-ansible --version
-pip install --upgrade ansible
-```
-
-- inventory
-
-```
-# Before writing the playbook, create a file named inventory to tell Ansible how to connect to localhost:
-[localhost]
-127.0.0.1   ansible_connection=local
-```
-
-- playbook
-
-```yml
-# main.yml
----
-- hosts: localhost
-```
-
-Now Run the ansible playbook!
-
-```sh
-ansible-playbook -i inventory main.yml
-```
-
-The best Ansible playbooks are idempotent, meaning you can run them more than one time,
-and assuming the system hasn’t been changed outside of Ansible,
-you’ll see no changes reported after the first time the playbook is run.
-This is helpful for ensuring a consistent state across your application deployments,
-and to verify there are no changes (intended or not) happening outside of your automation.
-
-
-- install go
-
-```
-wget https://go.dev/dl/go1.22.5.linux-arm64.tar.gz
-sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.5.linux-arm64.tar.gz
-echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.zshrc
-source ~/.zshrc
-```
-
-[↑ Back to top](#)
-<br><br>
-
 ## Kubernetes
 
 We will configure Kubernetes v1.30.
@@ -177,7 +116,8 @@ We will configure Kubernetes v1.30.
 # disable swapping temporarily.
 sudo swapoff -a
 # To make this change persistent across reboots, make sure swap is disabled in config files. Comment out swap
-vim /etc/fstab
+# vim /etc/fstab
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 ```
 
 - Required ports
@@ -218,7 +158,21 @@ EOF
 
 Kubernetes 1.30 requires that you use a runtime that conforms with the Container Runtime Interface (CRI); containerd, CRI-O, Docker Engine. You need to install a container runtime into each node in the cluster so that Pods can run there. (kubelet deprecated Docker support since Kubernetes>=1.24)
 
-I will be using [`containerd!`](https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
+#### CRI-O
+
+- [instruction](https://github.com/cri-o/packaging/blob/main/README.md#usage)
+
+```sh
+```
+
+
+[↑ Back to top](#)
+<br><br>
+
+
+#### containerd
+
+- Getting started with [containerd](https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
 
 - Install and configure prerequisites
   - 1. Enable IPv4 packet forwarding
@@ -264,7 +218,6 @@ sudo systemctl status containerd
 wget https://github.com/opencontainers/runc/releases/download/v1.1.13/runc.arm64
 sudo install -m 755 runc.arm64 /usr/local/sbin/runc
 
-
 # Step 3-3: Installing CNI plugins
 wget https://github.com/containernetworking/plugins/releases/download/v1.5.1/cni-plugins-linux-arm64-v1.5.1.tgz
 sudo mkdir -p /opt/cni/bin
@@ -273,9 +226,8 @@ sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-arm64-v1.5.1.tgz
 # 4. You can find this file under the path /etc/containerd/config.toml.
 # generate default config
 sudo mkdir -p /etc/containerd
-sudo su -
-containerd config default > /etc/containerd/config.toml
-cat /etc/containerd/config.toml
+sudo containerd config default > /etc/containerd/config.toml
+sudo cat /etc/containerd/config.toml
 
 # 5. Configuring the systemd cgroup driver
 #   To use the systemd cgroup driver in /etc/containerd/config.toml with runc, set
@@ -293,6 +245,7 @@ sudo vim /etc/containerd/config.toml
 
 
 sudo systemctl restart containerd
+sudo systemctl status containerd
 ```
 
 ### nerdctl
@@ -356,7 +309,6 @@ sudo apt-get update
 # apt-transport-https may be a dummy package; if so, you can skip that package
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 
-
 # 2. Download the public signing key for the Kubernetes package repositories. The same signing key is used for all repositories so you can disregard the version in the URL:
 # If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
 # sudo mkdir -p -m 755 /etc/apt/keyrings
@@ -370,6 +322,16 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
+
+# kublet : set node ip
+sudo su -
+local_ip="$(ip --json addr show eth0 | jq -r '.[0].addr_info[] | select(.family == "inet") | .local')"
+echo $local_ip
+cat > /etc/default/kubelet << EOF
+KUBELET_EXTRA_ARGS=--node-ip=$local_ip
+EOF
+cat /etc/default/kubelet
+exit
 
 # 5. (Optional) Enable the kubelet service before running kubeadm:
 sudo systemctl enable --now kubelet
@@ -389,67 +351,27 @@ sudo systemctl enable --now kubelet
 
 # on master node
 # sudo kubeadm init --config kubeadm-config.yaml
-sudo kubeadm init --pod-network-cidr=10.100.0.0/16 -v=5
 
-# [init] Using Kubernetes version: v1.30.3
-# [preflight] Running pre-flight checks
-# [preflight] Pulling images required for setting up a Kubernetes cluster
-# [preflight] This might take a minute or two, depending on the speed of your internet connection
-# [preflight] You can also perform this action in beforehand using 'kubeadm config images pull'
-# W0802 17:25:33.748578    2514 checks.go:844] detected that the sandbox image "registry.k8s.io/pause:3.8" of the container runtime is inconsistent with that used by kubeadm.It is recommended to use "registry.k8s.io/pause:3.9" as the CRI sandbox image.
+POD_CIDR="10.100.0.0/16"
+NODENAME=$(hostname -s)
+MASTER_PRIVATE_IP=$(ip addr show eth0 | awk '/inet / {print $2}' | cut -d/ -f1)
 
-# [certs] Using certificateDir folder "/etc/kubernetes/pki"
-# [certs] Generating "ca" certificate and key
-# [certs] Generating "apiserver" certificate and key
-# [certs] apiserver serving cert is signed for DNS names [kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local master] and IPs [10.96.0.1 192.168.0.10]
-# [certs] Generating "apiserver-kubelet-client" certificate and key
-# [certs] Generating "front-proxy-ca" certificate and key
-# [certs] Generating "front-proxy-client" certificate and key
-# [certs] Generating "etcd/ca" certificate and key
-# [certs] Generating "etcd/server" certificate and key
-# [certs] etcd/server serving cert is signed for DNS names [localhost master] and IPs [192.168.0.10 127.0.0.1 ::1]
-# [certs] Generating "etcd/peer" certificate and key
-# [certs] etcd/peer serving cert is signed for DNS names [localhost master] and IPs [192.168.0.10 127.0.0.1 ::1]
-# [certs] Generating "etcd/healthcheck-client" certificate and key
-# [certs] Generating "apiserver-etcd-client" certificate and key
-# [certs] Generating "sa" key and public key
-# [kubeconfig] Using kubeconfig folder "/etc/kubernetes"
-# [kubeconfig] Writing "admin.conf" kubeconfig file
-# [kubeconfig] Writing "super-admin.conf" kubeconfig file
-# [kubeconfig] Writing "kubelet.conf" kubeconfig file
-# [kubeconfig] Writing "controller-manager.conf" kubeconfig file
-# [kubeconfig] Writing "scheduler.conf" kubeconfig file
-# [etcd] Creating static Pod manifest for local etcd in "/etc/kubernetes/manifests"
-# [control-plane] Using manifest folder "/etc/kubernetes/manifests"
-# [control-plane] Creating static Pod manifest for "kube-apiserver"
-# [control-plane] Creating static Pod manifest for "kube-controller-manager"
-# [control-plane] Creating static Pod manifest for "kube-scheduler"
-# [kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
-# [kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
-# [kubelet-start] Starting the kubelet
-# [wait-control-plane] Waiting for the kubelet to boot up the control plane as static Pods from directory "/etc/kubernetes/manifests"
-# [kubelet-check] Waiting for a healthy kubelet. This can take up to 4m0s
-# [kubelet-check] The kubelet is healthy after 1.501769125s
-# [api-check] Waiting for a healthy API server. This can take up to 4m0s
-# [api-check] The API server is healthy after 7.002740784s
-# [upload-config] Storing the configuration used in ConfigMap "kubeadm-config" in the "kube-system" Namespace
-# [kubelet] Creating a ConfigMap "kubelet-config" in namespace kube-system with the configuration for the kubelets in the cluster
-# [upload-certs] Skipping phase. Please see --upload-certs
-# [mark-control-plane] Marking the node master as control-plane by adding the labels: [node-role.kubernetes.io/control-plane node.kubernetes.io/exclude-from-external-load-balancers]
-# [mark-control-plane] Marking the node master as control-plane by adding the taints [node-role.kubernetes.io/control-plane:NoSchedule]
-# [bootstrap-token] Using token: cc66r1.w7i0ydntja56y49x
-# [bootstrap-token] Configuring bootstrap tokens, cluster-info ConfigMap, RBAC Roles
-# [bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to get nodes
-# [bootstrap-token] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials
-# [bootstrap-token] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token
-# [bootstrap-token] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster
-# [bootstrap-token] Creating the "cluster-info" ConfigMap in the "kube-public" namespace
-# [kubelet-finalize] Updating "/etc/kubernetes/kubelet.conf" to point to a rotatable kubelet client certificate and key
+echo ""
+echo "POD_CIDR = $POD_CIDR"
+echo "NODENAME = $NODENAME"
+echo "MASTER_PRIVATE_IP = $MASTER_PRIVATE_IP"
+
+sudo kubeadm init \
+    --apiserver-advertise-address="$MASTER_PRIVATE_IP" \
+    --apiserver-cert-extra-sans="$MASTER_PRIVATE_IP" \
+    --pod-network-cidr="$POD_CIDR" \
+    --node-name "$NODENAME" \
+    --ignore-preflight-errors Swap \
+    -v=5
+
 # [addons] Applied essential addon: CoreDNS
 # [addons] Applied essential addon: kube-proxy
-
 # Your Kubernetes control-plane has initialized successfully!
-
 # To start using your cluster, you need to run the following as a regular user:
 
 mkdir -p $HOME/.kube
@@ -457,51 +379,40 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # Alternatively, if you are the root user, you can run:
-
 #   export KUBECONFIG=/etc/kubernetes/admin.conf
-
 # You should now deploy a pod network to the cluster.
 # Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
 #   https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
 # Then you can join any number of worker nodes by running the following on each as root:
-sudo kubeadm join 192.168.0.10:6443 --token dirh1v.jde74l3q3sy7xwhv \
-        --discovery-token-ca-cert-hash sha256:718b98c04f0c5adff8b6af285bf11b6b5bc965141e54f383172d433f799edcd5
+
+sudo kubeadm join 192.168.0.10:6443 --token thlb00.g7ge841m77zgkux3 \
+        --discovery-token-ca-cert-hash sha256:7f789053ab02c6f81be6a7fcdc2ba94a307f1e168a08561b5ae6c7ad60a91772
 ```
 
-### Controlling your cluster from machines other than the control-plane node
+- Worker nodes
 
 ```sh
-scp root@<control-plane-host>:/etc/kubernetes/admin.conf .
-scp mobb@192.168.0.10:/home/mobb/.kube/config .
+kubectl get no
+    NAME      STATUS   ROLES           AGE     VERSION
+    master    Ready    control-plane   2d17h   v1.30.3
+    worker1   Ready    <none>          2d17h   v1.30.3
+    worker2   Ready    <none>          2d17h   v1.30.3
 
-# `cluster` `context` `user` -> add this to existing `~/.kube/config`
-# change names to 'pi' which can be identified by you...
-kubectl --kubeconfig ./config get nodes
-  clusters:
-  - cluster: ...
-  contexts:
-  - context: ...
-  users:
-  - name: ...
-
-kubectl config get-contexts
-kubectl config use-context pi
-
+kubectl label node worker1 node-role.kubernetes.io/worker=worker
+kubectl label node worker2 node-role.kubernetes.io/worker=worker
 
 kubectl get no
-  NAME      STATUS     ROLES           AGE     VERSION
-  master    NotReady   control-plane   5h17m   v1.30.3
-  worker1   NotReady   <none>          5h12m   v1.30.3
-  worker2   NotReady   <none>          5h12m   v1.30.3
+    NAME      STATUS   ROLES           AGE     VERSION
+    master    Ready    control-plane   2d17h   v1.30.3
+    worker1   Ready    worker          2d17h   v1.30.3
+    worker2   Ready    worker          2d17h   v1.30.3
 ```
 
 
 ### Troubleshooting kubeadm
 
-`coredns` is stuck in the Pending state. This is expected and part of the design. 
-
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/troubleshooting-kubeadm/
+- `coredns` is stuck in the Pending state. This is expected and part of the design. 
+    - [troubleshooting-kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/troubleshooting-kubeadm/)
 
 ```sh
 k get pod -n kube-system
@@ -514,26 +425,66 @@ k describe pod coredns-7db6d8ff4d-sv6bv -n kube-system
 
 ```
 
-### CNI
+- CIDR allocation failed
+
+```sh
+k logs kube-controller-manager-master -nkube-system
+    E0805 23:30:48.648521       1 controller_utils.go:250] Error while processing Node Add
+    : failed to allocate cidr from cluster cidr at idx:0: CIDR allocation failed;
+    there are no remaining CIDRs left to allocate in the accepted range
+
+ps aux | grep cluster-cidr
+    --cluster-cidr=10.100.0.0/16
+
+helm install --dry-run cat-release ./cat-chart -f ./cat-chart/values.pi.yaml
+# change CIDR blocks 
+```
+
+
+- [Force delete](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
+
+```sh
+k delete --grace-period=0 --force -nkube-system pod/coredns-7db6d8ff4d-5dv6d
+```
+
+
+### CNI: Calico
+
+Install Calico CNI (Container Network Interface) plugin to enable Pod networking!
 
 You must deploy a `Container Network Interface` (CNI) based Pod network add-on so that your Pods can communicate with each other. Cluster DNS (CoreDNS) will not start up before a network is installed. Without CNI, the coredns pods are `pending` and `podSubnet` is not specified in the cluster configuration.
 
-: Use `Calico` as a Container Network Interface implementation!
 
-#### Calico
-
+- 1-1. Install with manifest
 
 ```sh
-# Check Pod Sunet is missing
+# Check Pod Subnet is missing
 kubectl get configmap -n kube-system kubeadm-config -o yaml
-  networking:
-        dnsDomain: cluster.local
-        # ---> podSubnet is MISSING............
-        serviceSubnet: 10.96.0.0/12
-      scheduler: {}
+    ...
+    networking:
+      dnsDomain: cluster.local
+      podSubnet: 10.100.0.0/16
+      serviceSubnet: 10.96.0.0/12
+    scheduler: {}
+    ...
 ```
 
-1. Calico Operator - tigera-operator
+```sh
+curl -O https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calico.yaml
+kubectl apply -f calico.yaml
+
+# Verify Calico installation in your cluster.
+kubectl get pods -nkube-system
+
+    NAME                                       READY   STATUS     RESTARTS   AGE
+    calico-kube-controllers-77d59654f4-59qlx   0/1     Pending    0          21s
+    calico-node-mn2kl                          0/1     Init:0/3   0          21s
+    calico-node-sndg4                          0/1     Init:0/3   0          21s
+    calico-node-wmwpm                          0/1     Init:0/3   0          21s
+```
+
+
+- 1-2. Install with Calico Operator - tigera-operator
 
 ```sh
 # Install the operator on your cluster.
@@ -572,7 +523,7 @@ metadata:
 spec: {}
 ```
 
-2. Custom Resource
+- Custom Resource
 
 ```sh
 curl https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/custom-resources.yaml -O
@@ -593,7 +544,6 @@ csi-node-driver-gqps8                      2/2     Running   0          6m43s
 csi-node-driver-lkthq                      2/2     Running   0          6m43s
 ```
 
-
 - To determine the pod network CIDR, you can inspect the configuration of the CNI plugin installed in your cluster.
 - Here’s how you can check for some common CNI plugins:
 
@@ -601,65 +551,124 @@ csi-node-driver-lkthq                      2/2     Running   0          6m43s
 # 1. `calico` CNI plugin
 kubectl get ippools.crd.projectcalico.org -o yaml
 
-apiVersion: v1
-items:
-- apiVersion: crd.projectcalico.org/v1
-  kind: IPPool
-  metadata:
-    annotations:
-      projectcalico.org/metadata: '{"generation":1,"creationTimestamp":"2024-08-02T15:05:43Z","labels":{"app.kubernetes.io/managed-by":"tigera-operator"}}'
-    creationTimestamp: "2024-08-02T15:05:43Z"
-    generation: 1
-    name: default-ipv4-ippool
-    resourceVersion: "2656"
-    uid: f26e7d00-fbac-414b-a275-9b82b8615d9c
-  spec:
-    allowedUses:
-    - Workload
-    - Tunnel
-    blockSize: 26
-    cidr: 10.100.0.0/16
-    ipipMode: Never
-    natOutgoing: true
-    nodeSelector: all()
-    vxlanMode: CrossSubnet
-kind: List
-metadata:
-  resourceVersion: ""
+    apiVersion: v1
+    items:
+    - apiVersion: crd.projectcalico.org/v1
+      kind: IPPool
+      spec:
+        blockSize: 26
+        cidr: 10.100.0.0/16
 ```
 
 [↑ Back to top](#)
 <br><br>
 
 
+### Controlling your cluster from machines other than the control-plane node
+
+```sh
+scp root@<control-plane-host>:/etc/kubernetes/admin.conf .
+scp mobb@192.168.0.10:/home/mobb/.kube/config .
+
+# `cluster` `context` `user` -> add this to existing `~/.kube/config`
+# change names to 'pi' which can be identified by you...
+kubectl --kubeconfig ./config get nodes
+  clusters:
+  - cluster: ...
+  contexts:
+  - context: ...
+  users:
+  - name: ...
+
+kubectl config get-contexts
+kubectl config use-context pi
+
+
+kubectl get no
+  NAME      STATUS     ROLES           AGE     VERSION
+  master    NotReady   control-plane   5h17m   v1.30.3
+  worker1   NotReady   <none>          5h12m   v1.30.3
+  worker2   NotReady   <none>          5h12m   v1.30.3
+
+kubectl top no
+    NAME      CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+    master    137m         3%     846Mi           10%
+    worker1   56m          1%     528Mi           6%
+    worker2   68m          1%     501Mi           6%
+
+kubectl top pod -nkube-system
+    NAME                                       CPU(cores)   MEMORY(bytes)
+    calico-kube-controllers-77d59654f4-59qlx   2m           12Mi
+    calico-node-mn2kl                          25m          117Mi
+    calico-node-sndg4                          27m          117Mi
+    calico-node-wmwpm                          24m          117Mi
+    coredns-7db6d8ff4d-kvzq2                   2m           13Mi
+    coredns-7db6d8ff4d-mqmj9                   2m           13Mi
+    etcd-master                                20m          44Mi
+    kube-apiserver-master                      48m          261Mi
+    kube-controller-manager-master             12m          56Mi
+    kube-proxy-7st54                           1m           13Mi
+    kube-proxy-gcb6c                           1m           12Mi
+    kube-proxy-wt555                           1m           13Mi
+    kube-scheduler-master                      3m           18Mi
+    metrics-server-5df54c66b8-zhr7h            4m           18Mi
+```
+
+
+[↑ Back to top](#)
+<br><br>
+
+
+### Metrics server
+
+```sh
+curl -L https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml -o metrics-server.yaml
+
+vim metrics-server.yaml
+      - args:
+        - --kubelet-insecure-tls=true
+
+kubectl apply -f metrics-server.yaml 
+
+k get pod -nkube-system
+
+    NAME                                       READY   STATUS    RESTARTS   AGE
+    ...
+    metrics-server-5df54c66b8-zhr7h            1/1     Running   0          35s
+```
+
+
+[↑ Back to top](#)
+<br><br>
+
 ### Nginx Ingress Controller
 
-- install `helm`
+- Install `helm`
 
 ```sh
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-$ chmod 700 get_helm.sh
-$ ./get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
 ```
 
-- install `nginx ingress controller`
+- Install `Nginx Ingress Controller`
     - [quick start](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
     - [Guide](#https://medium.com/@tonylixu/devops-in-k8s-nginx-ingress-controller-0a09f48458e2)
 
 
 ```sh
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
+helm upgrade --install ingress-nginx ingress-nginx \
+    --repo https://kubernetes.github.io/ingress-nginx \
+    --namespace ingress-nginx --create-namespace
 
-kubectl create namespace ingress-nginx
+kubectl get pods -ningress-nginx
 
-helm install ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace ingress-nginx \
-  --set controller.replicaCount=2
-
-kubectl get pods --namespace ingress-nginx
-kubectl get service ingress-nginx-controller --namespace=ingress-nginx
+kubectl get svc -ningress-nginx
+    NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+    ingress-nginx-controller             LoadBalancer   10.102.120.211   <pending>     80:31362/TCP,443:32684/TCP   52s
+    ingress-nginx-controller-admission   ClusterIP      10.99.130.218    <none>        443/TCP                      52s
 ```
+
 
 ### Metallb
 
@@ -689,10 +698,7 @@ kubectl get configmap kube-proxy -n kube-system -o yaml | \
 
 ```sh
 helm repo add metallb https://metallb.github.io/metallb
-helm install metallb metallb/metallb
-# A values file may be specified on installation. This is recommended for providing configs in Helm values:
-# helm install metallb metallb/metallb -f values.yaml
-
+helm install metallb metallb/metallb -n metallb-system
 ```
 
 - Configuration

@@ -1,4 +1,4 @@
----
+--
 draft: false
 date: 2024-07-01
 categories:
@@ -21,8 +21,10 @@ Over the course of the Raspberry-pi cluster setup, I tried to record Linux knowl
     - [Subnetting](#subnetting)
 - [Ubuntu](ubuntu)
     - [Time sync](#time-sync)
-    - [SSH access](#ssh-access)
     - [Initial Settings](#initial-settings)
+    - [SSH access](#ssh-access)
+    - [Password policy](#password-policy)
+    - [lm-sensors](#lm-sensors)
     - [minikube](#minikube)
 - [Reference](#reference)
 
@@ -251,48 +253,6 @@ date
 [↑ Back to top](#)
 <br><br>
 
-### SSH access
-
-- https://www.digitalocean.com/community/tutorials/ssh-essentials-working-with-ssh-servers-clients-and-keys
-
-By default password ssh is disabled on Ubuntu 24.04.
-
-1. ENABLE password ssh
-2. Create Public key and copy the public key content into the target server
-3. DISABLE password ssh
-
-```sh
-# 1. ENABLE password ssh via direct console access to Raspberry pi 5 hardware
-sudo su -
-vim /etc/ssh/sshd_config.d/50-cloud-init.conf
-    PasswordAuthentication yes
-systemctl restart ssh
-
-# 2. Create Public key to enable ssh with public key and copy the public key content into the target server's ~/.ssh/authorized_keys manually!
-ssh-keygen
-ssh-copy-id ubuntu@192.168.0.23
-    # /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/foo/.ssh/id_ed25519.pub"
-    # /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
-    # /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-    # ubuntu@192.168.0.23's password:
-
-    # Number of key(s) added: 1
-
-    # Now try logging into the machine, with:   "ssh 'ubuntu@192.168.0.23'"
-    # and check to make sure that only the key(s) you wanted were added.
-
-# ssh WITHOUT password; NOW ssh with public key intead!
-ssh ubuntu@192.168.0.23
-
-# 3. DISABLE password ssh AGAIN!
-sudo su -
-vim /etc/ssh/sshd_config.d/50-cloud-init.conf
-    PasswordAuthentication no
-systemctl restart ssh
-```
-
-[↑ Back to top](#)
-<br><br>
 
 ### Initial Settings
 
@@ -393,6 +353,51 @@ sudo hostnamectl set-hostname worker2
 [↑ Back to top](#)
 <br><br>
 
+
+### SSH access
+
+- https://www.digitalocean.com/community/tutorials/ssh-essentials-working-with-ssh-servers-clients-and-keys
+
+By default password ssh is disabled on Ubuntu 24.04.
+
+1. ENABLE password ssh
+2. Create Public key and copy the public key content into the target server
+3. DISABLE password ssh
+
+```sh
+# 1. ENABLE password ssh via direct console access to Raspberry pi 5 hardware
+sudo su -
+vim /etc/ssh/sshd_config.d/50-cloud-init.conf
+    PasswordAuthentication yes
+systemctl restart ssh
+
+# 2. Create Public key to enable ssh with public key and copy the public key content into the target server's ~/.ssh/authorized_keys manually!
+ssh-keygen
+ssh-copy-id mobb@192.168.0.10
+    # /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/foo/.ssh/id_ed25519.pub"
+    # /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+    # /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+    # mobb@192.168.0.10's password:
+
+    # Number of key(s) added: 1
+
+    # Now try logging into the machine, with:   "ssh 'mobb@192.168.0.23'"
+    # and check to make sure that only the key(s) you wanted were added.
+
+# ssh WITHOUT password; NOW ssh with public key intead!
+ssh mobb@192.168.0.10
+
+# 3. DISABLE password ssh AGAIN!
+sudo su -
+vim /etc/ssh/sshd_config.d/50-cloud-init.conf
+    PasswordAuthentication no
+sudo systemctl restart ssh
+```
+
+[↑ Back to top](#)
+<br><br>
+
+
 ### Password policy
 
 - [Set Password Rules](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=pam&f=1)
@@ -477,6 +482,17 @@ dictcheck = 0
 passwd user
 adm123
 ```
+
+[↑ Back to top](#)
+<br><br>
+
+
+### lm-sensors
+
+```sh
+sudo apt install lm-sensors
+```
+
 
 [↑ Back to top](#)
 <br><br>
