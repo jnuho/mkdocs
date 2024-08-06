@@ -763,8 +763,17 @@ kubectl get svc -ningress-nginx
     NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
     ingress-nginx-controller             LoadBalancer   10.102.120.211   192.168.0.100   80:31362/TCP,443:32684/TCP   164m
     ingress-nginx-controller-admission   ClusterIP      10.99.130.218    <none>          443/TCP                      164m
+
 ```
 
+- Edit Windows hosts File
+    - `C:\Windows\System32\drivers\etc\hosts`
+
+```
+192.168.0.10 catornot.com
+
+curl -D- http://192.168.0.10 -H 'Host: catornot.com'
+```
 
 
 ## Docker Registry
