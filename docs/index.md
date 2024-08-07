@@ -1,18 +1,20 @@
 # About me
 
-I'm interested in `EKS`, `Kubernetes`, and `Deep learning`.
+I'm focused on `Kubernetes` and `Deep learning`.
 
 <!-- [![jnuho GitHub stats](https://github-readme-stats.vercel.app/api?username=jnuho&show_icons=true&rank_icon=percentile&show=reviews,prs_merged,prs_merged_percentage)](https://github.com/jnuho) -->
 [![jnuho GitHub Streak](https://streak-stats.demolab.com?user=jnuho&theme=github-light)](https://github.com/jnuho)
 
 <hr>
 
-## [Blog](blog)
+## [Posts](blog)
 
-- [Cat vs. Non-cat classifier](blog/posts/Cat-vs.-Non-cat-Classifier-on-EKS.md) - AWS EKS with Terraform
-- [PI cluster](blog/posts/Raspberry-pi-cluster.md) - Kubernetes on Raspberry-pi cluster
-- [Deep learning](blog/posts/Deep-Neural-Network-for-Image-Classification.md) - deep learning basics.
-- [Golang AWS dashboard](blog/posts/Golang-AWS-dashboard.md) - I used Golang AWS SDK to create a dashboard for AWS resources
+I delve into Kubernetes and DevOps practices to write posts here!
+
+- [Cat.Vs.Non-cat image classifier - Deep learning model](blog/posts/Cat-vs.-Non-cat-Classifier-on-EKS.md) - deploy to EKS cluster using Terraform and predict images.
+- [Kubernetes cluster from scratch](blog/posts/Raspberry-pi-cluster-from-scratch.md) - Setup local Raspberry-PIs cluster from scratch.
+- [Golang AWS dashboard](blog/posts/Golang-AWS-dashboard.md) - Golang AWS SDK to create a dashboard for AWS resources - Side project for DevOps team.
+- [Deep learning](blog/posts/Deep-Neural-Network-for-Image-Classification.md) - Deep learning basics.
 - [→  More Posts](blog)
 
 
