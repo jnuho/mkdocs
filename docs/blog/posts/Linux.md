@@ -490,7 +490,9 @@ adm123
 ### lm-sensors
 
 ```sh
-sudo apt install lm-sensors
+sudo apt update
+sudo apt upgrade -y
+sudo apt install lm-sensors -y
 ```
 
 
