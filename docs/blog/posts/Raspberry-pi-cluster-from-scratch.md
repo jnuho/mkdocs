@@ -97,7 +97,12 @@ PCIE_PROBE=1
 
 ### Network settings
 
-Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/)
+Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/#time-sync)
+
+- Time sync
+- Change Hostname
+- SSH access
+
 
 [↑ Back to top](#)
 <br><br>
@@ -105,7 +110,7 @@ Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/)
 
 ## Kubernetes
 
-We will configure Kubernetes v1.30.
+We will configure Kubernetes v1.30.3.
 
 - [Prerequisite](#prerequisite)
 - [Container runtime](#container-runtime)
@@ -122,8 +127,16 @@ We will configure Kubernetes v1.30.
 # disable swapping temporarily.
 sudo swapoff -a
 # To make this change persistent across reboots, make sure swap is disabled in config files. Comment out swap
+
+# Disable swap permanently
 # vim /etc/fstab
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+# check Swap is disabled
+free -h
+                   total        used        free      shared  buff/cache   available
+    Mem:           7.8Gi       900Mi       2.1Gi       5.2Mi       5.0Gi       6.9Gi
+->  Swap:             0B          0B          0B
 ```
 
 - Required ports
@@ -236,18 +249,15 @@ sudo cat /etc/containerd/config.toml
 
 # 5. Configuring the systemd cgroup driver
 #   To use the systemd cgroup driver in /etc/containerd/config.toml with runc, set
-sudo vim /etc/containerd/config.toml
+sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup = true/g' /etc/containerd/config.toml
 
+cat /etc/containerd/config.toml
 [plugins]
   # ...
   [plugins."io.containerd.grpc.v1.cri"]
-    sandbox_image = "registry.k8s.io/pause:3.8"
-
         [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-          # ...
           [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
             SystemdCgroup = true
-
 
 sudo systemctl restart containerd
 sudo systemctl status containerd
@@ -356,7 +366,7 @@ sudo systemctl enable --now kubelet
 
 # on master node:
 
-POD_CIDR="10.100.0.0/16"
+POD_CIDR="10.10.0.0/16"
 NODENAME=$(hostname -s)
 MASTER_PRIVATE_IP=$(ip addr show eth0 | awk '/inet / {print $2}' | cut -d/ -f1)
 
@@ -423,25 +433,70 @@ k describe pod coredns-7db6d8ff4d-sv6bv -n kube-system
 
 ```sh
 k logs kube-controller-manager-master -nkube-system
-    E0805 23:30:48.648521       1 controller_utils.go:250] Error while processing Node Add
-    : failed to allocate cidr from cluster cidr at idx:0: CIDR allocation failed;
-    there are no remaining CIDRs left to allocate in the accepted range
+    E0807 07:33:10.824783       1 controller_utils.go:262]
+    Error while processing Node Add/Delete: failed to allocate cidr from cluster cidr at idx:0:
+    CIDR allocation failed; there are no remaining CIDRs left to allocate in the accepted range
+
+kubectl describe pod kube-controller-manager-master -n kube-system | grep cluster-cidr
+kubectl describe pod kube-controller-manager-master -n kube-system | grep allocate-node-cidrs
+
+# The --cluster-cidr=10.10.0.0/16 should match the pod network CIDR
+# and is used by the controller manager to allocate pod CIDRs to nodes.
+# So this seems to be a correct set-up of cidr
+sudo cat /etc/kubernetes/manifests/kube-controller-manager.yaml | grep cidr
+    - --allocate-node-cidrs=true
+    - --cluster-cidr=10.10.0.0/16
+
+# podCIDR is missing!
+# https://devops.stackexchange.com/questions/17032/what-is-the-meaning-of-the-podcidr-field-in-the-node-spec-in-kubenretes
+# https://github.com/kubernetes/kubernetes/issues/76761
+kubectl get nodes -o custom-columns=NAME:.metadata.name,CIDR:.spec.podCIDR
+    NAME      CIDR
+    master    <none>
+    worker1   <none>
+    worker2   <none>
+
+k get pod -A -o wide | grep -v 192.168. | grep -v Completed | grep worker2
+        10.10.189.xx
+k get pod -A -o wide | grep -v 192.168. | grep -v Completed | grep master
+        10.10.219.xx
+k get pod -A -o wide | grep -v 192.168. | grep -v Completed | grep worker1
+        10.10.235.xx
+
+kubectl get ippool default-ipv4-ippool -o yaml
+    apiVersion: crd.projectcalico.org/v1
+    kind: IPPool
+    metadata:
+      annotations:
+        projectcalico.org/metadata: '{"creationTimestamp":"2024-08-07T03:17:23Z"}'
+      creationTimestamp: "2024-08-07T03:17:23Z"
+      generation: 1
+      name: default-ipv4-ippool
+      resourceVersion: "935"
+      uid: 04c9c442-e0a4-4a42-b481-2609ccde7bda
+    spec:
+      allowedUses:
+      - Workload
+      - Tunnel
+      blockSize: 26
+      cidr: 10.10.0.0/16
+      ipipMode: Always
 
 ➜  ~ k get pod -A -o wide
 NAMESPACE        NAME                                       READY   STATUS      RESTARTS   AGE   IP               NODE      NOMINATED NODE   READINESS GATES
-default          be-go-6b6f5fc88d-mxxbg                     1/1     Running     0          13m   10.100.235.131   worker1   <none>           <none>
-default          be-py-6bc85fcb56-cn8cc                     1/1     Running     0          13m   10.100.235.132   worker1   <none>           <none>
-default          be-py-6bc85fcb56-lb4rk                     1/1     Running     0          13m   10.100.189.68    worker2   <none>           <none>
-default          fe-nginx-d7f6d6449-rzmll                   1/1     Running     0          13m   10.100.189.67    worker2   <none>           <none>
-ingress-nginx    ingress-nginx-admission-create-g4qqd       0/1     Completed   0          14m   10.100.235.129   worker1   <none>           <none>
-ingress-nginx    ingress-nginx-admission-patch-znfw5        0/1     Completed   0          14m   10.100.189.66    worker2   <none>           <none>
-ingress-nginx    ingress-nginx-controller-666487-z5td9      1/1     Running     0          14m   10.100.235.130   worker1   <none>           <none>
-kube-system      calico-kube-controllers-77d59654f4-ctfst   1/1     Running     0          17m   10.100.219.66    master    <none>           <none>
+default          be-go-6b6f5fc88d-mxxbg                     1/1     Running     0          13m   10.10.235.131   worker1   <none>           <none>
+default          be-py-6bc85fcb56-cn8cc                     1/1     Running     0          13m   10.10.235.132   worker1   <none>           <none>
+default          be-py-6bc85fcb56-lb4rk                     1/1     Running     0          13m   10.10.189.68    worker2   <none>           <none>
+default          fe-nginx-d7f6d6449-rzmll                   1/1     Running     0          13m   10.10.189.67    worker2   <none>           <none>
+ingress-nginx    ingress-nginx-admission-create-g4qqd       0/1     Completed   0          14m   10.10.235.129   worker1   <none>           <none>
+ingress-nginx    ingress-nginx-admission-patch-znfw5        0/1     Completed   0          14m   10.10.189.66    worker2   <none>           <none>
+ingress-nginx    ingress-nginx-controller-666487-z5td9      1/1     Running     0          14m   10.10.235.130   worker1   <none>           <none>
+kube-system      calico-kube-controllers-77d59654f4-ctfst   1/1     Running     0          17m   10.10.219.66    master    <none>           <none>
 kube-system      calico-node-d9nj8                          1/1     Running     0          17m   192.168.0.10     master    <none>           <none>
 kube-system      calico-node-mslzt                          1/1     Running     0          17m   192.168.0.12     worker2   <none>           <none>
 kube-system      calico-node-vzlk5                          1/1     Running     0          17m   192.168.0.11     worker1   <none>           <none>
-kube-system      coredns-7db6d8ff4d-pm4v9                   1/1     Running     0          19m   10.100.219.65    master    <none>           <none>
-kube-system      coredns-7db6d8ff4d-zz9h5                   1/1     Running     0          19m   10.100.219.67    master    <none>           <none>
+kube-system      coredns-7db6d8ff4d-pm4v9                   1/1     Running     0          19m   10.10.219.65    master    <none>           <none>
+kube-system      coredns-7db6d8ff4d-zz9h5                   1/1     Running     0          19m   10.10.219.67    master    <none>           <none>
 kube-system      etcd-master                                1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
 kube-system      kube-apiserver-master                      1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
 kube-system      kube-controller-manager-master             1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
@@ -449,14 +504,14 @@ kube-system      kube-proxy-6rlhv                           1/1     Running     
 kube-system      kube-proxy-6zrf8                           1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
 kube-system      kube-proxy-mz96w                           1/1     Running     0          19m   192.168.0.11     worker1   <none>           <none>
 kube-system      kube-scheduler-master                      1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
-kube-system      metrics-server-5df54c66b8-pzj84            1/1     Running     0          15m   10.100.189.65    worker2   <none>           <none>
-metallb-system   controller-6dd967fdc7-2c8fg                1/1     Running     0          11m   10.100.189.69    worker2   <none>           <none>
+kube-system      metrics-server-5df54c66b8-pzj84            1/1     Running     0          15m   10.10.189.65    worker2   <none>           <none>
+metallb-system   controller-6dd967fdc7-2c8fg                1/1     Running     0          11m   10.10.189.69    worker2   <none>           <none>
 metallb-system   speaker-4bm8l                              1/1     Running     0          11m   192.168.0.10     master    <none>           <none>
 metallb-system   speaker-9kmcf                              1/1     Running     0          11m   192.168.0.12     worker2   <none>           <none>
 metallb-system   speaker-qnw8v                              1/1     Running     0          11m   192.168.0.11     worker1   <none>           <none>
 
 ps aux | grep cluster-cidr
-    --cluster-cidr=10.100.0.0/16
+    --cluster-cidr=10.10.0.0/16
 
 helm install --dry-run cat-release ./cat-chart -f ./cat-chart/values.pi.yaml
 # change CIDR blocks 
@@ -474,7 +529,7 @@ k delete --grace-period=0 --force -nkube-system pod/coredns-7db6d8ff4d-5dv6d
 
 Install Calico CNI (Container Network Interface) plugin to enable Pod networking!
 
-You must deploy a `Container Network Interface` (CNI) based Pod network add-on so that your Pods can communicate with each other. Cluster DNS (CoreDNS) will not start up before a network is installed. Without CNI, the coredns pods are `pending` and `podSubnet` is not specified in the cluster configuration.
+You must deploy a `Container Network Interface` (CNI) based Pod network add-on such as `Calico`, `flannel`, `weavenet` so that your Pods can communicate with each other. Cluster DNS (CoreDNS) will not start up before a network is installed. Without CNI, the coredns pods are `pending` and `podSubnet` is not specified in the cluster configuration.
 
 
 - 1-1. Install with manifest
@@ -485,17 +540,15 @@ kubectl get configmap -n kube-system kubeadm-config -o yaml
     ...
     networking:
       dnsDomain: cluster.local
-      #podSubnet: 10.100.0.0/16
+      #podSubnet: 10.10.0.0/16
       serviceSubnet: 10.96.0.0/12
     scheduler: {}
     ...
 ```
 
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calico.yaml
-
-#curl -O https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calico.yaml
-#vim calico.yaml
+curl -O https://raw.githubusercontent.com/projectcalico/calico/v3.28.1/manifests/calico.yaml
+vim calico.yaml
 # Match POD_CIDR and CALICO_IPV4POOL_CIDR
 
 kind: DaemonSet
@@ -515,7 +568,7 @@ spec:
             # chosen from this range. Changing this value after installation will have
             # no effect. This should fall within `--cluster-cidr`.
             - name: CALICO_IPV4POOL_CIDR
-              value: "10.100.0.0/16"
+              value: "10.10.0.0/16"
 ---
 
 kubectl apply -f calico.yaml
@@ -554,7 +607,7 @@ spec:
     ipPools:
     - name: default-ipv4-ippool
       blockSize: 26
-      cidr: 10.100.0.0/16
+      cidr: 10.10.0.0/16
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
@@ -604,7 +657,7 @@ kubectl get ippools.crd.projectcalico.org -o yaml
       kind: IPPool
       spec:
         blockSize: 26
-        cidr: 10.100.0.0/16
+        cidr: 10.10.0.0/16
 ```
 
 [↑ Back to top](#)
@@ -790,7 +843,7 @@ k get ingress
 # NOTE: Setting no IPAddressPool selector in an L2Advertisement instance is interpreted
 #       as that instance being associated to all the IPAddressPools available.
 
-# DO NOT OVERLAP with POD_CIDR (10.100.0.0/16), and NODE_IPs (192.168.0.10 ~ 12) (master and worker nodes)
+# DO NOT OVERLAP with POD_CIDR (10.10.0.0/16), and NODE_IPs (192.168.0.10 ~ 12) (master and worker nodes)
 
 cat << EOF > metallb.yaml
 ---
@@ -837,10 +890,10 @@ curl -D- http://192.168.0.201 -H 'Host: catornot.com'
 ```sh
 kubectl get pod -o wide
     NAME                       READY   STATUS    RESTARTS   AGE   IP               NODE      NOMINATED NODE   READINESS GATES
-    be-go-6b6f5fc88d-mxxbg     1/1     Running   0          10m   10.100.235.131   worker1   <none>           <none>
-    be-py-6bc85fcb56-cn8cc     1/1     Running   0          10m   10.100.235.132   worker1   <none>           <none>
-    be-py-6bc85fcb56-lb4rk     1/1     Running   0          10m   10.100.189.68    worker2   <none>           <none>
-    fe-nginx-d7f6d6449-rzmll   1/1     Running   0          10m   10.100.189.67    worker2   <none>           <none>
+    be-go-6b6f5fc88d-mxxbg     1/1     Running   0          10m   10.10.235.131   worker1   <none>           <none>
+    be-py-6bc85fcb56-cn8cc     1/1     Running   0          10m   10.10.235.132   worker1   <none>           <none>
+    be-py-6bc85fcb56-lb4rk     1/1     Running   0          10m   10.10.189.68    worker2   <none>           <none>
+    fe-nginx-d7f6d6449-rzmll   1/1     Running   0          10m   10.10.189.67    worker2   <none>           <none>
 ```
 
 ## Docker Registry
