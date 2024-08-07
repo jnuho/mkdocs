@@ -7,14 +7,19 @@ authors:
   - junho
 ---
 
-Kubernetes the Hard way: Raspberry-pi 5 cluster.
+I created my own version of Kubernetes the Hard way.
 
-I try to configure the Control plane myself. Kubernetes is a complex distributed system. By setting it up by hand, I hope to learn more about Kubernetes components.
+I tried to configure the Control plane myself. Kubernetes is a complex distributed system. By setting it up in home network, I hope to learn more about Kubernetes.
 
-<img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="40">
-<img src="https://kubernetes.io/images/kubeadm-stacked-color.png" alt="kubeadm" width="50">
+<img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="35">
+<img src="https://kubernetes.io/images/kubeadm-stacked-color.png" alt="kubeadm" width="55">
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/containerd/horizontal/color/containerd-horizontal-color.png" alt="containerd" width="70">
-<img src="https://imgur.com/Av7PzuR.png" alt="pi-cluster" width="180">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="containerd" width="50">
+<img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="containerd" width="110">
+<img src="https://d7umqicpi7263.cloudfront.net/img/product/4e6562ed-61e5-4aee-87a2-009573d70e6f.com/340f0ca82cf778b32198293eb75166df" alt="containerd" width="110">
+
+
+<img src="https://i.imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="320">
 
 <!-- more -->
 
@@ -43,6 +48,8 @@ I try to configure the Control plane myself. Kubernetes is a complex distributed
 
 
 ## Raspberry Pi Setup
+
+You need to have minimum 1 master node and 1 worker node. To make the cluster highly available, more than 2 worker nodes are ideal. I chose SSD over microSD card which seemed to have poor performance and lack durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
 
 - Hardware
     - 3 x Raspberry pi 5 (1 Master node, 2 Worker nodes;)
@@ -91,7 +98,6 @@ PCIE_PROBE=1
 ### Network settings
 
 Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/)
-
 
 [↑ Back to top](#)
 <br><br>
@@ -916,6 +922,8 @@ sudo systemctl restart containerd
 <br><br>
 
 ## Argo CD
+
+"Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
 
 - install argocd
 
