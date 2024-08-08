@@ -65,10 +65,10 @@ nav:
     - Pi cluster from scratch: pi-cluster/Raspberry-pi-cluster-from-scratch.md
     - Cat vs non-cat on EKS: cat-vs-non-cat/Cat-vs.-Non-cat-Classifier-on-EKS.md
   - ⚡️🇬🇴🇱🇦🇳🇬:
-    - golang/AWS-dashboard.md
     - golang/worker-pool-pattern.md
-    - golang/basic.md
     - golang/concurrency.md
-    - golang/network.md
+    - golang/basic.md
+    - golang/AWS-dashboard.md
     - golang/tanmay-book.md
+    - golang/network.md
   - 🇮🇳🇫🇴: index.md
