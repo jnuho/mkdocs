@@ -2,12 +2,9 @@ site_name: JUN HO LEE
 
 theme:
   name: material
-  # font:
-  #   text: Ubuntu
-  #   code: Ubuntu Mono
   font:
-    text: Roboto
-    code: Roboto Mono
+    text: Titillium Web
+    code: Ubuntu Mono
   features:
     - navigation.instant
     - navigation.top
@@ -61,18 +58,25 @@ markdown_extensions:
 
 
 nav:
-  - ⚡️🇰🇺🇧🇪🇷🇳🇪🇹🇪🇸:
-    - Pi cluster from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
+  - <small>⚡</small> 🇰🇺🇧🇪🇷🇳🇪🇹🇪🇸:
+    - pi cluster from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
     - Cat vs non-cat on EKS: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
-    - kubernetes/Kubernetes-Core-Concept.md
-  - ⚡️🇨🇱🇴🇺🇩:
-    - cloud/Terraform_and_Helm.md
-  - ⚡️🇬🇴🇱🇦🇳🇬:
-    - golang/worker-pool-pattern.md
-    - golang/concurrency.md
-    - golang/basic.md
-    - golang/AWS-dashboard.md
-    - golang/tanmay-book.md
-    - golang/network.md
+    - core concept: kubernetes/Kubernetes-Core-Concept.md
+  - <small>⚡</small> 🇮🇦🇨:
+    - Ansible: iac/ansible.md
+    - Helm Guide: iac/helm.md
+    - Terraform and Helm: iac/terraform-and-helm.md
+  - <small>⚡</small> 🇱🇮🇳🇺🇽:
+    - basic linux: linux/linux-basic.md
+  - <small>⚡</small> 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
+    - Neural network: deep-learning/Deep-Neural-Network.md
+  - <small>⚡</small> 🇬🇴🇱🇦🇳🇬:
+    - worker pool pattern: golang/worker-pool-pattern.md
+    - concurrency: golang/concurrency.md
+    - basic: golang/basic.md
+    - AWS dashboard: golang/aws-dashboard.md
+    - tanmay book: golang/tanmay-book.md
+    - networking: golang/network.md
   - 🇮🇳🇫🇴: index.md
+
 
