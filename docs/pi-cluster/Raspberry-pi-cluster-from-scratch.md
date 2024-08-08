@@ -7,7 +7,7 @@ authors:
   - junho
 ---
 
-I tried to configure the Kubernetes Control plane myself.
+I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 
 <img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="35">
 <img src="https://kubernetes.io/images/kubeadm-stacked-color.png" alt="kubeadm" width="55">
@@ -20,7 +20,7 @@ I tried to configure the Kubernetes Control plane myself.
 
 <!-- more -->
 
-Kubernetes is a complex distributed system. By setting it up in home network, I try to understand complex inner workings of Kubernetes and use this cluster as a test bed.
+Kubernetes is a complex distributed system. By setting it up in home network, I explore inner workings of Kubernetes.
 
 <br>
 
