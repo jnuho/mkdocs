@@ -7,21 +7,22 @@ authors:
   - junho
 ---
 
-I created my own version of Kubernetes the Hard way.
-
-I tried to configure the Control plane myself. Kubernetes is a complex distributed system. By setting it up in home network, I hope to learn more about Kubernetes.
+I tried to configure the Kubernetes Control plane myself.
 
 <img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="35">
 <img src="https://kubernetes.io/images/kubeadm-stacked-color.png" alt="kubeadm" width="55">
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/containerd/horizontal/color/containerd-horizontal-color.png" alt="containerd" width="70">
 <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="containerd" width="50">
-<img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="containerd" width="110">
+<img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="containerd" width="110">      
 <img src="https://d7umqicpi7263.cloudfront.net/img/product/4e6562ed-61e5-4aee-87a2-009573d70e6f.com/340f0ca82cf778b32198293eb75166df" alt="containerd" width="110">
 
-
-<img src="https://i.imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="320">
+<img src="https://i.imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="400">
 
 <!-- more -->
+
+Kubernetes is a complex distributed system. By setting it up in home network, I try to understand complex inner workings of Kubernetes and use this cluster as a test bed.
+
+<br>
 
 # Table of Contents
 
@@ -49,10 +50,10 @@ I tried to configure the Control plane myself. Kubernetes is a complex distribut
 
 ## Raspberry Pi Setup
 
-You need to have minimum 1 master node and 1 worker node. To make the cluster highly available, more than 2 worker nodes are ideal. I chose SSD over microSD card which seemed to have poor performance and lack durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
+You need to have minimum 1 master node and 1 worker node. To make the cluster highly available, odd number of master node (1, 3, 5 ...) and more than 2 worker nodes are ideal. I chose SSD over microSD card which seemed to have poor performance and lack durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
 
 - Hardware
-    - 3 x Raspberry pi 5 (1 Master node, 2 Worker nodes;)
+    - 3 x Raspberry pi 5 (1 master, 2 workers)
         - 8GB Memory, 4-core CPU
     - 3 x Raspberry Pi M.2 HAT+  (1 master, 2 workers)
     - 3 x Raspberry Pi Active Cooler
@@ -366,7 +367,7 @@ sudo systemctl enable --now kubelet
 
 # on master node:
 
-POD_CIDR="10.10.0.0/16"
+POD_CIDR="10.100.0.0/16"
 NODENAME=$(hostname -s)
 MASTER_PRIVATE_IP=$(ip addr show eth0 | awk '/inet / {print $2}' | cut -d/ -f1)
 
@@ -374,8 +375,13 @@ sudo kubeadm init \
     --apiserver-advertise-address="$MASTER_PRIVATE_IP" \
     --apiserver-cert-extra-sans="$MASTER_PRIVATE_IP" \
     --pod-network-cidr="$POD_CIDR" \
+    --controller-manager-extra-args "allocate-node-cidrs=false" \
     --node-name "$NODENAME" \
     -v=5
+
+# NOTE: --controller-manager-extra-args "allocate-node-cidrs=false"
+# prevent `kube-controller-manager-master` from trying to allocate podCidr.
+# Calico will do it instead :)
 
 # [addons] Applied essential addon: CoreDNS
 # [addons] Applied essential addon: kube-proxy
@@ -440,28 +446,52 @@ k logs kube-controller-manager-master -nkube-system
 kubectl describe pod kube-controller-manager-master -n kube-system | grep cluster-cidr
 kubectl describe pod kube-controller-manager-master -n kube-system | grep allocate-node-cidrs
 
-# The --cluster-cidr=10.10.0.0/16 should match the pod network CIDR
+# The --cluster-cidr=10.100.0.0/16 should match the pod network CIDR
 # and is used by the controller manager to allocate pod CIDRs to nodes.
 # So this seems to be a correct set-up of cidr
 sudo cat /etc/kubernetes/manifests/kube-controller-manager.yaml | grep cidr
     - --allocate-node-cidrs=true
-    - --cluster-cidr=10.10.0.0/16
+    - --cluster-cidr=10.100.0.0/16
+sudo vim /etc/kubernetes/manifests/kube-controller-manager.yaml
+    - --allocate-node-cidrs=false
 
-# podCIDR is missing!
+# Error message is resolved!
+kubectl describe nodes
+    Events:
+      Type    Reason            Age                   From             Message
+      ----    ------            ----                  ----             -------
+      Normal  CIDRNotAvailable  7m53s (x17 over 14h)  cidrAllocator    Node worker1 status is now: CIDRNotAvailable
+ ->   Normal  RegisteredNode    4m1s                  node-controller  Node worker1 event: Registered Node worker1 in Controller
+
+
 # https://devops.stackexchange.com/questions/17032/what-is-the-meaning-of-the-podcidr-field-in-the-node-spec-in-kubenretes
 # https://github.com/kubernetes/kubernetes/issues/76761
+# When using Calico, the podCIDR field on the node objects is not used or required.
+# Calico handles IP allocation without needing this field to be set.
 kubectl get nodes -o custom-columns=NAME:.metadata.name,CIDR:.spec.podCIDR
     NAME      CIDR
     master    <none>
     worker1   <none>
     worker2   <none>
+# Instead of using podCIDR, Calico uses its own IPPool resource to manage the available IP ranges. You can view this with:
+kubectl get ippool -o yaml
 
+kubectl get blockaffinities -A
+    NAME                        AGE
+    master-10-100-219-64-26     20h
+    worker1-10-100-235-128-26   20h
+    worker2-10-100-189-64-26    20h
+kubectl get ipamblocks -A
+    NAME                AGE
+    10-100-189-64-26    20h
+    10-100-219-64-26    20h
+    10-100-235-128-26   20h
 k get pod -A -o wide | grep -v 192.168. | grep -v Completed | grep worker2
-        10.10.189.xx
+        10.100.189.xx
 k get pod -A -o wide | grep -v 192.168. | grep -v Completed | grep master
-        10.10.219.xx
+        10.100.219.xx
 k get pod -A -o wide | grep -v 192.168. | grep -v Completed | grep worker1
-        10.10.235.xx
+        10.100.235.xx
 
 kubectl get ippool default-ipv4-ippool -o yaml
     apiVersion: crd.projectcalico.org/v1
@@ -479,24 +509,24 @@ kubectl get ippool default-ipv4-ippool -o yaml
       - Workload
       - Tunnel
       blockSize: 26
-      cidr: 10.10.0.0/16
+      cidr: 10.100.0.0/16
       ipipMode: Always
 
 ➜  ~ k get pod -A -o wide
 NAMESPACE        NAME                                       READY   STATUS      RESTARTS   AGE   IP               NODE      NOMINATED NODE   READINESS GATES
-default          be-go-6b6f5fc88d-mxxbg                     1/1     Running     0          13m   10.10.235.131   worker1   <none>           <none>
-default          be-py-6bc85fcb56-cn8cc                     1/1     Running     0          13m   10.10.235.132   worker1   <none>           <none>
-default          be-py-6bc85fcb56-lb4rk                     1/1     Running     0          13m   10.10.189.68    worker2   <none>           <none>
-default          fe-nginx-d7f6d6449-rzmll                   1/1     Running     0          13m   10.10.189.67    worker2   <none>           <none>
-ingress-nginx    ingress-nginx-admission-create-g4qqd       0/1     Completed   0          14m   10.10.235.129   worker1   <none>           <none>
-ingress-nginx    ingress-nginx-admission-patch-znfw5        0/1     Completed   0          14m   10.10.189.66    worker2   <none>           <none>
-ingress-nginx    ingress-nginx-controller-666487-z5td9      1/1     Running     0          14m   10.10.235.130   worker1   <none>           <none>
-kube-system      calico-kube-controllers-77d59654f4-ctfst   1/1     Running     0          17m   10.10.219.66    master    <none>           <none>
+default          be-go-6b6f5fc88d-mxxbg                     1/1     Running     0          13m   10.100.235.131   worker1   <none>           <none>
+default          be-py-6bc85fcb56-cn8cc                     1/1     Running     0          13m   10.100.235.132   worker1   <none>           <none>
+default          be-py-6bc85fcb56-lb4rk                     1/1     Running     0          13m   10.100.189.68    worker2   <none>           <none>
+default          fe-nginx-d7f6d6449-rzmll                   1/1     Running     0          13m   10.100.189.67    worker2   <none>           <none>
+ingress-nginx    ingress-nginx-admission-create-g4qqd       0/1     Completed   0          14m   10.100.235.129   worker1   <none>           <none>
+ingress-nginx    ingress-nginx-admission-patch-znfw5        0/1     Completed   0          14m   10.100.189.66    worker2   <none>           <none>
+ingress-nginx    ingress-nginx-controller-666487-z5td9      1/1     Running     0          14m   10.100.235.130   worker1   <none>           <none>
+kube-system      calico-kube-controllers-77d59654f4-ctfst   1/1     Running     0          17m   10.100.219.66    master    <none>           <none>
 kube-system      calico-node-d9nj8                          1/1     Running     0          17m   192.168.0.10     master    <none>           <none>
 kube-system      calico-node-mslzt                          1/1     Running     0          17m   192.168.0.12     worker2   <none>           <none>
 kube-system      calico-node-vzlk5                          1/1     Running     0          17m   192.168.0.11     worker1   <none>           <none>
-kube-system      coredns-7db6d8ff4d-pm4v9                   1/1     Running     0          19m   10.10.219.65    master    <none>           <none>
-kube-system      coredns-7db6d8ff4d-zz9h5                   1/1     Running     0          19m   10.10.219.67    master    <none>           <none>
+kube-system      coredns-7db6d8ff4d-pm4v9                   1/1     Running     0          19m   10.100.219.65    master    <none>           <none>
+kube-system      coredns-7db6d8ff4d-zz9h5                   1/1     Running     0          19m   10.100.219.67    master    <none>           <none>
 kube-system      etcd-master                                1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
 kube-system      kube-apiserver-master                      1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
 kube-system      kube-controller-manager-master             1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
@@ -504,14 +534,14 @@ kube-system      kube-proxy-6rlhv                           1/1     Running     
 kube-system      kube-proxy-6zrf8                           1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
 kube-system      kube-proxy-mz96w                           1/1     Running     0          19m   192.168.0.11     worker1   <none>           <none>
 kube-system      kube-scheduler-master                      1/1     Running     0          19m   192.168.0.10     master    <none>           <none>
-kube-system      metrics-server-5df54c66b8-pzj84            1/1     Running     0          15m   10.10.189.65    worker2   <none>           <none>
-metallb-system   controller-6dd967fdc7-2c8fg                1/1     Running     0          11m   10.10.189.69    worker2   <none>           <none>
+kube-system      metrics-server-5df54c66b8-pzj84            1/1     Running     0          15m   10.100.189.65    worker2   <none>           <none>
+metallb-system   controller-6dd967fdc7-2c8fg                1/1     Running     0          11m   10.100.189.69    worker2   <none>           <none>
 metallb-system   speaker-4bm8l                              1/1     Running     0          11m   192.168.0.10     master    <none>           <none>
 metallb-system   speaker-9kmcf                              1/1     Running     0          11m   192.168.0.12     worker2   <none>           <none>
 metallb-system   speaker-qnw8v                              1/1     Running     0          11m   192.168.0.11     worker1   <none>           <none>
 
 ps aux | grep cluster-cidr
-    --cluster-cidr=10.10.0.0/16
+    --cluster-cidr=10.100.0.0/16
 
 helm install --dry-run cat-release ./cat-chart -f ./cat-chart/values.pi.yaml
 # change CIDR blocks 
@@ -540,7 +570,7 @@ kubectl get configmap -n kube-system kubeadm-config -o yaml
     ...
     networking:
       dnsDomain: cluster.local
-      #podSubnet: 10.10.0.0/16
+      #podSubnet: 10.100.0.0/16
       serviceSubnet: 10.96.0.0/12
     scheduler: {}
     ...
@@ -568,7 +598,7 @@ spec:
             # chosen from this range. Changing this value after installation will have
             # no effect. This should fall within `--cluster-cidr`.
             - name: CALICO_IPV4POOL_CIDR
-              value: "10.10.0.0/16"
+              value: "10.100.0.0/16"
 ---
 
 kubectl apply -f calico.yaml
@@ -577,10 +607,10 @@ kubectl apply -f calico.yaml
 kubectl get pods -nkube-system
 
     NAME                                       READY   STATUS     RESTARTS   AGE
-    calico-kube-controllers-77d59654f4-59qlx   0/1     Pending    0          21s
-    calico-node-mn2kl                          0/1     Init:0/3   0          21s
-    calico-node-sndg4                          0/1     Init:0/3   0          21s
-    calico-node-wmwpm                          0/1     Init:0/3   0          21s
+    calico-kube-controllers-77d59654f4-59qlx   1/1     Running    0          21s
+    calico-node-mn2kl                          1/1     Running   0          21s
+    calico-node-sndg4                          1/1     Running   0          21s
+    calico-node-wmwpm                          1/1     Running   0          21s
 ```
 
 
@@ -607,7 +637,7 @@ spec:
     ipPools:
     - name: default-ipv4-ippool
       blockSize: 26
-      cidr: 10.10.0.0/16
+      cidr: 10.100.0.0/16
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
@@ -657,7 +687,7 @@ kubectl get ippools.crd.projectcalico.org -o yaml
       kind: IPPool
       spec:
         blockSize: 26
-        cidr: 10.10.0.0/16
+        cidr: 10.100.0.0/16
 ```
 
 [↑ Back to top](#)
@@ -843,7 +873,7 @@ k get ingress
 # NOTE: Setting no IPAddressPool selector in an L2Advertisement instance is interpreted
 #       as that instance being associated to all the IPAddressPools available.
 
-# DO NOT OVERLAP with POD_CIDR (10.10.0.0/16), and NODE_IPs (192.168.0.10 ~ 12) (master and worker nodes)
+# DO NOT OVERLAP with POD_CIDR (10.100.0.0/16), and NODE_IPs (192.168.0.10 ~ 12) (master and worker nodes)
 
 cat << EOF > metallb.yaml
 ---
@@ -890,10 +920,10 @@ curl -D- http://192.168.0.201 -H 'Host: catornot.com'
 ```sh
 kubectl get pod -o wide
     NAME                       READY   STATUS    RESTARTS   AGE   IP               NODE      NOMINATED NODE   READINESS GATES
-    be-go-6b6f5fc88d-mxxbg     1/1     Running   0          10m   10.10.235.131   worker1   <none>           <none>
-    be-py-6bc85fcb56-cn8cc     1/1     Running   0          10m   10.10.235.132   worker1   <none>           <none>
-    be-py-6bc85fcb56-lb4rk     1/1     Running   0          10m   10.10.189.68    worker2   <none>           <none>
-    fe-nginx-d7f6d6449-rzmll   1/1     Running   0          10m   10.10.189.67    worker2   <none>           <none>
+    be-go-6b6f5fc88d-mxxbg     1/1     Running   0          10m   10.100.235.131   worker1   <none>           <none>
+    be-py-6bc85fcb56-cn8cc     1/1     Running   0          10m   10.100.235.132   worker1   <none>           <none>
+    be-py-6bc85fcb56-lb4rk     1/1     Running   0          10m   10.100.189.68    worker2   <none>           <none>
+    fe-nginx-d7f6d6449-rzmll   1/1     Running   0          10m   10.100.189.67    worker2   <none>           <none>
 ```
 
 ## Docker Registry

@@ -1,5 +1,5 @@
 ---
-draft: false
+draft: true
 date: 2024-06-01
 categories:
   - Ansible
@@ -21,23 +21,27 @@ Ansible playbook
 We can automate some aspects of the Cloud Native application lifecycle using Ansible.
 
 ```sh
-# install python
-sudo apt install python3 python3-venv python3-pip -y
-python3 -V
+# install using python
+# sudo apt install python3 python3-venv python3-pip -y
+# python3 -V
+# echo -e "import sys\nprint(sys.version)" > python3_test.py
+# python3 python3_test.py
+#   3.12.3 (main, Apr 10 2024, 05:33:47) [GCC 13.2.0]
+# rm python3_test.py
+# cd ~
+# python3 -m venv .venv
+# source .venv/bin/activate
+# pip install ansible
+# pip install --upgrade ansible
 
-echo -e "import sys\nprint(sys.version)" > python3_test.py
-python3 python3_test.py
-  3.12.3 (main, Apr 10 2024, 05:33:47) [GCC 13.2.0]
-rm python3_test.py
+# install using package manager
+sudo apt update
+sudo apt install software-properties-common
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible
 
 
-cd ~
-python3 -m venv .venv
-source .venv/bin/activate
-
-pip install ansible
 ansible --version
-pip install --upgrade ansible
 ```
 
 - inventory

@@ -3,7 +3,7 @@ site_name: Jun Ho Lee
 theme:
   name: material
   logo: assets/icons8-minecraft-grass-cube-144.png
-  favicon: assets/icons8-dot-100.png
+  favicon: assets/icons8-minecraft-grass-cube-144.png
   font:
     text: Ubuntu
     code: Ubuntu Mono

@@ -14,9 +14,9 @@ authors:
 
 <img src="https://imgur.com/DwRBYMd.png" alt="EKS architecture" width="500">
 
-The CatVsNonCat image classifier uses a deep learning model to determine whether an image from a given URL contains a cat or not.
+The CatVsNonCat image classifier uses a L-layer Neural network model to classify cat images.
 
-I focused on implementing Kubernetes in an AWS environment. I used Nginx Ingress Controller to configure external access to the application.
+I focused on creating Kubernetes cluster in Cloud environment and how to expose the application to outside world.
 
 <!-- more -->
 
@@ -57,7 +57,7 @@ Github Repository : [CatVsNonCat](https://github.com/jnuho/CatVsNonCat)
 
 My initial goal was to revisit the [`skills`](#skills-used) I've learned.
 
-With my recent interest on deep learning, I decided to create a Cat image classifying application on Kubernetes environment.
+With recent interest on deep learning, I decided to create a Cat image classifying application on Kubernetes environment.
 
 The prediction model uses the following steps to train a Neural Network:
 
