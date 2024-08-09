@@ -918,6 +918,9 @@ curl -D- http://192.168.0.201 -H 'Host: catornot.com'
 ## Application
 
 ```sh
+helm install ...
+
+
 kubectl get pod -o wide
     NAME                       READY   STATUS    RESTARTS   AGE   IP               NODE      NOMINATED NODE   READINESS GATES
     be-go-6b6f5fc88d-mxxbg     1/1     Running   0          10m   10.100.235.131   worker1   <none>           <none>
@@ -1008,14 +1011,16 @@ sudo systemctl restart containerd
 
 "Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
 
-- install argocd
+
+### Install Argo CD
 
 ```sh
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
-- argocd CLI
+
+### Argo CD CLI
 
 ```sh
 cat << EOF > install-argocd-cli.sh
@@ -1034,14 +1039,223 @@ argocd admin initial-password -n argocd
 argocd account update-password --server "https://localhost:8080"
 ```
 
-- ingress to EXPOSE argocd 
 
-https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/
+### Configure TLS
+
+This default installation will have a self-signed certificate and cannot be accessed without a bit of extra work. Do one of:
 
 ```sh
-# test with port-forward just for testing..
-kubectl port-forward svc/argocd-server -n argocd 8080:443
+# default self-signed certificate
+kubectl get secret argocd-secret -nargocd -o yaml
+
+    apiVersion: v1
+    data:
+      admin.password: PASSWORD_HERE
+      admin.passwordMtime: PASSWORD_HERE
+      server.secretkey: SECRETKEY_HERE
+      tls.crt: CERT_HERE
+      tls.key: KEY_HERE
+    kind: Secret
+    metadata:
+      name: argocd-secret
+      namespace: argocd
+    type: Opaque
 ```
+
+#### Create self-signed TLS certificate
+
+-  I referred to a book, [`Bulletproof SSL and TLS`](https://www.amazon.com/Bulletproof-SSL-TLS-Understanding-Applications/dp/1907117040).
+
+```sh
+# 1. Generate an RSA private key
+openssl genrsa -out argocd.key 2048
+
+
+# 2. Public key: have just the public part of a key separately
+openssl rsa -in argocd.key -pubout -out argocd-public.key
+
+
+# 3. Certificate Signing Request (CSR).
+# This is a formal request asking a CA to sign a certificate, and it contains the public key of the
+# entity requesting the certificate and some information about the entity.
+# A CSR is always signed with the private key corresponding to the public key it carries.
+# openssl req -new -key argocd.key -out argocd.csr
+# Here, I did Unattended CSR Generation (non-interactive). it requires creating argocd.cnf beforehand.
+cat << EOF > argocd.cnf
+[req]
+prompt = no
+distinguished_name = dn
+req_extensions = ext
+[dn]
+CN = www.catornot.com
+emailAddress = cactoos555@gmail.com
+O = CatOrNot Ltd
+L = Seoul
+C = KR
+
+[ext]
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1   = *.catornot.com
+DNS.2   = catornot.com
+DNS.3   = argocd-repo-server
+DNS.4   = argocd-repo-server.argo-cd.svc
+DNS.5   = argocd-dex-server
+DNS.6   = argocd-dex-server.argo-cd.svc
+EOF
+
+openssl req -new -config argocd.cnf -key argocd.key -out argocd.csr
+# double-check that the CSR is correct
+# openssl req -text -in argocd.csr -noout
+
+
+# 4. Signing Your Own Certificates
+# After a CSR is generated, use it to sign your own certificate and/or send it to a public CA
+# and ask him or her to sign the certificate
+# If you’re installing a TLS server for your own use, you probably don’t want to go to a CA to
+# get a publicly trusted certificate. It’s much easier to sign your own. 
+
+# (Required for) Creating Certificates Valid for Multiple Hostnames
+cat << EOF > argocd.ext
+subjectAltName = DNS:*.catornot.com, DNS:catornot.com, DNS:argocd-repo-server, DNS:argocd-repo-server.argo-cd.svc, DNS:argocd-dex-server, DNS:argocd-dex-server.argo-cd.svc
+EOF
+
+openssl x509 -req -days 3650 -in argocd.csr -signkey argocd.key -out argocd.crt -extfile argocd.ext
+
+# examine the created certificate
+openssl x509 -text -in argocd.crt -noout
+```
+
+#### Create secrets using Self-signed certificate
+
+- [TLS configuration](https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/)
+
+"Argo CD provides three inbound TLS endpoints that can be configured:"
+
+- argocd-server
+    - `argocd-server-tls` (higher priority) or `argocd-secret` (deprecated) secret that stores tls.crt and tls.key
+    - if tls.crt and tls.key are found in neither of above secrets, a self-signed certificate is generated into `argocd-secret`
+
+```sh
+# To create this secret manually from an existing key pair, you can use kubectl:
+# Argo CD will pick up changes to the argocd-server-tls secret automatically
+# and will not require restart of the pods to use a renewed certificate.
+cd argocd_certs
+
+kubectl create -n argocd secret tls argocd-server-tls \
+  --cert=./argocd.crt \
+  --key=./argocd.key
+```
+
+- argocd-repo-server
+
+```sh
+kubectl create -n argocd secret tls argocd-repo-server-tls \
+  --cert=./argocd.crt \
+  --key=./argocd.key
+
+k get deploy/argocd-repo-server -nargocd
+    NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+    argocd-repo-server                 1/1     1            1           16h
+
+k rollout restart deploy/argocd-repo-server -nargocd
+k get pod -nargocd
+```
+
+- argocd-dex-server
+    - NOTE: as opposed to argocd-server, the argocd-repo-server is not able to pick up changes
+    - to this secret automatically. If you create (or update) this secret,
+    - the argocd-repo-server pods need to be `restarted`.
+
+```sh
+kubectl create -n argocd secret tls argocd-dex-server-tls \
+  --cert=./argocd.crt \
+  --key=./argocd.key
+
+k get deploy/argocd-dex-server -nargocd
+    NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+    argocd-dex-server                 1/1     1            1           16h
+
+k rollout restart deploy/argocd-dex-server -nargocd
+k get pod -nargocd
+```
+
+##### Configuring TLS between Argo CD components
+
+- Configuring TLS to argocd-repo-server
+    - Modify the pod startup parameters for argocd-server and argocd-application-controller
+    - to include the `--repo-server-strict-tls` parameter.
+
+```sh
+kubectl get deploy/argocd-server -nargocd
+    NAME            READY   UP-TO-DATE   AVAILABLE   AGE
+    argocd-server   1/1     1            1           17h
+kubectl edit deployment argocd-server -n argocd
+    spec:
+      containers:
+      - args:
+        - /usr/local/bin/argocd-server
+        - --repo-server-strict-tls
+        name: argocd-server
+
+
+kubectl get statefulsets/argocd-application-controller -n argocd
+    NAME                            READY   AGE
+    argocd-application-controller   1/1     17h
+kubectl edit statefulset argocd-application-controller -n argocd
+    spec:
+      containers:
+      - args:
+        - /usr/local/bin/argocd-application-controller
+        - --repo-server-strict-tls
+```
+
+- Configuring TLS to argocd-dex-server
+    - Modify the pod startup parameters for argocd-server to include the --dex-server-strict-tls parameter.
+
+```sh
+kubectl get deploy/argocd-server -nargocd
+    NAME            READY   UP-TO-DATE   AVAILABLE   AGE
+    argocd-server   1/1     1            1           17h
+kubectl edit deployment argocd-server -n argocd
+    spec:
+      containers:
+      - args:
+        - /usr/local/bin/argocd-server
+        - --repo-server-strict-tls
+        - --dex-server-strict-tls
+        name: argocd-server
+```
+
+
+### Ingress Configuration
+
+- [document](https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/)
+    - [SSL-Passthrough](https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-1-ssl-passthrough)
+
+
+```sh
+# **TEST** with port-forward just for testing
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# TEST use of Service of type Load Balancer and ROLLBACK to use ingress instead
+kubectl get svc/argocd-server -n argocd
+    NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+    argocd-server   ClusterIP   10.98.233.38   <none>        80/TCP,443/TCP   15h
+
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl get svc/argocd-server -n argocd
+    NAME            TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
+    argocd-server   LoadBalancer   10.98.233.38   192.168.0.202   80:32216/TCP,443:32427/TCP   15h
+
+# Access available: http://192.168.0.202
+
+# ROLLBACK
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
+```
+
+
 
 [↑ Back to top](#)
 <br><br>
