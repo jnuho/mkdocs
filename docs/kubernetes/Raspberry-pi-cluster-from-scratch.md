@@ -16,7 +16,7 @@ I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 <img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="containerd" width="110">      
 <img src="https://d7umqicpi7263.cloudfront.net/img/product/4e6562ed-61e5-4aee-87a2-009573d70e6f.com/340f0ca82cf778b32198293eb75166df" alt="containerd" width="110">
 
-<img src="https://i.imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="400">
+<img src="https://i.imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="500">
 
 <!-- more -->
 
