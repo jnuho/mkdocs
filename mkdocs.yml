@@ -58,19 +58,19 @@ markdown_extensions:
 
 
 nav:
-  - <small>🧿</small> 🇰🇺🇧🇪🇷🇳🇪🇹🇪🇸:
+  - ➡️ 🇰🇺🇧🇪🇷🇳🇪🇹🇪🇸:
     - pi cluster from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
     - Cat vs non-cat on EKS: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
     - core concept: kubernetes/Kubernetes-Core-Concept.md
-  - <small>🧿</small> 🇮🇦🇨:
+  - ➡️ 🇮🇦🇨:
     - Ansible: iac/ansible.md
     - Helm Guide: iac/helm.md
     - Terraform and Helm: iac/terraform-and-helm.md
-  - <small>🧿</small> 🇱🇮🇳🇺🇽:
+  - ➡️ 🇱🇮🇳🇺🇽:
     - basic linux: linux/linux-basic.md
-  - <small>🧿</small> 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
+  - ➡️ 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
     - Neural network: deep-learning/Deep-Neural-Network.md
-  - <small>🧿</small> 🇬🇴🇱🇦🇳🇬:
+  - ➡️ 🇬🇴🇱🇦🇳🇬:
     - worker pool pattern: golang/worker-pool-pattern.md
     - concurrency: golang/concurrency.md
     - basic: golang/basic.md
@@ -78,5 +78,3 @@ nav:
     - tanmay book: golang/tanmay-book.md
     - networking: golang/network.md
   - 🇮🇳🇫🇴: index.md
-
-

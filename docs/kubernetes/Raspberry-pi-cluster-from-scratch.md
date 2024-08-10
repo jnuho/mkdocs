@@ -1103,6 +1103,7 @@ DNS.3   = argocd-repo-server
 DNS.4   = argocd-repo-server.argo-cd.svc
 DNS.5   = argocd-dex-server
 DNS.6   = argocd-dex-server.argo-cd.svc
+IP.1    = 192.168.0.202
 EOF
 
 openssl req -new -config argocd.cnf -key argocd.key -out argocd.csr
@@ -1118,7 +1119,15 @@ openssl req -new -config argocd.cnf -key argocd.key -out argocd.csr
 
 # (Required for) Creating Certificates Valid for Multiple Hostnames
 cat << EOF > argocd.ext
-subjectAltName = DNS:*.catornot.com, DNS:catornot.com, DNS:argocd-repo-server, DNS:argocd-repo-server.argo-cd.svc, DNS:argocd-dex-server, DNS:argocd-dex-server.argo-cd.svc
+subjectAltName = @alt_names
+[alt_names]
+DNS.1   = *.catornot.com
+DNS.2   = catornot.com
+DNS.3   = argocd-repo-server
+DNS.4   = argocd-repo-server.argo-cd.svc
+DNS.5   = argocd-dex-server
+DNS.6   = argocd-dex-server.argo-cd.svc
+IP.1    = 192.168.0.202
 EOF
 
 openssl x509 -req -days 3650 -in argocd.csr -signkey argocd.key -out argocd.crt -extfile argocd.ext
@@ -1228,6 +1237,43 @@ kubectl edit deployment argocd-server -n argocd
         name: argocd-server
 ```
 
+
+#### Check argocd-server pods if it correctly uses the created certificate!
+
+```sh
+kubectl exec -it argocd-server-66688f65d6-xdcl8 -nargocd /bin/bash
+ls /app/config/server/tls
+
+openssl x509 -text -in /app/config/server/tls/tls.crt -noout
+```
+
+#### Register A Cluster To Deploy Apps To (Optional)
+
+In case, argocd need to deploy application to a different Kubernetes cluster than the cluster that argocd is running in.
+When deploying internally (to the same cluster that Argo CD is running in),
+`https://kubernetes.default.svc` should be used as the application's K8s API server address.
+
+
+```sh
+argocd cluster list
+    SERVER                          NAME        VERSION  STATUS   MESSAGE                                                  PROJECT
+    https://kubernetes.default.svc  in-cluster           Unknown  Cluster has no applications and is not being monitored.
+
+
+kubectl config get-contexts -o name
+    arn:aws:eks:ap-northeast-2:094833749257:cluster/my-cluster
+    minikube
+    pi
+argocd cluster add pi
+
+argocd cluster list
+    SERVER                          NAME        VERSION  STATUS      MESSAGE                                                  PROJECT
+    https://192.168.0.10:6443       pi          1.30     Successful
+    https://kubernetes.default.svc  in-cluster           Unknown     Cluster has no applications and is not being monitored.
+```
+
+.kube/config
+    server: https://192.168.0.10:6443
 
 ### Ingress Configuration
 
