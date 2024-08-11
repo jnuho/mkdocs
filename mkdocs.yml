@@ -71,8 +71,8 @@ nav:
   - 🧿 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
     - Depp Neural Network with numpy: deep-learning/Deep-Neural-Network.md
   - 🧿 🇬🇴🇱🇦🇳🇬:
-    - Worker pool pattern: golang/worker-pool-pattern.md
+    - Golang basics: golang/basic.md
     - Concurrency: golang/concurrency.md
-    - Basic Golang concept: golang/basic.md
+    - Worker pool pattern: golang/worker-pool-pattern.md
     - Dashboard app with Go AWS SDK: golang/aws-dashboard.md
   - 🇮🇳🇫🇴: index.md
