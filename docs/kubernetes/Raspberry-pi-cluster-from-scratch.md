@@ -743,6 +743,11 @@ kubectl top pod -nkube-system
     kube-proxy-wt555                           1m           13Mi
     kube-scheduler-master                      3m           18Mi
     metrics-server-5df54c66b8-zhr7h            4m           18Mi
+
+# Powershell
+#   An alias that's created or changed by Set-Alias isn't permanent and is only available during the current PowerShell session.
+Set-Alias -Name k -Value kubectl
+k get pod
 ```
 
 
@@ -1152,11 +1157,11 @@ openssl x509 -text -in argocd.crt -noout
 # Argo CD will pick up changes to the argocd-server-tls secret automatically
 # and will not require restart of the pods to use a renewed certificate.
 cd argocd_certs
+```
 
-kubectl create -n argocd secret tls argocd-server-tls \
+kubectl create secret tls catornot-tls \
   --cert=./argocd.crt \
   --key=./argocd.key
-```
 
 - argocd-repo-server
 
@@ -1278,15 +1283,76 @@ argocd cluster list
 
 ### Ingress Configuration
 
-- [document](https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/)
-    - [SSL-Passthrough](https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-1-ssl-passthrough)
+- [Kubernetes/ingress-nginx](https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#kubernetesingress-nginx)
+    - [Option 1: SSL-Passthrough](https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-1-ssl-passthrough)
+    - [Option 2: SSL Termination at Ingress Controller](https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#option-2-ssl-termination-at-ingress-controller)
 
+#### Option 1: SSL-Passthrough
+
+- `--enable-ssl-passthrough` argument to `ingress-nginx-controller` container spec of deployment.
 
 ```sh
-# **TEST** with port-forward just for testing
-kubectl port-forward svc/argocd-server -n argocd 8080:443
+# curl -L https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.1/deploy/static/provider/cloud/deploy.yaml -o ingress-nginx.yaml
+# vim ingress-nginx.yaml
+# OR:
+kubectl edit deploy ingress-nginx-controller -ningress-nginx
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  template:
+    spec:
+      containers:
+      - args:
+        - /nginx-ingress-controller
+        - --enable-ssl-passthrough
+```
 
-# TEST use of Service of type Load Balancer and ROLLBACK to use ingress instead
+- Helm `values.pi.yaml`
+
+```yaml
+# Helm values for argocd INGRESS
+  - name: argocd-ingress
+    namespace: argocd
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    tls:
+    - hosts:
+      - argocd.catornot.com
+      secretName: argocd-server-tls
+    hosts:
+      - host: argocd.catornot.com
+        http:
+          paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 443
+```
+
+- hosts file
+
+```
+192.168.0.201 catornot.com
+192.168.0.201 argocd.catornot.com
+```
+
+
+- (Optional) Without using ingress configuration
+
+```sh
+# Method 1. port-forward just for testing
+# kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+# Method 2. Service of LoadBalancer type and ROLLBACK to use ingress instead
 kubectl get svc/argocd-server -n argocd
     NAME            TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
     argocd-server   ClusterIP   10.98.233.38   <none>        80/TCP,443/TCP   15h
@@ -1301,7 +1367,6 @@ kubectl get svc/argocd-server -n argocd
 # ROLLBACK
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
 ```
-
 
 
 [↑ Back to top](#)
