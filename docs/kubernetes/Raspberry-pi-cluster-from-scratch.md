@@ -7,7 +7,6 @@ authors:
   - junho
 ---
 
-
 I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="k8s" width="50">
@@ -49,7 +48,8 @@ Kubernetes is a complex distributed system. By setting it up in home network, I 
 - [Reference](#reference)
 
 
-## Raspberry Pi Setup [¶](#raspberry-pi-setup)
+## Raspberry Pi Setup <a class="headerlink" href="#raspberry-pi-setup" title="Permanent link"> ¶</a>
+
 
 You need to have minimum 1 master node and 1 worker node. To make the cluster highly available, odd number of master node (1, 3, 5 ...) and more than 2 worker nodes are ideal. I chose SSD over microSD card which seemed to have poor performance and lack durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
 
@@ -110,7 +110,7 @@ Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/#time-sync)
 <br><br>
 
 
-## Kubernetes [¶](#kubernetes)
+## Kubernetes <a class="headerlink" href="#kubernetes" title="Permanent link"> ¶</a>
 
 We will configure Kubernetes v1.30.3.
 
@@ -750,7 +750,7 @@ kubectl top pod -nkube-system
 <br><br>
 
 
-## Metrics server [¶](#metrics-server)
+## Metrics server <a class="headerlink" href="#metrics-server" title="Permanent link"> ¶</a>
 
 ```sh
 curl -L https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml -o metrics-server.yaml
@@ -772,7 +772,7 @@ k get pod -nkube-system
 [↑ Back to top](#)
 <br><br>
 
-## Nginx Ingress Controller [¶](#nginx-ingress-controller)
+## Nginx Ingress Controller <a class="headerlink" href="#nginx-ingress-controller" title="Permanent link"> ¶</a>
 
 - Method 1. Install with yaml manifest
 
@@ -811,7 +811,7 @@ kubectl get svc -ningress-nginx
 ```
 
 
-## Metallb [¶](#metallb)
+## Metallb <a class="headerlink" href="#metallb" title="Permanent link"> ¶</a>
 
 <img src="https://kubernetes.github.io/ingress-nginx/images/baremetal/baremetal_overview.jpg" alt="A pure software solution: MetalLB" width="400">
 
@@ -930,7 +930,7 @@ kubectl get pod -o wide
     fe-nginx-d7f6d6449-rzmll   1/1     Running   0          10m   10.100.189.67    worker2   <none>           <none>
 ```
 
-## Docker Registry [¶](#docker-registry)
+## Docker Registry <a class="headerlink" href="#docker-registry" title="Permanent link"> ¶</a>
 
 ### Local Registry
 
@@ -1008,7 +1008,7 @@ sudo systemctl restart containerd
 [↑ Back to top](#)
 <br><br>
 
-## Argo CD [¶](#argo-cd)
+## Argo CD <a class="headerlink" href="#argo-cd" title="Permanent link"> ¶</a>
 
 "Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
 
@@ -1307,7 +1307,7 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
 [↑ Back to top](#)
 <br><br>
 
-## Reference [¶](#reference)
+## Reference <a class="headerlink" href="#reference" title="Permanent link"> ¶</a>
 
 - [kubernetes.io](https://kubernetes.io/docs/home/)
 - [server world](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=download)
