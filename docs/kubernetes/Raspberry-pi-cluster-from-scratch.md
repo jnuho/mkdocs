@@ -1368,6 +1368,19 @@ kubectl get svc/argocd-server -n argocd
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
 ```
 
+#### Create Apps Via CLI
+
+- one can create apps via CLI or UI
+
+```sh
+kubectl config get-contexts
+kubectl config set-context --current --namespace=argocd
+argocd app create guestbook --repo https://github.com/jnuho/infra.git --path guestbook --dest-server https://kubernetes.default.svc --dest-namespace default
+
+kubectl config set-context --current --namespace=default
+kubectl config get-contexts
+```
+
 
 [↑ Back to top](#)
 <br><br>
