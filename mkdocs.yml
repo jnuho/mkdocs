@@ -59,12 +59,12 @@ markdown_extensions:
 
 nav:
   - ☸️ 🇰🇺🇧🇪🇷🇳🇪🇹🇪🇸:
-    - Kubernetes cluster with Raspberry Pi from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
-    - EKS with Terraform - Cat vs. Non-cat Neural network app: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
+    - Kubernetes Pi Cluster from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
+    - EKS with Terraform - Cat vs. Non-cat app: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
     - Kubernetes Core concept: kubernetes/Kubernetes-Core-Concept.md
   - 🧿 🇮🇦🇨:
     - Ansible for beginner: iac/ansible.md
-    - Terraform and Helm instruction dump: iac/terraform-and-helm.md
+    - Terraform and Helm CLI: iac/terraform-and-helm.md
     - Helm Chart Guide - PDF: iac/helm.md
   - 🧿 🇱🇮🇳🇺🇽:
     - Basic Linux command: linux/linux-basic.md

@@ -4,7 +4,7 @@ I explore Kubernetes and DevOps practices and write posts here.
 
 - [Kubernetes cluster with Raspberry Pi from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  on-premise K8s cluster.
 - [EKS with Terraform](kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md) - Cat vs. Non-cat L-layer Deep Neural network
-- [Deep learning](deep-learning/Deep-Neural-Network.md): Deep Neural Network jupyter notebook.
+- [Deep Neural Network](deep-learning/Deep-Neural-Network.md): jupyter notebook to build a L-layer DNN
 - [Golang AWS dashboard](golang/aws-dashboard.md) - Dashboard app using Go AWS SDK
 
 <hr>
