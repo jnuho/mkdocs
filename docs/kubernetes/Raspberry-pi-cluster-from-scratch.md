@@ -16,7 +16,8 @@ I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 <img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="30">
 <img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="calico" width="110">      
 
-<img src="https://imgur.com/2wDQPY0.jpg" alt="pi-cluster" width="400">
+<img src="https://imgur.com/HEPBDpT.jpg" alt="pi-cluster-1" width="600">
+
 
 <!-- more -->
 
@@ -53,6 +54,8 @@ Kubernetes is a complex distributed system. By setting it up in home network, I 
 
 You need to have minimum 1 master node and 1 worker node. To make the cluster highly available, odd number of master node (1, 3, 5 ...) and more than 2 worker nodes are ideal. I chose SSD over microSD card which seemed to have poor performance and lack durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
 
+<img src="https://imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="600">
+
 - Hardware
     - 3 x Raspberry pi 5 (1 master, 2 workers)
         - 8GB Memory, 4-core CPU
@@ -64,6 +67,8 @@ You need to have minimum 1 master node and 1 worker node. To make the cluster hi
     - 1 x TP LINK Switch Hub TL-SG105
 
 Now, configure NVMD SSD Boot! [LINK](https://www.jeffgeerling.com/blog/2023/nvme-ssd-boot-raspberry-pi-5).
+
+<img src="https://imgur.com/2wDQPY0.jpg" alt="pi-cluster-2" width="350">
 
 ### Enable the external PCI Express port
 

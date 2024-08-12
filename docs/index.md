@@ -2,6 +2,13 @@
 
 I explore Kubernetes and DevOps practices and write posts here.
 
+<img src="https://i.imgur.com/DwRBYMd.png" alt="eks" width="200">
+<img src="https://imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="200">
+<a href="https://i.imgur.com/SkvollY.mp4" target="_blank"><img src="https://imgur.com/SkvollY.gif" alt="pi-cluster" width="200"></a>
+
+
+
+
 - [Kubernetes cluster with Raspberry Pi from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  on-premise K8s cluster.
 - [EKS with Terraform](kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md) - Cat vs. Non-cat L-layer Deep Neural network
 - [Deep Neural Network](deep-learning/Deep-Neural-Network.md): jupyter notebook to build a L-layer DNN
