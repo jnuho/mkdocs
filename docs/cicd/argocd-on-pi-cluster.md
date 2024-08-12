@@ -12,7 +12,7 @@ authors:
 
 "Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
 
-<img src="https://imgur.com/6J1986a.gif" alt="pi-cluster" width="600">
+<a href="https://imgur.com/6J1986a.gif" ><img src="https://imgur.com/6J1986a.gif" alt="pi-cluster" width="800"></a>
 
 <!-- more -->
 
@@ -25,7 +25,7 @@ authors:
 
 ## Install Argo CD
 
-<img src="https://imgur.com/ZFTjY2G.jpg" alt="pi-cluster" width="600">
+<img src="https://imgur.com/ZFTjY2G.jpg" alt="pi-cluster" width="800">
 
 ```sh
 kubectl create namespace argocd
