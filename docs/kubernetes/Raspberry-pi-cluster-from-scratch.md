@@ -7,14 +7,15 @@ authors:
   - junho
 ---
 
+
 I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 
-<img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="35">
-<img src="https://kubernetes.io/images/kubeadm-stacked-color.png" alt="kubeadm" width="55">
-<img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/containerd/horizontal/color/containerd-horizontal-color.png" alt="containerd" width="70">
-<img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="containerd" width="50">
-<img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="containerd" width="110">      
-<img src="https://d7umqicpi7263.cloudfront.net/img/product/4e6562ed-61e5-4aee-87a2-009573d70e6f.com/340f0ca82cf778b32198293eb75166df" alt="containerd" width="110">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="k8s" width="50">
+<img src="https://kubernetes.io/images/kubeadm-stacked-color.png" alt="kubeadm" width="45">
+<img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/containerd/horizontal/color/containerd-horizontal-color.png" alt="containerd" width="100">
+<img src="https://www.f5.com/content/dam/www/global-assets/partner-logos/ce-partner-logo/NGINX-Part-of-F5-horiz-black-type-525x208@2x.png" alt="nginx" width="110">
+<img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="30">
+<img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="calico" width="110">      
 
 <img src="https://i.imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="500">
 
@@ -48,7 +49,7 @@ Kubernetes is a complex distributed system. By setting it up in home network, I 
 - [Reference](#reference)
 
 
-## Raspberry Pi Setup
+## Raspberry Pi Setup <a class="headerlink" href="#raspberry-pi-setup" title="Permanent link"> ¶</a>
 
 You need to have minimum 1 master node and 1 worker node. To make the cluster highly available, odd number of master node (1, 3, 5 ...) and more than 2 worker nodes are ideal. I chose SSD over microSD card which seemed to have poor performance and lack durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
 
@@ -109,7 +110,7 @@ Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/#time-sync)
 <br><br>
 
 
-## Kubernetes
+## Kubernetes <a class="headerlink" href="#kubernetes" title="Permanent link"> ¶</a>
 
 We will configure Kubernetes v1.30.3.
 
@@ -749,7 +750,7 @@ kubectl top pod -nkube-system
 <br><br>
 
 
-## Metrics server
+## Metrics server <a class="headerlink" href="#metrics-server" title="Permanent link"> ¶</a>
 
 ```sh
 curl -L https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml -o metrics-server.yaml
@@ -771,7 +772,7 @@ k get pod -nkube-system
 [↑ Back to top](#)
 <br><br>
 
-## Nginx Ingress Controller
+## Nginx Ingress Controller <a class="headerlink" href="#nginx-ingress-controller" title="Permanent link"> ¶</a>
 
 - Method 1. Install with yaml manifest
 
@@ -810,7 +811,7 @@ kubectl get svc -ningress-nginx
 ```
 
 
-## Metallb
+## Metallb <a class="headerlink" href="#metallb" title="Permanent link"> ¶</a>
 
 <img src="https://kubernetes.github.io/ingress-nginx/images/baremetal/baremetal_overview.jpg" alt="A pure software solution: MetalLB" width="400">
 
@@ -929,7 +930,7 @@ kubectl get pod -o wide
     fe-nginx-d7f6d6449-rzmll   1/1     Running   0          10m   10.100.189.67    worker2   <none>           <none>
 ```
 
-## Docker Registry
+## Docker Registry <a class="headerlink" href="#docker-registry" title="Permanent link"> ¶</a>
 
 ### Local Registry
 
@@ -1007,7 +1008,7 @@ sudo systemctl restart containerd
 [↑ Back to top](#)
 <br><br>
 
-## Argo CD
+## Argo CD <a class="headerlink" href="#argo-cd" title="Permanent link"> ¶</a>
 
 "Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
 
@@ -1260,8 +1261,8 @@ argocd cluster list
     https://kubernetes.default.svc  in-cluster           Unknown  Cluster has no applications and is not being monitored.
 
 
-kubectl config get-contexts -o name
     arn:aws:eks:ap-northeast-2:094833749257:cluster/my-cluster
+kubectl config get-contexts -o name
     minikube
     pi
 argocd cluster add pi
@@ -1306,7 +1307,7 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
 [↑ Back to top](#)
 <br><br>
 
-## Reference
+## Reference <a class="headerlink" href="#reference" title="Permanent link"> ¶</a>
 
 - [kubernetes.io](https://kubernetes.io/docs/home/)
 - [server world](https://www.server-world.info/en/note?os=Ubuntu_24.04&p=download)
