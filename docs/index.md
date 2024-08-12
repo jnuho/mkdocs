@@ -4,9 +4,7 @@ I explore Kubernetes and DevOps practices and write posts here.
 
 <img src="https://i.imgur.com/DwRBYMd.png" alt="eks" width="200">
 <img src="https://imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="200">
-<a href="https://i.imgur.com/SkvollY.mp4" target="_blank"><img src="https://imgur.com/SkvollY.gif" alt="pi-cluster" width="200"></a>
-
-
+<img src="https://imgur.com/ZFTjY2G.jpg" alt="argocd" width="200">
 
 
 - [Kubernetes cluster with Raspberry Pi from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  on-premise K8s cluster.

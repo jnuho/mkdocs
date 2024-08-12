@@ -64,7 +64,7 @@ nav:
     - Kubernetes Core concept: kubernetes/Kubernetes-Core-Concept.md
   - 🧿 🇨🇮/🇨🇩:
     # - Github Actions CI: cicd/github-actions.md
-    - Argo CD on Kubernetes Pi cluster: cicd/argocd-on-pi-cluster.md
+    - Github Actions CI and Argo CD for Kubernetes cluster: cicd/argocd-github-actions-kubernetes.md
   - 🧿 🇮🇦🇨:
     - Ansible for beginner: iac/ansible.md
     - Terraform and Helm CLI: iac/terraform-and-helm.md

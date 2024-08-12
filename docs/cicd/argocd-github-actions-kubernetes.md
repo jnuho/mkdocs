@@ -8,19 +8,31 @@ authors:
   - junho
 ---
 
-# Argo CD
+I will be creating a CI/CD pipeline -  Github actions as CI and Argo CD as CD. The target is a Kubernetes cluster I created in my home Raspberry pi cluster. And I'll be covering the CI/CD on AWS EKS as well. As a test bed, I will try to apply to the local Raspberry Pi cluster first.
 
-"Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
-
-<a href="https://i.imgur.com/SkvollY.mp4" target="_blank"><img src="https://imgur.com/SkvollY.gif" alt="pi-cluster" width="800"></a>
+<a href="https://imgur.com/SkvollY.gif" target="_blank"><img src="https://imgur.com/SkvollY.gif" alt="pi-cluster" width="800"></a>
 
 <!-- more -->
 
-- [Install Argo CD](#install-argo-cd)
-- [Argo CD CLI](#argo-cd-cli)
-- [Configure TLS](#configure-tls)
-- [Create An Application From A Git Repository](#create-an-application-from-a-git-repository)
-- [Sync (Deploy) The Application](#sync-deploy-the-application)
+# CI/CD pipeline for Kubernetes cluster
+
+## Table of Contents
+
+- [Github Actions](#github-actions)
+- [Argo CD](#argo-cd)
+    - [Install Argo CD](#install-argo-cd)
+    - [Argo CD CLI](#argo-cd-cli)
+    - [Configure TLS](#configure-tls)
+    - [Create An Application From A Git Repository](#create-an-application-from-a-git-repository)
+    - [Sync (Deploy) The Application](#sync-deploy-the-application)
+
+## Github Actions
+
+
+## Argo CD
+
+"Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
+
 
 
 ## Install Argo CD
