@@ -37,10 +37,10 @@ theme:
 
 extra_css:
   - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css
-  - stylesheets/extra.css
+  - assets/css/extra.css
   
 extra_javascript:
-  - javascripts/mathjax.js
+  - assets/js/mathjax.js
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 plugins:
@@ -62,13 +62,15 @@ nav:
     - Kubernetes Pi Cluster from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
     - EKS with Terraform - Cat vs. Non-cat app: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
     - Kubernetes Core concept: kubernetes/Kubernetes-Core-Concept.md
+  - 🧿 🇨🇮/🇨🇩:
+    - Argo CD on Kubernetes Pi cluster: cicd/argocd.md
   - 🧿 🇮🇦🇨:
     - Ansible for beginner: iac/ansible.md
     - Terraform and Helm CLI: iac/terraform-and-helm.md
     - Helm Chart Guide - PDF: iac/helm.md
-  - 🧿 🇱🇮🇳🇺🇽:
+  - 🐧 🇱🇮🇳🇺🇽:
     - Basic Linux command: linux/linux-basic.md
-  - 🧿 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
+  - 🧠 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
     - Depp Neural Network with numpy: deep-learning/Deep-Neural-Network.md
   - 🧿 🇬🇴🇱🇦🇳🇬:
     - Golang basics: golang/basic.md

@@ -16,7 +16,7 @@ I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 <img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="30">
 <img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="calico" width="110">      
 
-<img src="https://i.imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="500">
+<img src="https://imgur.com/2wDQPY0.jpg" alt="pi-cluster" width="400">
 
 <!-- more -->
 
@@ -1368,18 +1368,47 @@ kubectl get svc/argocd-server -n argocd
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
 ```
 
-#### Create Apps Via CLI
+#### Create An Application From A Git Repository
 
-- one can create apps via CLI or UI
+- Create apps via CLI or UI
 
 ```sh
-kubectl config get-contexts
+argocd login argocd.catornot.com
+kubectl config get-contexts -o name
+argocd cluster add pi
+
 kubectl config set-context --current --namespace=argocd
-argocd app create guestbook --repo https://github.com/jnuho/infra.git --path guestbook --dest-server https://kubernetes.default.svc --dest-namespace default
+argocd app create catornot --repo https://github.com/jnuho/infra.git --path helm-chart/cat-chart --dest-server https://kubernetes.default.svc --dest-namespace default
 
 kubectl config set-context --current --namespace=default
 kubectl config get-contexts
 ```
+
+### Sync (Deploy) The Application
+
+- Syncing via CLI or UI
+
+```sh
+argocd app get catornot
+
+Name:               argocd/catornot
+Project:            default
+Server:             https://kubernetes.default.svc
+Namespace:          default
+URL:                https://argocd.catornot.com/applications/catornot
+Source:
+- Repo:             https://github.com/jnuho/infra.git
+  Target:
+  Path:             helm-chart/cat-chart
+SyncWindow:         Sync Allowed
+Sync Policy:        Manual
+Sync Status:        Synced to  (1fc839b)
+Health Status:      Healthy
+
+
+argocd app sync catornot
+```
+
 
 
 [↑ Back to top](#)
