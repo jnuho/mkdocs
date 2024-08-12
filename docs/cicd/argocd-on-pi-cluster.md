@@ -12,7 +12,7 @@ authors:
 
 "Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
 
-<a href="https://imgur.com/6J1986a.gif" target="_blank"><img src="https://imgur.com/6J1986a.gif" alt="pi-cluster" width="800"></a>
+<a href="https://imgur.com/SkvollY.gif" target="_blank"><img src="https://imgur.com/SkvollY.gif" alt="pi-cluster" width="800"></a>
 
 <!-- more -->
 
