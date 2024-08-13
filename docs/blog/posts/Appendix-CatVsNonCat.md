@@ -23,7 +23,7 @@ Extra stuffs from [CatVsNonCat](https://blogd.org/blog/2024/07/11/implement-cat-
 - [CORS issue](#cors-issue)
 - [Minikube implementation](#minikube-implementation)
 - [Microk8s implemntation](#microk8s-implemntation)
-- [Gcloud implementation](#gcloud-implementation)
+- [Gcloud implementation](#gcp-implementation)
 - [Golang ini setting](#golang-ini-setting)
 - [AWS LoadBalancer Controller](#aws-loadbalancer-controller)
 - [MariaDB](#mariadb)
@@ -34,11 +34,11 @@ Extra stuffs from [CatVsNonCat](https://blogd.org/blog/2024/07/11/implement-cat-
 
 ### Exposing external service
 
-- [`LINK`](#https://youtu.be/ePqUq06WoLk?si=jlRgm1oI9RI_d7RF)
+- [`LINK`](https://youtu.be/ePqUq06WoLk?si=jlRgm1oI9RI_d7RF)
 
 ### Terraform Reference
 
-- [LINK](#https://antonputra.com/terraform/how-to-create-eks-cluster-using-terraform)
+- [LINK](https://antonputra.com/terraform/how-to-create-eks-cluster-using-terraform)
 
 ### Binary classification
 

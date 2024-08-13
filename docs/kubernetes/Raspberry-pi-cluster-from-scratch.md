@@ -45,7 +45,7 @@ Kubernetes is a complex distributed system. I decided to explore the inner worki
     - [Creating a cluster with kubeadm](#creating-a-cluster-with-kubeadm)
     - [Troubleshooting kubeadm](#troubleshooting-kubeadm)
     - [CNI: Calico](#cni-calico)
-    - [Control your cluster from other machines](#controlling-your-cluster-from-other-machines)
+    - [Control your cluster from other machines](#control-your-cluster-from-other-machines)
 - [Metrics server](#metrics-server)
 - [Nginx Ingress Controller](#nginx-ingress-controller)
 - [Metallb](#metallb)
@@ -819,7 +819,7 @@ chmod 700 get_helm.sh
 
 - Install `Nginx Ingress Controller`
     - [quick start](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
-    - [Guide](#https://medium.com/@tonylixu/devops-in-k8s-nginx-ingress-controller-0a09f48458e2)
+    - [Guide](https://medium.com/@tonylixu/devops-in-k8s-nginx-ingress-controller-0a09f48458e2)
 
 
 ```sh

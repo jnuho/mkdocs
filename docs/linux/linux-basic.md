@@ -21,13 +21,12 @@ Over the course of the Raspberry-pi cluster setup, I tried to record Linux knowl
     - [curl](#curl)
     - [terminology](#terminology)
     - [Subnetting](#subnetting)
-- [Ubuntu](ubuntu)
+- [Ubuntu](#ubuntu)
     - [Time sync](#time-sync)
     - [Initial Settings](#initial-settings)
     - [SSH access](#ssh-access)
     - [Password policy](#password-policy)
     - [lm-sensors](#lm-sensors)
-    - [minikube](#minikube)
 - [Reference](#reference)
 
 

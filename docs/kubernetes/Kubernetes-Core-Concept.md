@@ -22,7 +22,7 @@ authors:
     - [`Workload Management`](#workload-management)
         - [`Deployment`](#deployment)
         - [`ReplicaSet`](#replicaset)
-        - [`Daemonset`](#daemonset)
+        - [`StatefulSet`](#statefulset)
     - [`Service`](#service)
     - [`Ingress`](#ingress)
         - [`traffic flow`](#traffic-flow)
@@ -147,7 +147,7 @@ computers in the underlying computer cluster and acts as an interface between th
 
 ### Workload Management
 
-#### Deployments
+#### Deployment
 
 - manage stateless application workloads on your cluster, where any Pod in the Deployment is interchangeable and can be replaced if needed.
 
