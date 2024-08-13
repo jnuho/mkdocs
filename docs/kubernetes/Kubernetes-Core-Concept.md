@@ -9,9 +9,8 @@ authors:
 
 <p align="left"><strong>Date:</strong> June 1, 2024<br></p>
 
-|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="680">|
-|:--:| 
-| *Kubernetes as an operating system for the cluster* |
+<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="680">
+
 
 <!-- more -->
 
@@ -108,9 +107,7 @@ computers in the underlying computer cluster and acts as an interface between th
 
 - https://kubernetes.io/docs/concepts/architecture/
 
-|<img src="https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg" alt="add-node" width="820">|
-|:--:| 
-| *kubernetes-cluster-architecture* |
+<img src="https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg" alt="add-node" width="820">
 
 
 - Example of Cluster Set-up

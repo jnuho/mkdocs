@@ -61,7 +61,7 @@ markdown_extensions:
 nav:
   - ☸️ 🇰🇺🇧🇪🇷🇳🇪🇹🇪🇸:
     - <small>-</small> Kubernetes Pi Cluster from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
-    - <small>-</small> EKS with Terraform - Cat vs. Non-cat app: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
+    - <small>-</small> EKS cluster with Terraform - Cat vs. Non-cat app: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
     - <small>-</small> Kubernetes Core concept: kubernetes/Kubernetes-Core-Concept.md
   - 🧿 🇨🇮/🇨🇩:
     # - Github Actions CI: cicd/github-actions.md
