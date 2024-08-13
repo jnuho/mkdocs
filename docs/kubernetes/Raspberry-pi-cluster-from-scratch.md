@@ -14,7 +14,7 @@ I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/containerd/horizontal/color/containerd-horizontal-color.png" alt="containerd" width="100">
 <img src="https://www.f5.com/content/dam/www/global-assets/partner-logos/ce-partner-logo/NGINX-Part-of-F5-horiz-black-type-525x208@2x.png" alt="nginx" width="110">
 <img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="30">
-<img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="calico" width="110">      
+<img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="calico" width="110">
 
 <img src="https://imgur.com/HEPBDpT.jpg" alt="pi-cluster-1" width="600">
 

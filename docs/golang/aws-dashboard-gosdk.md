@@ -56,7 +56,7 @@ It utilizes Go AWS SDK to render a organized view of AWS resources deployed in m
 
 - Cloud접속 -> Vpn > http://{ip_addr}:port
 
-![go sdk app](https://imgur.com/5tIpYyR.png)
+![go sdk app](https://imgur.com/5tIpYyR.jpg)
 
 
 ## Aws Profile Management
