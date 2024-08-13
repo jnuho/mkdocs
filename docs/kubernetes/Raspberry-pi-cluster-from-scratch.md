@@ -949,9 +949,9 @@ kubectl get svc -ningress-nginx
     - C:\Windows\System32\drivers\etc\hosts
 
 ```
-192.168.0.201 catornot.com
+192.168.0.201 catornot.org
 
-curl -D- http://192.168.0.201 -H 'Host: catornot.com'
+curl -D- http://192.168.0.201 -H 'Host: catornot.org'
 ```
 
 ## Application
@@ -1083,15 +1083,118 @@ Let's Encrypt is a nonprofit CA (certificate authority) that provides free SSL/T
 - Once domain ownership is validated, Let's Encrypt issues the certificate and the client installs it.
 - The client periodically renews the certificate through the ACME protocol, ensuring continued validity and security.
 
+
+#### Configure a Let's Encrypt Issuer - Staging
+
+Due to strict rate limit, first start with Let's Encrypt `staging issuer`, and check if it's working for staging.
+Then, we can move on to creating the `production issuer`.
+
+
 ```sh
+# Edit as your email address
+kubectl create --edit -f https://raw.githubusercontent.com/cert-manager/website/master/content/docs/tutorials/acme/example/staging-issuer.yaml
+# expected output: issuer.cert-manager.io "letsencrypt-staging" created
+
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    # Email address used for ACME registration
+    # You must replace this email address with your own.
+    # Let's Encrypt will use this to contact you about expiring
+    # certificates, and issues related to your account.
+    email: cactoos555@gmail.com
+    # The ACME server URL
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+        # Secret resource that will be used to store the account's private key.
+      name: letsencrypt-staging
+    # Enable the HTTP-01 challenge provider
+    # Add a single challenge solver, HTTP01 using nginx
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx
+
+# You should see the issuer listed with a registered account.
+kubectl describe issuer letsencrypt-staging
+```
+
+### Deploy a TLS Ingress Resource
+
+- To request the TLS certificate, edit ingress resource to add the annotation on the ingress with ingress-shim.
+- (Another method) or directly create a cretificate resource.
+
+```sh
+vim ./cat-chart/values.pi.yaml
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: catornot-ingress
+  annotations:
+    cert-manager.io/issuer: "letsencrypt-staging"
+  # ...
+
+# Argo CD: OutOfSync -> deploy to cluster!
+
+# Cert-manager will read these annotations and use them to CREATE a CERTIFICATE, which you can request and see:
+kubectl get certificate
+
+# cert-manager reflects the state of the process for every request in the certificate object
+kubectl describe certificate quickstart-example-tls
+
+# Once complete, cert-manager will have created a secret with the details of the certificate
+# based on the secret used in the ingress resource. You can use the describe command as well to see some details:
+kubectl describe secret quickstart-example-tls
 ```
 
 
+#### Configure a Let's Encrypt Issuer - Production
+
+Now that we have confidence that everything is configured correctly, you can update the annotations in the ingress to specify the production issuer:
+
+```sh
+vim ./cat-chart/values.pi.yaml
+
+apiVersion: networking.k8s.io/v1 
+kind: Ingress
+metadata:
+  name: catornot-ingress
+  annotations:
+    cert-manager.io/issuer: "letsencrypt-prod"
+
+  # ...
+
+# Argo CD: OutOfSync -> deploy to cluster!
+
+# You will also need to delete the existing secret, which cert-manager is watching and will cause it to reprocess the request with the updated issuer.
+kubectl delete secret quickstart-example-tls
+
+# Cert-manager will read these annotations and use them to create a certificate, which you can request and see:
+kubectl get certificate
+
+# cert-manager reflects the state of the process for every request in the certificate object
+kubectl describe certificate quickstart-example-tls
+
+# Once complete, cert-manager will have created a secret with the details of the certificate
+# based on the secret used in the ingress resource. You can use the describe command as well to see some details:
+kubectl describe secret quickstart-example-tls
+
+# You can see the current state of the ACME Order by running kubectl describe on the Order resource that cert-manager has created for your Certificate:
+kubectl describe order quickstart-example-tls-889745041
 
 
+# Here, we can see that cert-manager has created 1 'Challenge' resource to fulfill the Order. You can dig into the state of the current ACME challenge by running kubectl describe on the automatically created Challenge resource:
+kubectl describe challenge quickstart-example-tls-889745041-0
 
+# From above, we can see that the challenge has been 'presented' and cert-manager is waiting for the challenge record to propagate to the ingress controller. You should keep an eye out for new events on the challenge resource, as a 'success' event should be printed after a minute or so (depending on how fast your ingress controller is at updating rules):
+kubectl describe challenge quickstart-example-tls-889745041-0
 
-
+```
 
 
 

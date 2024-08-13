@@ -114,7 +114,7 @@ prompt = no
 distinguished_name = dn
 req_extensions = ext
 [dn]
-CN = www.catornot.com
+CN = www.catornot.org
 emailAddress = cactoos555@gmail.com
 O = CatOrNot Ltd
 L = Seoul
@@ -124,13 +124,13 @@ C = KR
 subjectAltName = @alt_names
 
 [alt_names]
-DNS.1   = *.catornot.com
-DNS.2   = catornot.com
+DNS.1   = *.catornot.org
+DNS.2   = catornot.org
 DNS.3   = argocd-repo-server
 DNS.4   = argocd-repo-server.argo-cd.svc
 DNS.5   = argocd-dex-server
 DNS.6   = argocd-dex-server.argo-cd.svc
-IP.1    = 192.168.0.202
+IP.1    = 192.168.0.201
 EOF
 
 openssl req -new -config argocd.cnf -key argocd.key -out argocd.csr
@@ -148,13 +148,13 @@ openssl req -new -config argocd.cnf -key argocd.key -out argocd.csr
 cat << EOF > argocd.ext
 subjectAltName = @alt_names
 [alt_names]
-DNS.1   = *.catornot.com
-DNS.2   = catornot.com
+DNS.1   = *.catornot.org
+DNS.2   = catornot.org
 DNS.3   = argocd-repo-server
 DNS.4   = argocd-repo-server.argo-cd.svc
 DNS.5   = argocd-dex-server
 DNS.6   = argocd-dex-server.argo-cd.svc
-IP.1    = 192.168.0.202
+IP.1    = 192.168.0.201
 EOF
 
 openssl x509 -req -days 3650 -in argocd.csr -signkey argocd.key -out argocd.crt -extfile argocd.ext
@@ -268,7 +268,7 @@ kubectl edit deployment argocd-server -n argocd
 ### Check argocd-server pods if it correctly uses the created certificate!
 
 ```sh
-kubectl exec -it argocd-server-66688f65d6-xdcl8 -nargocd /bin/bash
+kubectl exec -it argocd-server-6dd89c8cc4-zqz2g -nargocd /bin/bash
 ls /app/config/server/tls
 
 openssl x509 -text -in /app/config/server/tls/tls.crt -noout
@@ -285,7 +285,6 @@ When deploying internally (to the same cluster that Argo CD is running in),
 argocd cluster list
     SERVER                          NAME        VERSION  STATUS   MESSAGE                                                  PROJECT
     https://kubernetes.default.svc  in-cluster           Unknown  Cluster has no applications and is not being monitored.
-
 
     arn:aws:eks:ap-northeast-2:094833749257:cluster/my-cluster
 kubectl config get-contexts -o name
@@ -344,10 +343,10 @@ spec:
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     tls:
     - hosts:
-      - argocd.catornot.com
+      - argocd.catornot.org
       secretName: argocd-server-tls
     hosts:
-      - host: argocd.catornot.com
+      - host: argocd.catornot.org
         http:
           paths:
           - path: /
@@ -362,8 +361,8 @@ spec:
 - hosts file
 
 ```
-192.168.0.201 catornot.com
-192.168.0.201 argocd.catornot.com
+192.168.0.201 catornot.org
+192.168.0.201 argocd.catornot.org
 ```
 
 
@@ -381,9 +380,9 @@ kubectl get svc/argocd-server -n argocd
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 kubectl get svc/argocd-server -n argocd
     NAME            TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
-    argocd-server   LoadBalancer   10.98.233.38   192.168.0.202   80:32216/TCP,443:32427/TCP   15h
+    argocd-server   LoadBalancer   10.98.233.38   192.168.0.201   80:32216/TCP,443:32427/TCP   15h
 
-# Access available: http://192.168.0.202
+# Access available: http://192.168.0.201
 
 # ROLLBACK
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
@@ -394,9 +393,10 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
 - Create apps via CLI or UI
 
 ```sh
-argocd login argocd.catornot.com
+argocd login argocd.catornot.org
 kubectl config get-contexts -o name
 argocd cluster add pi
+
 
 kubectl config set-context --current --namespace=argocd
 argocd app create catornot --repo https://github.com/jnuho/infra.git --path helm-chart/cat-chart --dest-server https://kubernetes.default.svc --dest-namespace default
@@ -416,7 +416,7 @@ Name:               argocd/catornot
 Project:            default
 Server:             https://kubernetes.default.svc
 Namespace:          default
-URL:                https://argocd.catornot.com/applications/catornot
+URL:                https://argocd.catornot.org/applications/catornot
 Source:
 - Repo:             https://github.com/jnuho/infra.git
   Target:
