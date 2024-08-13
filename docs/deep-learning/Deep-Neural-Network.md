@@ -12,9 +12,6 @@ authors:
 
 # L-layer Deep Neural Network with numpy
 
-<!DOCTYPE html>
-
-<html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Deep+Neural+Network+-+Application+v8</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
@@ -7522,7 +7519,7 @@ a.anchor-link {
   }
 </style>
 <!-- End of mermaid configuration --></head>
-<body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
+<body class="" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
@@ -8796,4 +8793,3 @@ y = 0.0, your L-layer model predicts a "non-cat" picture.
 </div>
 </main>
 </body>
-</html>
