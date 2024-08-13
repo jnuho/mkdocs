@@ -8,6 +8,8 @@ authors:
   - junho
 ---
 
+<p align="left"><strong>Date:</strong> May 31, 2024<br></p>
+
 <!-- ### [Deep Learning](https://jnuho.github.io/articles/deep_learning.html -->
 
 <head><meta charset="utf-8"/>

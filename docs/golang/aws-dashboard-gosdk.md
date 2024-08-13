@@ -8,12 +8,13 @@ authors:
   - junho
 ---
 
+<p align="left"><strong>Date:</strong> October 01, 2022<br></p>
 
 <img src="https://i.imgur.com/zjZAUPN.gif" alt="pods" width="520">
 
 <!-- more -->
 
-# Dashboard app with Go AWS SDK: golang/aws-dashboard.md
+# Dashboard app with Go AWS SDK
 
 - [repository](https://github.com/jnuho/goproject)
 - [aws sdk for go](https://aws.amazon.com/sdk-for-go/)

@@ -7,6 +7,8 @@ authors:
   - junho
 ---
 
+<p align="left"><strong>Date:</strong> May 29, 2024<br></p>
+
 |<img src="https://i.imgur.com/vPEfkbp.png" alt="pods" width="500">|
 |:--:| 
 | *Worker pool pattern is one of the golang concurrency patterns* |

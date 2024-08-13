@@ -12,6 +12,8 @@ authors:
     - junho
 ---
 
+<p align="left"><strong>Date:</strong> July 11, 2024<br></p>
+
 <img src="https://imgur.com/DwRBYMd.png" alt="EKS architecture" width="500">
 
 The CatVsNonCat image classifier uses a L-layer Neural network model to classify cat images.

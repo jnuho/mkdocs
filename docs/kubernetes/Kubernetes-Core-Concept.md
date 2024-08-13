@@ -7,6 +7,8 @@ authors:
     - junho
 ---
 
+<p align="left"><strong>Date:</strong> June 1, 2024<br></p>
+
 |<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="680">|
 |:--:| 
 | *Kubernetes as an operating system for the cluster* |

@@ -8,6 +8,8 @@ authors:
   - junho
 ---
 
+<p align="left"><strong>Date:</strong> August 12, 2024<br></p>
+
 I will be creating a CI/CD pipeline -  Github actions as CI and Argo CD as CD. The target is a Kubernetes cluster I created in my home Raspberry pi cluster. And I'll be covering the CI/CD on AWS EKS as well. As a test bed, I will try to apply to the local Raspberry Pi cluster first.
 
 <a href="https://imgur.com/SkvollY.gif" target="_blank"><img src="https://imgur.com/SkvollY.gif" alt="pi-cluster" width="800"></a>

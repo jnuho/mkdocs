@@ -7,6 +7,8 @@ authors:
   - junho
 ---
 
+<p align="left"><strong>Date:</strong> August 1, 2024<br></p>
+
 I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg" alt="k8s" width="50">
@@ -117,7 +119,7 @@ PCIE_PROBE=1
 
 ### Network settings
 
-Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/#time-sync)
+Check [linux set-up](https://blogd.org/linux/linux-basic) for 
 
 - Time sync
 - Change Hostname
@@ -130,7 +132,7 @@ Check [linux set-up](https://blogd.org/blog/2024/07/01/linux/#time-sync)
 
 ## Kubernetes <a class="headerlink" href="#kubernetes" title="Permanent link"> ¶</a>
 
-We will configure Kubernetes v1.30.3.
+We will use v1.30.3 Kubernetes.
 
 - [Prerequisite](#prerequisite)
 - [Container runtime](#container-runtime)
@@ -140,7 +142,7 @@ We will configure Kubernetes v1.30.3.
 ### Prerequisite
 
 - Swap memory off
-  - The default behavior of a kubelet was to fail to start if swap memory was detected on a node. 
+  - "The default behavior of a kubelet was to fail to start if swap memory was detected on a node."
   - You MUST disable swap if the kubelet is not properly configured to use swap.
 
 ```sh

@@ -8,6 +8,8 @@ authors:
   - junho
 ---
 
+<p align="left"><strong>Date:</strong> July 1, 2024<br></p>
+
 Over the course of the Raspberry-pi cluster setup, I tried to record Linux knowledge I learned.
 
 <!-- more -->
