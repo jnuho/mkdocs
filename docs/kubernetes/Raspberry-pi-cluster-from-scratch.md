@@ -969,6 +969,10 @@ kubectl get pod -o wide
 ```
 ## Let's Encrypt Certificate
 
+- [Prerequisite: NGINX Ingress Controller](#prerequisite-nginx-ingress-controller)
+- [Install cert-manager](#install-cert-manager)
+- [Issuer](#issuer)
+
 ### Prerequisite: NGINX Ingress Controller
 
 - [nginx-ingress tutorial by cert-manager](https://cert-manager.io/docs/tutorials/acme/nginx-ingress/)
@@ -980,7 +984,7 @@ One of the most popular CA as of July 2024 is [Let's Encrypt](https://en.wikiped
 In Kubernetes environment, `cert-manager` provide Cloud Native certificate management, which includes certificate auto-renewal!
 
 
-### Deploy cert-manager
+### Install cert-manager
 
 We need to deploy `cert-manager` to our Kubernetes cluster. We can use Helm or plain Kubernetes manifests to install cert-manager.
 
@@ -991,10 +995,110 @@ We need to deploy `cert-manager` to our Kubernetes cluster. We can use Helm or p
 curl -L https://github.com/cert-manager/cert-manager/releases/download/v1.15.2/cert-manager.yaml -o cert-manager.yaml
 
 kubectl apply -f cert-manager.yaml
+
+# You should see cert-manager, cert-manager-cainjector, and cert-manager-webhook
+# The webhook might take a little longer to successfully provision than the others.
+kubectl get pods -n cert-manager
+```
+
+- Check if the installtion of cert-manager is successful
+
+```sh
+# isntall cmctl
+
+OS=$(uname -s | tr A-Z a-z); ARCH=$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/');
+curl -fsSL -o cmctl "https://github.com/cert-manager/cmctl/releases/latest/download/cmctl_${OS}_${ARCH}"
+chmod +x cmctl
+sudo mv cmctl /usr/local/bin
+# or `sudo mv cmctl /usr/local/bin/kubectl-cert_manager` to use `kubectl cert-manager` instead.
+
+# cmctl performs a dry-run certificate creation check against the Kubernetes cluster.
+# If successful, the message The cert-manager API is ready is displayed.
+cmctl check api
+    The cert-manager API is ready
+cmctl check api --wait=2m
+    The cert-manager API is ready
+
+#  End-to-end verify the installation
+cat <<EOF > test-resources.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager-test
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: test-selfsigned
+  namespace: cert-manager-test
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: selfsigned-cert
+  namespace: cert-manager-test
+spec:
+  dnsNames:
+    - example.com
+  secretName: selfsigned-cert-tls
+  issuerRef:
+    name: test-selfsigned
+EOF
+kubectl apply -f test-resources.yaml
+kubectl describe certificate -n cert-manager-test
+kubectl delete -f test-resources.yaml
 ```
 
 
+### Issuers
+
+`cert-manager` mainly uses two different custom Kubernetes resources - known as CRDs - to configure and control how it operates, as well as to store state. These resources are Issuers and Certificates.
+
+An Issuer defines <i>how</i> cert-manager will request TLS certificates. 
+
+`Issuers` are specific to a single namespace in Kubernetes, but there's also a `ClusterIssuer` which is meant to be a cluster-wide version.
+
+ClusterIssuer resources apply across all Ingress resources in your cluster. If you are using a ClusterIssuer, remember to <b>update the Ingress annotation cert-manager.io/issuer to cert-manager.io/cluster-issuer.</b>
+
+There are different types of Issuers. I will be using ACME Issuer.
+
+When you create a new ACME Issuer, cert-manager will generate a private key which is used to identify you with the ACME server.
+
+#### What is ACME?
+
+ACME is a protocol developed to automate the process of obtaining and managing SSL/TLS certificates. It standardizes the interactions between certificate authorities (CAs) and clients to streamline the process of proving domain ownership and issuing certificates.
+
+### What is Let's Encrypt?
+
+Let's Encrypt is a nonprofit CA (certificate authority) that provides free SSL/TLS certificates to promote secure web communications. It uses the ACME protocol to automate the certificate management; the issuance and renewal of these certificates.
+
+#### How ACME Works with Let's Encrypt?
+
+`Client Requests Certificate → Domain Validation → Issuance → Renewal`
+
+- A client (e.g., a web server or application) uses an ACME client (e.g. certbot) to request a certificate from Let's Encrypt.
+- The ACME client and Let's Encrypt engage in a process to validate domain ownership through ACME challenges to prove that the client controls the domain.
+- Once domain ownership is validated, Let's Encrypt issues the certificate and the client installs it.
+- The client periodically renews the certificate through the ACME protocol, ensuring continued validity and security.
+
+```sh
+```
+
+
+
+
+
+
+
+
+
+
+
+
 ## Docker Registry <a class="headerlink" href="#docker-registry" title="Permanent link"> ¶</a>
+
 
 ### Local Registry
 
