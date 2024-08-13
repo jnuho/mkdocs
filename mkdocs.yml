@@ -37,11 +37,12 @@ theme:
 
 extra_css:
   - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css
-  - assets/css/extra.css
+  - stylesheets/extra.css
   
 extra_javascript:
-  - assets/js/mathjax.js
-  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+  - javascripts/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
 
 plugins:
   - search
@@ -72,9 +73,9 @@ nav:
   - 🧿 🇱🇮🇳🇺🇽:
     - <small>-</small> Basic Linux command: linux/linux-basic.md
   - 🧿 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
-    - <small>-</small> Depp Neural Network with numpy: deep-learning/Deep-Neural-Network.md
+    - <small>-</small> Deep Neural Network with numpy: deep-learning/Deep-Neural-Network.md
   - 🧿 🇬🇴🇱🇦🇳🇬:
-    - <small>-</small> Golang basics: golang/basic.md
+    - <small>-</small> Golang basics: golang/golang-basic.md
     - <small>-</small> Concurrency: golang/concurrency.md
     - <small>-</small> Worker pool pattern: golang/worker-pool-pattern.md
     - <small>-</small> Dashboard app with Go AWS SDK: golang/aws-dashboard-gosdk.md

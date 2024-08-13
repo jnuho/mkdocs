@@ -9,40 +9,42 @@ authors:
 
 <p align="left"><strong>Date:</strong> April 01, 2024<br></p>
 
+# Goroutine and Concurrent Programming
+
 |<img src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*OOCsWxmdJIQEZelF1sp4WA.png" alt="pods" width="550">|
 |:--:| 
 | *Golang concurrency* |
 
 <!-- more -->
+# Table of Content
 
-### Goroutine과 동시성 프로그래밍
-
-- [고루틴](#goroutine)
+- [Goroutine](#goroutine)
   - [sync.WaitGroup](#syncwaitgroup)
   - [sync.Once](#synconce)
-- [고루틴의 동작방법](#how-goroutine-works)
-  - [동시성 프로그래밍 주의점](#concurrent-programming-precautions)
-  - [뮤텍스를 이용한 동시성 문제 해결](#solving-concurrency-problems-using-mutexes)
-  - [mutex to ensure atomic access to a shared variable](#mutex-to-ensure-atomic-access-to-a-shared-variable)
-    - [Using mutex and WaitGroup](#using-mutex-and-waitgroup)
-    - [Using mutex and done channel](#using-mutex-and-done-channel)
-    - [More done channel example](#more-done-channel-example)
-  - [뮤텍스의 문제점](#the-problem-with-mutexes)
-  - [또 다른 자원 관리 기법](#또-다른-자원-관리-기법)
-- [채널](#채널)
-  - [go channel with range and close](#go-channel-with-range-and-close)
-  - [채널 크기](#채널-크기)
-  - [채널에서 데이터 대기](#채널에서-데이터-대기)
-  - [SELECT 문](#select-문)
-    - [일정간격으로 실행](#일정간격으로-실행)
-    - [SELECT 패턴](#SELECT-패턴)
-  - [채널로 생산자 소비자 패턴 구현](#채널로-생산자-소비자-패턴-구현)
-  - [unbuffered vs. buffered channel](#buffered-vs-unbuffered-channel)
-- [컨텍스트](#컨텍스트)
-  - [특정 값을 설정한 컨텍스트](#특정-값을-설정한-컨텍스트)
-  - [작업시간 설정한 컨텍스트](#작업시간-설정한-컨텍스트)
-  - [작업취소 가능한 컨텍스트](#작업취소-가능한-컨텍스트)
-  - [취소도 되면서 값도 설정하는 컨텍스트 만들기](#취소도-되면서-값도-설정하는-컨텍스트-만들기)
+- [How Goroutine works](#how-goroutine-works)
+  - [Concurrent Programming Precautions](#concurrent-programming-precautions)
+  - [Solving Concurrency Problems Using Mutexes](#solving-concurrency-problems-using-mutexes)
+  - [Mutex to Ensure Atomic Access to a Shared Variable](#mutex-to-ensure-atomic-access-to-a-shared-variable)
+    - [Using Mutex and WaitGroup](#using-mutex-and-waitgroup)
+    - [Using Mutex and Done Channel](#using-mutex-and-done-channel)
+    - [More Done Channel Example](#more-done-channel-example)
+  - [The Problem with Mutexes](#the-problem-with-mutexes)
+  - [Another Resource Management Technique](#another-resource-management-technique)
+- [Channel](#channel)
+  - [Go Channel with Range and Close](#go-channel-with-range-and-close)
+  - [Channel Size](#channel-size)
+  - [Waiting for Data in a Channel](#waiting-for-data-in-a-channel)
+  - [SELECT Statement](#select-statement)
+    - [Execute at Regular Intervals](#execute-at-regular-intervals)
+    - [SELECT Pattern](#select-pattern)
+  - [Implementing Producer-Consumer Pattern with Channel](#implementing-producer-consumer-pattern-with-channel)
+  - [Buffered vs Unbuffered Channel](#buffered-vs-unbuffered-channel)
+- [Context](#context)
+  - [Cancelable Context](#cancelable-context)
+  - [Setting a Timeout in Context](#setting-a-timeout-in-context)
+  - [Setting a Specific Value in Context](#setting-a-specific-value-in-context)
+  - [Creating a Context with Both Cancellation and Value](#creating-a-context-with-both-cancellation-and-value)
+
 
 <!-- more -->
 
@@ -727,7 +729,7 @@ func main() {
 
 
 
-### 또 다른 자원 관리 기법
+### Another Resource Management Technique
 
 - 각 고루틴이 서로 다른 자원에 접근하게 만드는 두가지 방법
 - mutex없이 동시성 프로그래밍 가능
@@ -789,7 +791,7 @@ func main() {
 <br><br>
 
 
-### 채널
+### Channel
 
 - 채널: 고루틴끼리 메시지를 전달 할 수 있는 메시지 큐
   - 메시지큐에 메시지가 쌓이게 되고
@@ -1118,7 +1120,7 @@ func main() {
 <br><br>
 
 
-### 채널 크기
+### Channel size
 
 - 기본 채널크기 0
   - 채널크기0: 채널에 데이터 보관할 곳이 없으므로 데이터 빼갈때까지 대기
@@ -1154,7 +1156,7 @@ func main() {
 
 
 
-### 채널에서 데이터 대기
+### Waiting for Data in a Channel
 
 - 고루틴에서 데이터를 계속 기다리면서 데이터가 들어오면 작업을 수행
 
@@ -1210,7 +1212,7 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-### SELECT 문
+### SELECT statement
 
 - 여러 채널을 동시에 기다릴 수 있음.
 - 어떤 채널이라도 하나의 채널에서 데이터를 읽어오면 해당 구문을 실행하고 select문이 종료됨.
@@ -1266,7 +1268,7 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-### 일정간격으로 실행
+### Execute at Regular Intervals
 
 ```go
 package main
@@ -1319,7 +1321,7 @@ func main() {
 }
 ```
 
-### SELECT 패턴
+### SELECT pattern
 
 - [select 패턴](https://hamait.tistory.com/1017)
 - [channel with select](https://velog.io/@moonyoung/golang-channel-with-select-헷갈리는-케이스-정리하기)
@@ -1531,7 +1533,7 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-### 채널로 생산자 소비자 패턴 구현
+### Implementing Producer-Consumer Pattern with Channel
 
 - 역할 나누는 방법
   - 컨베이어벨트: 차체생산->바퀴설치->도색->완성
@@ -1692,7 +1694,7 @@ In summary, while not explicitly closing an unbuffered channel won't cause immed
 [↑ Back to top](#)
 <br><br>
 
-### 컨텍스트
+### Context
 
 - https://go.dev/doc/database/cancel-operations
 
@@ -1763,7 +1765,7 @@ func fetchAPI(ctx context.Context, url string, results chan<- string) {
 <br><br>
 
 
-### 작업취소 가능한 컨텍스트
+### Cancelable Context
 
 - 이 컨텍스트를 만들어, 작업자에게 전달하면 작업 지시한 지시자가 원할때 작업취소 알릴 수 있음
 
@@ -1815,7 +1817,7 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-### 작업시간 설정한 컨텍스트
+### Setting a Timeout in Context
 
 - 일정시간 동안만 작업을 지시할 수 있는 컨텍스트 생성
 - WithTimeout() 두번째 인수로 시간을 설정하면, 그시간이 지난 뒤
@@ -1838,7 +1840,7 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-### 특정 값을 설정한 컨텍스트
+### Setting a Specific Value in Context
 
 - 작업자에게 지시할때 별도의 지시사항 추가 가능
 - 컨텍스트에 특정키로 값을 읽어오도록 설정 가능
@@ -1883,7 +1885,7 @@ func main() {
 <br><br>
 
 
-### 취소도 되면서 값도 설정하는 컨텍스트 만들기
+### Creating a Context with Both Cancellation and Value
 
 - 컨텍스트를 만들때 항상 상위 컨텍스트 객체를 인수로 넣어줘야 했음
 - 일반적으로 context.Background()를 넣어줬는데, 여기에 이미 만들어진 컨텍스트 객체 넣어도 됨

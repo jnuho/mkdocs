@@ -9,11 +9,12 @@ authors:
 
 <p align="left"><strong>Date:</strong> April 01, 2024<br></p>
 
+# Learn Golang
+
 - [go.dev/wiki](https://go.dev/wiki/)
 
 <!-- more -->
 
-## Learn Golang
 
 ```sh
 # fmt 라이브러리만 사용할때는 go run 파일명.go 실행 가능
