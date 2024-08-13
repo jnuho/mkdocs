@@ -77,5 +77,5 @@ nav:
     - Golang basics: golang/basic.md
     - Concurrency: golang/concurrency.md
     - Worker pool pattern: golang/worker-pool-pattern.md
-    - Dashboard app with Go AWS SDK: golang/aws-dashboard.md
+    - Dashboard app with Go AWS SDK: golang/aws-dashboard-gosdk.md
   - 🇮🇳🇫🇴: index.md

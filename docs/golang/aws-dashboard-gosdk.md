@@ -9,44 +9,41 @@ authors:
 ---
 
 
-|<img src="https://i.imgur.com/zjZAUPN.gif" alt="pods" width="480">|
-|:--:| 
-| *Dashbaord with Go AWS SDK* |
-
+<img src="https://i.imgur.com/zjZAUPN.gif" alt="pods" width="520">
 
 <!-- more -->
 
-### AWS 자원 조회
+# Dashboard app with Go AWS SDK: golang/aws-dashboard.md
 
 - [repository](https://github.com/jnuho/goproject)
 - [aws sdk for go](https://aws.amazon.com/sdk-for-go/)
 
-### 진행 배경
+## Motivation
 
 - EC2 -> ECS 이관 및 생성 작업에 필요한, ECS, TG, ALB 등 자원조회 기능 필요
 - 자원 생성 시 stage 별 데이터 확인 필요하여 AWS Console 대신, SDK 활용
+- CLI (go cobra library) 툴 대신, 웹페이지 url (ip:port)로 간편하게 사용할 수 있는 web 어플리케이션 생성
+	- url:  프라이빗 클라우드 내부 vpn으로만 접근 가능
+- AWS 자원간 의존성이 있는데, AWS가 제공하는 단일 API로 원하는 자원상태 조회가 힘듦
+- AWS API 호출 결과들로 object list 만들어, 정렬 처리 (Override Len, Less, Swap functions)
 
-### 사용 기술
+## Skills
 
 ```
 Backend : Go, Go AWS SDK
 Frontend : Javascript, HTML, CSS
 ```
 
-### 주요 기능
+## How Application Works
 
-- 조회 : ALB > TargetGroup > Target Health >  Container_Ip, Instance_Id
-- 조회 : ECS Task의 Container, Image, IP 등
-- 조회 : ECR tag, image uri -> 최신순 정렬
+It utilizes Go AWS SDK to render a organized view of AWS resources deployed in multiple environments: dev, stg, prd.
 
-### 구현 시 고려사항 :
+- ALB > TargetGroup > Target Health >  Container_Ip, Instance_Id
+- ECS Task의 Container, Image, IP 등
+- ECR tag, image uri -> 최신순 정렬
 
-- CLI (go cobra library) 툴 대신, 웹페이지 url (ip:port)로 간편하게 사용할 수 있는 web 어플리케이션 생성
-	- url:  프라이빗 클라우드 내부 vpn으로만 접근 가능
-- AWS 자원간 의존성이 있는데, AWS가 제공하는 단일 API로 원하는 자원상태 조회가 힘듦
-- AWS API 호출 결과들로 object list 만들어, 정렬 처리 (Override Len, Less, Swap functions)
 
-### 진행 상태
+## Progress
 
 - Web application (go, javascript, html, css) 완성
 - 컨테이너화
@@ -55,14 +52,14 @@ Frontend : Javascript, HTML, CSS
 	- 고루틴 및 채널 적용: API 호출시 다수의 AWS api 통신하는 경우
 - Cloudwatch 로그, EC2, Task event 조회(down, up) 추가 예정
 
-### 테스트
+## Test
 
 - Cloud접속 -> Vpn > http://{ip_addr}:port
 
 ![go sdk app](https://imgur.com/5tIpYyR.png)
 
 
-### Aws Profile 관리
+## Aws Profile Management
 
 - `credential_source=Ec2InstanceMetadata`
 	- AWS CLI / SDK가 EC2 인스턴스에 attach된 IAM Role 사용하여 Source credential 가져옴
@@ -104,7 +101,7 @@ AWSLambda_FullAccess
 	Grants full access to AWS Lambda service, AWS
 ```
 
-### Credential 접근: go aws sdk
+## Credential: go aws sdk
 
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"
@@ -138,9 +135,7 @@ func InitSession(profile string) *session.Session {
 }
 ```
 
-### 구조체 Repo 정의<br>
-### Repo 반환 인터페이스 정의<br>
-### Repo 구조체 구현 메소드 정의<br>
+### Repo custom interface
 
 - `func (repo *Repo) getAWSTargetGroups()`
 - `func (repo *Repo) getAWSTargetHealths(tgarn string)`
@@ -198,10 +193,5 @@ func (repo *Repo) getAWSTargetGroups() {
 		return
 	}
 }
-```
-
-### 컨테이너화
-
-```sh
 ```
 
