@@ -149,13 +149,3 @@ winpty docker login http://172.16.6.77:5000
 docker push 172.16.6.77:5000/my_image
 docker pull 172.16.6.77:5000/my_image
 ```
-
-
-but i still get error messages "http: server gave HTTP response to HTTPS client"
-when i push my image from local to remote ubuntu server
-
-please suggest the best 
-free docker registry where i can push my local docker images
-and pull images from into my local machine
-i failed to setup my remote ubuntu machine as my own docker registry due to
-docker in the remote machine not supporting https communication

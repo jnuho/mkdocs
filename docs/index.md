@@ -7,9 +7,10 @@ I explore Kubernetes and DevOps practices and write posts here.
 <img src="https://imgur.com/5tIpYyR.jpg" alt="go aws sdk" width="180">
 
 - [Kubernetes cluster from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  On-premise Raspberry PI cluster.
-- [Create EKS cluster with Terraform](kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md) - Cat vs. Non-cat classifier app on EKS using Terraform.
+- [Create EKS cluster with Terraform](kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md): Cat vs. Non-cat classifier app on EKS using Terraform.
 - [Deep Neural Network with numpy](deep-learning/Deep-Neural-Network.md): jupyter notebook to build a L-layer Deep Neural Network.
-- [Golang AWS dashboard](golang/aws-dashboard-gosdk.md) - Resource monitoring app using Go AWS SDK
+- [Github Actions CI and Argo CD](cicd/argocd-github-actions-kubernetes.md): CI/CD pipeline for Kubernetes cluster
+- [Golang AWS dashboard](golang/aws-dashboard-gosdk.md): Resource monitoring app using Go AWS SDK
 
 <hr>
 
