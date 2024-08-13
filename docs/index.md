@@ -7,8 +7,8 @@ I explore Kubernetes and DevOps practices and write posts here.
 <img src="https://imgur.com/5tIpYyR.jpg" alt="go aws sdk" width="180">
 
 
-- [Kubernetes cluster with Raspberry Pi from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  on-premise K8s cluster.
-- [EKS with Terraform](kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md) - Cat vs. Non-cat L-layer Deep Neural network
+- [Kubernetes on Raspberry Pi from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  on-premise K8s cluster.
+- [EKS with Terraform](kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md) - L-layer Deep Neural Network on Cat vs. Non-cat classifier.
 - [Deep Neural Network](deep-learning/Deep-Neural-Network.md): jupyter notebook to build a L-layer DNN
 - [Golang AWS dashboard](golang/aws-dashboard-gosdk.md) - Dashboard app using Go AWS SDK
 

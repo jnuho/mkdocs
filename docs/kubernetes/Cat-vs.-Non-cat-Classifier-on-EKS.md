@@ -70,7 +70,7 @@ The prediction model uses the following steps to train a Neural Network:
 
 <img src="https://miro.medium.com/v2/resize:fit:640/format:webp/1*iNPHcCxIvcm7RwkRaMTx1g.jpeg" alt="gradient descent" width="300">
 
-<sub>Original image credited to towardsdatascience.com</sub>
+<sub><i>Original image credited to towardsdatascience.com</i></sub>
 
 - jupyter [notebook](https://blogd.org/blog/2024/05/31/deep-neural-network-for-image-classification)
 
@@ -227,7 +227,7 @@ Nginx Ingress Controller is a 3rd party implementation of Ingress controller.
 
 <img src="https://kubernetes.io/docs/images/ingress.svg" alt="ingress" width="500">
 
-<sub>Original image credited to kubernetes.io</sub>
+<sub><i>Original image credited to kubernetes.io</i></sub>
 
 ```sh
 kubectl get ingressclass -A
@@ -248,7 +248,7 @@ kubectl get ingressclass -A
 
 <img src="https://kubernetes.github.io/ingress-nginx/images/baremetal/baremetal_overview.jpg" alt="ingress" width="500">
 
-<sub>Original image credited to kubernetes.github.io</sub>
+<sub><i>Original image credited to kubernetes.github.io</i></sub>
 
 
 #### AWS Load Balancer Controller
@@ -774,11 +774,11 @@ The difference between a CA certificate and a self-signed certificate is the iss
 
 <img src="https://coffeewhale.com/assets/images/mlops/hidden-model.png" alt="pods" width="580">
 
-<sub>Original image credited to papers.nips.cc/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf and coffeewhale.com</sub>
+<sub><i>Original image credited to papers.nips.cc/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf and coffeewhale.com</i></sub>
 
 <img src="https://www.determined.ai/assets/images/blogs/kubernetes-bad/kubeflow-unicorns.png" alt="pods" width="480">
 
-<sub>Original image credited to .determined.ai</sub>
+<sub><i>Original image credited to .determined.ai</i></sub>
 
 
 - Challenges of Using Kubernetes-Based ML Tools

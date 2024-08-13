@@ -18,15 +18,18 @@ I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 
 <img src="https://imgur.com/HEPBDpT.jpg" alt="pi-cluster-1" width="600">
 
+<sub><i>Kubernetes Cluster using Raspberry PIs</i></sub>
+
 
 <!-- more -->
 
-Kubernetes is a complex distributed system. By setting it up in home network, I explore inner workings of Kubernetes.
+Kubernetes is a complex distributed system. I decided to explore the inner workings of Kubernetes by setting up the Raspberry Pi cluster in home network.
 
 <br>
 
 # Table of Contents
 
+- [Motivation](#motivation)
 - [Raspberry Pi Setup](#raspberry-pi-setup)
     - [Enable the external PCI Express port](#enable-the-external-pci-express-port)
     - [Set NVMe early in the boot order](#set-nvme-early-in-the-boot-order)
@@ -48,13 +51,21 @@ Kubernetes is a complex distributed system. By setting it up in home network, I 
 - [Argo CD](#argo-cd)
 - [Reference](#reference)
 
+## Motivation
+
+I built [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/) previosuly. Due to the maintaining cost is not so cheap, I tried [VirtualBox implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and [minikube single cluster implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation).
+
+
+But VirtualBox network was unstable and minikube lacks scalability. So I decided to try out Raspberry Pi cluster which includes 1 master and 2 worker nodes.
 
 ## Raspberry Pi Setup <a class="headerlink" href="#raspberry-pi-setup" title="Permanent link"> ¶</a>
 
 
-You need to have minimum 1 master node and 1 worker node. To make the cluster highly available, odd number of master node (1, 3, 5 ...) and more than 2 worker nodes are ideal. I chose SSD over microSD card which seemed to have poor performance and lack durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
+You need to have minimum 1 master node and 1 worker node. But in order to make the cluster highly available, more than 2 worker nodes and odd number of master node (1, 3, 5 ...) are required. I chose SSD over microSD card as the Hard Drive. The microSD storage seemed to have poor performance and bad durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
 
 <img src="https://imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="600">
+
+<sub><i>Without fans</i></sub>
 
 - Hardware
     - 3 x Raspberry pi 5 (1 master, 2 workers)
@@ -69,6 +80,8 @@ You need to have minimum 1 master node and 1 worker node. To make the cluster hi
 Now, configure NVMD SSD Boot! [LINK](https://www.jeffgeerling.com/blog/2023/nvme-ssd-boot-raspberry-pi-5).
 
 <img src="https://imgur.com/2wDQPY0.jpg" alt="pi-cluster-2" width="350">
+
+<sub><i>Installing fans reduces the SSD and CPU temperature drastically</i></sub>
 
 ### Enable the external PCI Express port
 
