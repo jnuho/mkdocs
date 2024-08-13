@@ -33,6 +33,7 @@ Kubernetes is a complex distributed system. I decided to explore the inner worki
 
 - [Motivation](#motivation)
 - [Raspberry Pi Setup](#raspberry-pi-setup)
+    - [Install OS](#install-os)
     - [Enable the external PCI Express port](#enable-the-external-pci-express-port)
     - [Set NVMe early in the boot order](#set-nvme-early-in-the-boot-order)
     - [Network settings](#network-settings)
@@ -49,13 +50,14 @@ Kubernetes is a complex distributed system. I decided to explore the inner worki
 - [Metrics server](#metrics-server)
 - [Nginx Ingress Controller](#nginx-ingress-controller)
 - [Metallb](#metallb)
+- [Let's Encrypt Certificate](#lets-encrypt-certificate)
 - [Docker Registry](#docker-registry)
 - [Argo CD](#argo-cd)
 - [Reference](#reference)
 
 ## Motivation
 
-I built [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/) previosuly. Due to the maintaining cost is not so cheap, I tried [VirtualBox implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and [minikube single cluster implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation).
+I built [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/) previosuly. Due to the maintaining cost, I tried [VirtualBox implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and [minikube single cluster implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation).
 
 
 But VirtualBox network was unstable and minikube lacks scalability. So I decided to try out Raspberry Pi cluster which includes 1 master and 2 worker nodes.
@@ -85,8 +87,19 @@ Now, configure NVMD SSD Boot! [LINK](https://www.jeffgeerling.com/blog/2023/nvme
 
 <sub><i>Installing fans reduces the SSD and CPU temperature drastically</i></sub>
 
+## Install OS
+
+I installed Ubuntu Server 24.04 LTS. The installation process is as follows:
+
+- Download and Run [raspberrypi/rpi-imager](https://github.com/raspberrypi/rpi-imager/releases/).
+- Use NVME SSD Adapter to connect your SSD into your PC.
+- Use rpi-imager to flash the SSD with Ubuntu server 24.04 LTS image.
+- Once done, extract the SSD from the SSD adapter, equip it into the Raspbbery PI and boot with account you setup during the flashing process. (Default id/pw: ubuntu/ubuntu)
+
+
 ### Enable the external PCI Express port
 
+Now that we are logged into the Raspberry Pi 5 server, use command line interface to update some configurations. If you mounted the m.2 NVME SSD into the PI using Raspberry PI's official NVME HAT, the external PCIE port is enabled by default. Otherwise, do the following:
 
 ```sh
 sudo vim /boot/firmware/config.txt
@@ -119,7 +132,7 @@ PCIE_PROBE=1
 
 ### Network settings
 
-Check [linux set-up](https://blogd.org/linux/linux-basic) for 
+Check [linux set-up](https://blogd.org/linux/linux-basic) for initial OS setups.
 
 - Time sync
 - Change Hostname
@@ -954,6 +967,32 @@ kubectl get pod -o wide
     be-py-6bc85fcb56-lb4rk     1/1     Running   0          10m   10.100.189.68    worker2   <none>           <none>
     fe-nginx-d7f6d6449-rzmll   1/1     Running   0          10m   10.100.189.67    worker2   <none>           <none>
 ```
+## Let's Encrypt Certificate
+
+### Prerequisite: NGINX Ingress Controller
+
+- [nginx-ingress tutorial by cert-manager](https://cert-manager.io/docs/tutorials/acme/nginx-ingress/)
+
+Our previous ingress-nginx installation works with default HTTP protocol. However, I wanted to secure  the connection to my application applying certificate issued by CA (Certificate Authority).
+
+One of the most popular CA as of July 2024 is [Let's Encrypt](https://en.wikipedia.org/wiki/Let%27s_Encrypt).
+
+In Kubernetes environment, `cert-manager` provide Cloud Native certificate management, which includes certificate auto-renewal!
+
+
+### Deploy cert-manager
+
+We need to deploy `cert-manager` to our Kubernetes cluster. We can use Helm or plain Kubernetes manifests to install cert-manager.
+
+- use plain Kubernetes manifest
+
+```sh
+# Default static install
+curl -L https://github.com/cert-manager/cert-manager/releases/download/v1.15.2/cert-manager.yaml -o cert-manager.yaml
+
+kubectl apply -f cert-manager.yaml
+```
+
 
 ## Docker Registry <a class="headerlink" href="#docker-registry" title="Permanent link"> ¶</a>
 
