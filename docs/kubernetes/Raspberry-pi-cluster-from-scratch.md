@@ -973,7 +973,7 @@ kubectl get pod -o wide
 - [Install cert-manager](#install-cert-manager)
 - [Issuer](#issuer)
 
-### Prerequisite: NGINX Ingress Controller
+### Prerequisite-1: NGINX Ingress Controller
 
 - [nginx-ingress tutorial by cert-manager](https://cert-manager.io/docs/tutorials/acme/nginx-ingress/)
 
@@ -983,6 +983,16 @@ One of the most popular CA as of July 2024 is [Let's Encrypt](https://en.wikiped
 
 In Kubernetes environment, `cert-manager` provide Cloud Native certificate management, which includes certificate auto-renewal!
 
+### Prerequisite-2: Assign a DNS name
+
+!IMPORTATNT: The external IP that is allocated to the ingress-controller is the IP to which all incoming traffic should be routed.
+To enable this, add it to a DNS zone you control, for example as www.example.com.
+This quick-start assumes you know how to assign a DNS entry to an IP address and will do so.
+
+Since I use metallb the nginx-ingress-controller ip is private ip(192.168.0.201). So First, I have to setup my router's port-forwarding
+so that my router will forward public ip request into the private ip(192.168.0.201)!
+
+- [Port-forwarding](https://luckygg.tistory.com/270)
 
 ### Install cert-manager
 
@@ -1002,10 +1012,10 @@ kubectl get pods -n cert-manager
 ```
 
 - Check if the installtion of cert-manager is successful
+    - `cmctl` is a CLI tool manage and configure cert-manager resources for Kubernetes
 
 ```sh
 # isntall cmctl
-
 OS=$(uname -s | tr A-Z a-z); ARCH=$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/');
 curl -fsSL -o cmctl "https://github.com/cert-manager/cmctl/releases/latest/download/cmctl_${OS}_${ARCH}"
 chmod +x cmctl
@@ -1014,6 +1024,7 @@ sudo mv cmctl /usr/local/bin
 
 # cmctl performs a dry-run certificate creation check against the Kubernetes cluster.
 # If successful, the message The cert-manager API is ready is displayed.
+# Check if the cert-manager API is ready
 cmctl check api
     The cert-manager API is ready
 cmctl check api --wait=2m
@@ -1052,25 +1063,12 @@ kubectl delete -f test-resources.yaml
 ```
 
 
-### Issuers
-
-`cert-manager` mainly uses two different custom Kubernetes resources - known as CRDs - to configure and control how it operates, as well as to store state. These resources are Issuers and Certificates.
-
-An Issuer defines <i>how</i> cert-manager will request TLS certificates. 
-
-`Issuers` are specific to a single namespace in Kubernetes, but there's also a `ClusterIssuer` which is meant to be a cluster-wide version.
-
-ClusterIssuer resources apply across all Ingress resources in your cluster. If you are using a ClusterIssuer, remember to <b>update the Ingress annotation cert-manager.io/issuer to cert-manager.io/cluster-issuer.</b>
-
-There are different types of Issuers. I will be using ACME Issuer.
-
-When you create a new ACME Issuer, cert-manager will generate a private key which is used to identify you with the ACME server.
 
 #### What is ACME?
 
 ACME is a protocol developed to automate the process of obtaining and managing SSL/TLS certificates. It standardizes the interactions between certificate authorities (CAs) and clients to streamline the process of proving domain ownership and issuing certificates.
 
-### What is Let's Encrypt?
+#### What is Let's Encrypt?
 
 Let's Encrypt is a nonprofit CA (certificate authority) that provides free SSL/TLS certificates to promote secure web communications. It uses the ACME protocol to automate the certificate management; the issuance and renewal of these certificates.
 
@@ -1084,10 +1082,19 @@ Let's Encrypt is a nonprofit CA (certificate authority) that provides free SSL/T
 - The client periodically renews the certificate through the ACME protocol, ensuring continued validity and security.
 
 
-#### Configure a Let's Encrypt Issuer - Staging
+### Issuer: staging
 
-Due to strict rate limit, first start with Let's Encrypt `staging issuer`, and check if it's working for staging.
-Then, we can move on to creating the `production issuer`.
+cert-manager mainly uses two different custom Kubernetes resources - known as CRDs - to configure and control how it operates, as well as to store state.
+
+These resources are `Issuers` and `Certificates`.
+
+An Issuer defines <i>how</i> cert-manager will request TLS certificates. 
+
+`Issuers` are specific to a single namespace in Kubernetes, but there's also a `ClusterIssuer` which is meant to be a cluster-wide version. ClusterIssuer resources apply across all Ingress resources in your cluster. If you are using a ClusterIssuer, remember to update the Ingress annotation cert-manager.io/issuer to <b>cert-manager.io/cluster-issuer</b>.
+
+There are different types of Issuers. I will be using ACME Issuer. When you create a new ACME Issuer, cert-manager will generate a private key which is used to identify you with the ACME server.
+
+BEWARE: Let's Encrypt server has a very strict rate limit (check with staging, then do production)
 
 
 ```sh
@@ -1096,6 +1103,7 @@ kubectl create --edit -f https://raw.githubusercontent.com/cert-manager/website/
 # expected output: issuer.cert-manager.io "letsencrypt-staging" created
 
 apiVersion: cert-manager.io/v1
+# kind: Issuer
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-staging
@@ -1120,13 +1128,46 @@ spec:
             ingressClassName: nginx
 
 # You should see the issuer listed with a registered account.
-kubectl describe issuer letsencrypt-staging
+k get clusterissuer
+    NAME                  READY   AGE
+    letsencrypt-staging   True    11s
+k describe clusterissuer letsencrypt-staging
+
+
+# PRODUCTION ClusterIssuer
+kubectl create --edit -f https://raw.githubusercontent.com/cert-manager/website/master/content/docs/tutorials/acme/example/production-issuer.yaml
+
+apiVersion: cert-manager.io/v1
+# kind: Issuer
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: cactoos555@gmail.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    # Enable the HTTP-01 challenge provider
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx
+
+k get clusterissuer
+    NAME                  READY   AGE
+    letsencrypt-prod      True    4s
+    letsencrypt-staging   True    109s
+k describe clusterissuer letsencrypt-prod
 ```
 
 ### Deploy a TLS Ingress Resource
 
-- To request the TLS certificate, edit ingress resource to add the annotation on the ingress with ingress-shim.
-- (Another method) or directly create a cretificate resource.
+- To request the TLS certificate, edit ingress resource to add the `annotation` on the ingress with ingress-shim.
+- (Another method) or directly create a cretificate resource
 
 ```sh
 vim ./cat-chart/values.pi.yaml
@@ -1136,26 +1177,37 @@ kind: Ingress
 metadata:
   name: catornot-ingress
   annotations:
-    cert-manager.io/issuer: "letsencrypt-staging"
+    # cert-manager.io/issuer: "letsencrypt-staging"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
   # ...
 
 # Argo CD: OutOfSync -> deploy to cluster!
-
-# Cert-manager will read these annotations and use them to CREATE a CERTIFICATE, which you can request and see:
-kubectl get certificate
-
-# cert-manager reflects the state of the process for every request in the certificate object
-kubectl describe certificate quickstart-example-tls
-
-# Once complete, cert-manager will have created a secret with the details of the certificate
-# based on the secret used in the ingress resource. You can use the describe command as well to see some details:
-kubectl describe secret quickstart-example-tls
 ```
 
+- <b>Cert-manager will read these annotations and use them to create a certificate, which you can request and see:</b>
 
-#### Configure a Let's Encrypt Issuer - Production
+```sh
+# Cert-manager will read these annotations and use them to CREATE a CERTIFICATE, which you can request and see:
+k get certificate -w
+    NAME           READY   SECRET         AGE
+    catornot-tls   False   catornot-tls   14s
 
-Now that we have confidence that everything is configured correctly, you can update the annotations in the ingress to specify the production issuer:
+# cert-manager reflects the state of the process for every request in the certificate object
+kubectl describe certificate catornot-tls
+```
+
+- <b>Once complete, cert-manager will have created a secret with the details of the certificate based on the secret used in the ingress resource. You can use the describe command as well to see some details:</b>
+
+```sh
+k get secret      
+    NAME                                TYPE                 DATA   AGE
+    catornot-tls-xq4k4                  Opaque               1      77s
+kubectl describe secret catornot-tls-xq4k4
+```
+
+#### Issuer - Production
+
+Now that we have confidence that everything is configured correctly, you can update the annotations in the ingress to specify the `production` issuer:
 
 ```sh
 vim ./cat-chart/values.pi.yaml
@@ -1165,18 +1217,19 @@ kind: Ingress
 metadata:
   name: catornot-ingress
   annotations:
-    cert-manager.io/issuer: "letsencrypt-prod"
-
+    # cert-manager.io/issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
   # ...
 
 # Argo CD: OutOfSync -> deploy to cluster!
 
-# You will also need to delete the existing secret, which cert-manager is watching and will cause it to reprocess the request with the updated issuer.
+# You will also need to DELETE the existing secret, which cert-manager is watching and will cause it to reprocess the request with the updated issuer.
 kubectl delete secret quickstart-example-tls
 
 # Cert-manager will read these annotations and use them to create a certificate, which you can request and see:
 kubectl get certificate
 
+# ---> This will start the process to get a new certificate, and using describe you can see the status. Once the production certificate has been updated, you should see the example KUARD running at your domain with a signed TLS certificate.
 # cert-manager reflects the state of the process for every request in the certificate object
 kubectl describe certificate quickstart-example-tls
 
@@ -1184,8 +1237,13 @@ kubectl describe certificate quickstart-example-tls
 # based on the secret used in the ingress resource. You can use the describe command as well to see some details:
 kubectl describe secret quickstart-example-tls
 
-# You can see the current state of the ACME Order by running kubectl describe on the Order resource that cert-manager has created for your Certificate:
+# ---> You can see the current state of the ACME Order by running kubectl describe on the Order resource that cert-manager has created for your Certificate:
 kubectl describe order quickstart-example-tls-889745041
+    ...
+    Events:
+    Type    Reason      Age   From          Message
+    ----    ------      ----  ----          -------
+    Normal  Created     90s   cert-manager  Created Challenge resource "quickstart-example-tls-889745041-0" for domain "www.example.com"
 
 
 # Here, we can see that cert-manager has created 1 'Challenge' resource to fulfill the Order. You can dig into the state of the current ACME challenge by running kubectl describe on the automatically created Challenge resource:
@@ -1193,9 +1251,20 @@ kubectl describe challenge quickstart-example-tls-889745041-0
 
 # From above, we can see that the challenge has been 'presented' and cert-manager is waiting for the challenge record to propagate to the ingress controller. You should keep an eye out for new events on the challenge resource, as a 'success' event should be printed after a minute or so (depending on how fast your ingress controller is at updating rules):
 kubectl describe challenge quickstart-example-tls-889745041-0
+    ...
+    Status:
+    Presented:   false
+    Processing:  false
+    Reason:      Successfully authorized domain
+    State:       valid
+    Events:
+    Type    Reason          Age   From          Message
+    ----    ------          ----  ----          -------
+    Normal  Started         71s   cert-manager  Challenge scheduled for processing
+    Normal  Presented       70s   cert-manager  Presented challenge using http-01 challenge mechanism
+    Normal  DomainVerified  2s    cert-manager  Domain "www.example.com" verified with "http-01" validation
 
 ```
-
 
 
 
