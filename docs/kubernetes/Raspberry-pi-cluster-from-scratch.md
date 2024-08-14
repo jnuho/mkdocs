@@ -57,15 +57,16 @@ Kubernetes is a complex distributed system. I decided to explore the inner worki
 
 ## Motivation
 
-I built [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/) previosuly. Due to the maintaining cost, I tried [VirtualBox implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and [minikube single cluster implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation).
+Why on-premise Kubernetes?
 
+I built [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/) previosuly. Due to maintaining cost, I tried [VirtualBox implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and [minikube single cluster implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation). But VirtualBox network was unstable and minikube lacks scalability. So I decided to try out Raspberry Pi cluster which includes 1 master and 2 worker nodes.
 
-But VirtualBox network was unstable and minikube lacks scalability. So I decided to try out Raspberry Pi cluster which includes 1 master and 2 worker nodes.
+Also, I wanted to configure Control plane myself for a deeper understanding of Kubernetes management beyond the automated solutions provided by major cloud providers.
+
 
 ## Raspberry Pi Setup <a class="headerlink" href="#raspberry-pi-setup" title="Permanent link"> ¶</a>
 
-
-You need to have minimum 1 master node and 1 worker node. But in order to make the cluster highly available, more than 2 worker nodes and odd number of master node (1, 3, 5 ...) are required. I chose SSD over microSD card as the Hard Drive. The microSD storage seemed to have poor performance and bad durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
+We need to have minimum 1 master node and 1 worker node. But in order to make the cluster highly available, more than 2 worker nodes and odd number of master node (1, 3, 5 ...) are required. I chose SSD over microSD card as the Hard Drive. The microSD storage seemed to have poor performance and bad durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
 
 <img src="https://imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="600">
 
