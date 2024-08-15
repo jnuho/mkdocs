@@ -20,12 +20,12 @@ I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 
 <img src="https://imgur.com/HEPBDpT.jpg" alt="pi-cluster-1" width="600">
 
-<sub><i>Kubernetes Cluster using Raspberry PIs</i></sub>
+<sub><i>Raspberry PI - Kuberentes home cluster</i></sub>
 
 
 <!-- more -->
 
-Kubernetes is a complex distributed system. I decided to explore the inner workings of Kubernetes by setting up the Raspberry Pi cluster in home network.
+Kubernetes is a complex distributed system, comprising numerous components that work together to manage containerized applications at scale. I decided to explore the inner workings of Kubernetes and various components by setting up the Raspberry Pi cluster in home network.
 
 <br>
 
@@ -57,16 +57,18 @@ Kubernetes is a complex distributed system. I decided to explore the inner worki
 
 ## Motivation
 
-Why on-premise Kubernetes?
+Why On-Premise Kubernetes?
 
-I built [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/) previosuly. Due to maintaining cost, I tried [VirtualBox implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and [minikube single cluster implementation](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation). But VirtualBox network was unstable and minikube lacks scalability. So I decided to try out Raspberry Pi cluster which includes 1 master and 2 worker nodes.
+I previously built a [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/). But due to cloud maintenance costs, I opted for a private on-premise setup for greater control over network, hardware, and security.
 
-Also, I wanted to configure Control plane myself for a deeper understanding of Kubernetes management beyond the automated solutions provided by major cloud providers.
+I initially tried a 3-master node MicroK8s cluster on [VirtualBox](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and a single-node setup using [Minikube](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation). But I encountered network instability in Virtualbox and scalability issues in minikube. 
+
+These challenges led me to build a Raspberry Pi cluster with 1 master and 2 worker nodes, offering better stability and scalability, while allowing me to manually configure the control plane for a deeper understanding of Kubernetes management.
 
 
 ## Raspberry Pi Setup <a class="headerlink" href="#raspberry-pi-setup" title="Permanent link"> ¶</a>
 
-We need to have minimum 1 master node and 1 worker node. But in order to make the cluster highly available, more than 2 worker nodes and odd number of master node (1, 3, 5 ...) are required. I chose SSD over microSD card as the Hard Drive. The microSD storage seemed to have poor performance and bad durability. Installing NVME SSD requires M.2 HAT+ and additional configuration in Linux.
+Kubernetes consists of a control plane (master node) and worker nodes. For high availability, an [`odd number`](https://discuss.kubernetes.io/t/high-availability-host-numbers/13143) of master nodes (1, 3, 5, etc.) and more than 2 worker nodes are ideal. I opted for a minimal, scalable setup with 1 master and 2 worker nodes. To ensure durability and better performance, I used SSDs instead of microSD cards. NVMe SSDs require an M.2 HAT+ to connect them to the Raspberry Pi and OS install.
 
 <img src="https://imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="600">
 
@@ -82,7 +84,7 @@ We need to have minimum 1 master node and 1 worker node. But in order to make th
     - 3 x Usb-C cable (power adapter ideally >= 25W = 5A x 5V)
     - 1 x TP LINK Switch Hub TL-SG105
 
-Now, configure NVMD SSD Boot! [LINK](https://www.jeffgeerling.com/blog/2023/nvme-ssd-boot-raspberry-pi-5).
+I referred to a [LINK](https://www.jeffgeerling.com/blog/2023/nvme-ssd-boot-raspberry-pi-5) to configure NVMD SSD Boot.
 
 <img src="https://imgur.com/2wDQPY0.jpg" alt="pi-cluster-2" width="350">
 
@@ -968,11 +970,15 @@ kubectl get pod -o wide
     be-py-6bc85fcb56-lb4rk     1/1     Running   0          10m   10.100.189.68    worker2   <none>           <none>
     fe-nginx-d7f6d6449-rzmll   1/1     Running   0          10m   10.100.189.67    worker2   <none>           <none>
 ```
+
 ## Let's Encrypt Certificate
 
-- [Prerequisite: NGINX Ingress Controller](#prerequisite-nginx-ingress-controller)
+- [Prerequisite-1: NGINX Ingress Controller](#prerequisite-1-nginx-ingress-controller)
+- [Prerequisite-2: Assign a DNS name](#prerequisite-2-assign-a-dns-name)
 - [Install cert-manager](#install-cert-manager)
-- [Issuer](#issuer)
+- [Issuer: staging](#issuer-staging)
+- [Deploy a TLS Ingress Resource](#deploy-a-tls-ingress-resource)
+- [Issuer - Production](#issuer-production)
 
 ### Prerequisite-1: NGINX Ingress Controller
 
