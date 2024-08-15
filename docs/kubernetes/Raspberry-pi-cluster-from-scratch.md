@@ -59,7 +59,7 @@ Kubernetes is a complex distributed system, comprising numerous components that 
 
 Why On-Premise Kubernetes?
 
-I previously built a [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/). Due to cloud maintenance costs, however, I opted for a private on-premise setup for complete control over network, hardware, and security.
+I previously built a [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/). Due to cloud maintenance costs, however, I wanted to have a private on-premise setup for complete control over network, hardware, and security. It would be a good testing bed of application building for Kubernetes environment.
 
 I initially tried a 3-master node MicroK8s cluster on [VirtualBox](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and a single-node setup using [Minikube](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation). But I encountered network instability in Virtualbox and lack of scalability in minikube. 
 
