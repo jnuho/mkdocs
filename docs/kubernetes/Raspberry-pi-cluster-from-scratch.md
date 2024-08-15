@@ -59,11 +59,11 @@ Kubernetes is a complex distributed system, comprising numerous components that 
 
 Why On-Premise Kubernetes?
 
-I previously built a [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/). But due to cloud maintenance costs, I opted for a private on-premise setup for greater control over network, hardware, and security.
+I previously built a [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/). Due to cloud maintenance costs, however, I opted for a private on-premise setup for complete control over network, hardware, and security.
 
-I initially tried a 3-master node MicroK8s cluster on [VirtualBox](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and a single-node setup using [Minikube](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation). But I encountered network instability in Virtualbox and scalability issues in minikube. 
+I initially tried a 3-master node MicroK8s cluster on [VirtualBox](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and a single-node setup using [Minikube](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation). But I encountered network instability in Virtualbox and lack of scalability in minikube. 
 
-These challenges led me to build a Raspberry Pi cluster with 1 master and 2 worker nodes, offering better stability and scalability, while allowing me to manually configure the control plane for a deeper understanding of Kubernetes management.
+So I decided to build a Raspberry Pi cluster with 1 master and 2 worker nodes for better stability and scalability, while allowing me to manually configure the control plane for a deeper understanding of Kubernetes management.
 
 
 ## Raspberry Pi Setup <a class="headerlink" href="#raspberry-pi-setup" title="Permanent link"> ¶</a>
