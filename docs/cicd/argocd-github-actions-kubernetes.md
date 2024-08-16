@@ -62,8 +62,7 @@ chmod +x install-argocd-cli.sh
 
 # NOTE: INITIAL PASSWORD!
 argocd admin initial-password -n argocd
-
-argocd account update-password --server "https://localhost:8080"
+argocd account update-password
 ```
 
 
@@ -77,9 +76,9 @@ kubectl get secret argocd-secret -nargocd -o yaml
 
     apiVersion: v1
     data:
-      admin.password: PASSWORD_HERE
-      admin.passwordMtime: PASSWORD_HERE
-      server.secretkey: SECRETKEY_HERE
+      admin.password: .............
+      admin.passwordMtime: .............
+      server.secretkey: .............
       tls.crt: CERT_HERE
       tls.key: KEY_HERE
     kind: Secret
@@ -95,20 +94,20 @@ kubectl get secret argocd-secret -nargocd -o yaml
 
 ```sh
 # 1. Generate an RSA private key
-openssl genrsa -out argocd.key 2048
+openssl genrsa -out argocd.catornot.org.key 2048
 
 
 # 2. Public key: have just the public part of a key separately
-openssl rsa -in argocd.key -pubout -out argocd-public.key
+openssl rsa -in argocd.catornot.org.key -pubout -out argocd-public.key
 
 
 # 3. Certificate Signing Request (CSR).
 # This is a formal request asking a CA to sign a certificate, and it contains the public key of the
 # entity requesting the certificate and some information about the entity.
 # A CSR is always signed with the private key corresponding to the public key it carries.
-# openssl req -new -key argocd.key -out argocd.csr
-# Here, I did Unattended CSR Generation (non-interactive). it requires creating argocd.cnf beforehand.
-cat << EOF > argocd.cnf
+# openssl req -new -key argocd.catornot.org.key -out argocd.catornot.org.csr
+# Here, I did Unattended CSR Generation (non-interactive). it requires creating argocd.catornot.org.cnf beforehand.
+cat << EOF > argocd.catornot.org.cnf
 [req]
 prompt = no
 distinguished_name = dn
@@ -133,9 +132,9 @@ DNS.6   = argocd-dex-server.argo-cd.svc
 IP.1    = 192.168.0.201
 EOF
 
-openssl req -new -config argocd.cnf -key argocd.key -out argocd.csr
+openssl req -new -config argocd.catornot.org.cnf -key argocd.catornot.org.key -out argocd.catornot.org.csr
 # double-check that the CSR is correct
-# openssl req -text -in argocd.csr -noout
+# openssl req -text -in argocd.catornot.org.csr -noout
 
 
 # 4. Signing Your Own Certificates
@@ -145,7 +144,7 @@ openssl req -new -config argocd.cnf -key argocd.key -out argocd.csr
 # get a publicly trusted certificate. It’s much easier to sign your own. 
 
 # (Required for) Creating Certificates Valid for Multiple Hostnames
-cat << EOF > argocd.ext
+cat << EOF > argocd.catornot.org.ext
 subjectAltName = @alt_names
 [alt_names]
 DNS.1   = *.catornot.org
@@ -157,10 +156,10 @@ DNS.6   = argocd-dex-server.argo-cd.svc
 IP.1    = 192.168.0.201
 EOF
 
-openssl x509 -req -days 3650 -in argocd.csr -signkey argocd.key -out argocd.crt -extfile argocd.ext
+openssl x509 -req -days 3650 -in argocd.catornot.org.csr -signkey argocd.catornot.org.key -out argocd.catornot.org.crt -extfile argocd.catornot.org.ext
 
 # examine the created certificate
-openssl x509 -text -in argocd.crt -noout
+openssl x509 -text -in argocd.catornot.org.crt -noout
 ```
 
 ### Create secrets using Self-signed certificate
@@ -178,18 +177,18 @@ openssl x509 -text -in argocd.crt -noout
 # Argo CD will pick up changes to the argocd-server-tls secret automatically
 # and will not require restart of the pods to use a renewed certificate.
 cd argocd_certs
-```
 
 kubectl create secret tls catornot-tls \
-  --cert=./argocd.crt \
-  --key=./argocd.key
+  --cert=./argocd.catornot.org.crt \
+  --key=./argocd.catornot.org.key
+```
 
 - argocd-repo-server
 
 ```sh
 kubectl create -n argocd secret tls argocd-repo-server-tls \
-  --cert=./argocd.crt \
-  --key=./argocd.key
+  --cert=./argocd.catornot.org.crt \
+  --key=./argocd.catornot.org.key
 
 k get deploy/argocd-repo-server -nargocd
     NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
@@ -206,8 +205,8 @@ k get pod -nargocd
 
 ```sh
 kubectl create -n argocd secret tls argocd-dex-server-tls \
-  --cert=./argocd.crt \
-  --key=./argocd.key
+  --cert=./argocd.catornot.org.crt \
+  --key=./argocd.catornot.org.key
 
 k get deploy/argocd-dex-server -nargocd
     NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
@@ -394,8 +393,10 @@ kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "ClusterIP"}}'
 
 ```sh
 argocd login argocd.catornot.org
-kubectl config get-contexts -o name
-argocd cluster add pi
+
+# Only necessary when deploying to an EXTERNAL cluster.
+# kubectl config get-contexts -o name
+# argocd cluster add pi
 
 
 kubectl config set-context --current --namespace=argocd
