@@ -35,6 +35,9 @@ Github Repository : [CatVsNonCat](https://github.com/jnuho/CatVsNonCat)
 - [Motivation](#motivation)
 - [Why Kuberenetes?](#why-kubernetes)
     - [Scalability](#scalability)
+        - [Horizontal Pod Autoscaling](#horizontal-pod-autoscaling)
+        - [Metric server](#metric-server)
+        - [How does a HorizontalPodAutoscaler work?](#how-does-a-horizontalpodautoscaler-work)
     - [Load Balancing](#load-balancing)
         - [Nginx Ingress Controller](#nginx-ingress-controller)
         - [AWS Load Balancer Controller](#aws-load-balancer-controller)
@@ -190,6 +193,12 @@ spec:
 
 [↑ Back to top](#)
 <br><br>
+
+#### How does a HorizontalPodAutoscaler work?
+
+- Algorithm details
+
+`desiredReplicas = ceil[currentReplicas * ( currentMetricValue / desiredMetricValue )]`
 
 
 ### Load Balancing

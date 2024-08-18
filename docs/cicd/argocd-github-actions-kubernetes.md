@@ -24,6 +24,7 @@ I will be creating a CI/CD pipeline -  Github actions as CI and Argo CD as CD. T
 - [Argo CD](#argo-cd)
     - [Install Argo CD](#install-argo-cd)
     - [Argo CD CLI](#argo-cd-cli)
+        - [Update Password](#update-password)
     - [Configure TLS](#configure-tls)
     - [Create An Application From A Git Repository](#create-an-application-from-a-git-repository)
     - [Sync (Deploy) The Application](#sync-deploy-the-application)
@@ -34,7 +35,6 @@ I will be creating a CI/CD pipeline -  Github actions as CI and Argo CD as CD. T
 ## Argo CD
 
 "Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
-
 
 
 ## Install Argo CD
@@ -59,7 +59,11 @@ EOF
 
 chmod +x install-argocd-cli.sh
 ./install-argocd-cli.sh
+```
 
+### Update password
+
+```sh
 # NOTE: INITIAL PASSWORD!
 argocd admin initial-password -n argocd
 argocd account update-password
@@ -68,24 +72,13 @@ argocd account update-password
 
 ## Configure TLS
 
-This default installation will have a self-signed certificate and cannot be accessed without a bit of extra work. Do one of:
+This default installation will have a self-signed certificate and cannot be accessed without a bit of extra work.
 
 ```sh
-# default self-signed certificate
-kubectl get secret argocd-secret -nargocd -o yaml
-
-    apiVersion: v1
-    data:
-      admin.password: .............
-      admin.passwordMtime: .............
-      server.secretkey: .............
-      tls.crt: CERT_HERE
-      tls.key: KEY_HERE
-    kind: Secret
-    metadata:
-      name: argocd-secret
-      namespace: argocd
-    type: Opaque
+# Default self-signed certificate
+# kubectl get secret argocd-secret -nargocd
+#     NAME            TYPE     DATA   AGE
+#     argocd-secret   Opaque   5      3h56m
 ```
 
 ### Create self-signed TLS certificate
@@ -94,20 +87,18 @@ kubectl get secret argocd-secret -nargocd -o yaml
 
 ```sh
 # 1. Generate an RSA private key
-openssl genrsa -out argocd.catornot.org.key 2048
-
+openssl genrsa -out catornot.org.key 2048
 
 # 2. Public key: have just the public part of a key separately
-openssl rsa -in argocd.catornot.org.key -pubout -out argocd-public.key
-
+# openssl rsa -in catornot.org.key -pubout -out public-catornot.org.key
 
 # 3. Certificate Signing Request (CSR).
 # This is a formal request asking a CA to sign a certificate, and it contains the public key of the
 # entity requesting the certificate and some information about the entity.
 # A CSR is always signed with the private key corresponding to the public key it carries.
-# openssl req -new -key argocd.catornot.org.key -out argocd.catornot.org.csr
-# Here, I did Unattended CSR Generation (non-interactive). it requires creating argocd.catornot.org.cnf beforehand.
-cat << EOF > argocd.catornot.org.cnf
+# openssl req -new -key catornot.org.key -out catornot.org.csr
+# Here, I did Unattended CSR Generation (non-interactive). it requires creating catornot.org.cnf beforehand.
+cat << EOF > catornot.org.cnf
 [req]
 prompt = no
 distinguished_name = dn
@@ -132,9 +123,9 @@ DNS.6   = argocd-dex-server.argo-cd.svc
 IP.1    = 192.168.0.201
 EOF
 
-openssl req -new -config argocd.catornot.org.cnf -key argocd.catornot.org.key -out argocd.catornot.org.csr
+openssl req -new -config catornot.org.cnf -key catornot.org.key -out catornot.org.csr
 # double-check that the CSR is correct
-# openssl req -text -in argocd.catornot.org.csr -noout
+# openssl req -text -in catornot.org.csr -noout
 
 
 # 4. Signing Your Own Certificates
@@ -144,7 +135,7 @@ openssl req -new -config argocd.catornot.org.cnf -key argocd.catornot.org.key -o
 # get a publicly trusted certificate. It’s much easier to sign your own. 
 
 # (Required for) Creating Certificates Valid for Multiple Hostnames
-cat << EOF > argocd.catornot.org.ext
+cat << EOF > catornot.org.ext
 subjectAltName = @alt_names
 [alt_names]
 DNS.1   = *.catornot.org
@@ -156,10 +147,10 @@ DNS.6   = argocd-dex-server.argo-cd.svc
 IP.1    = 192.168.0.201
 EOF
 
-openssl x509 -req -days 3650 -in argocd.catornot.org.csr -signkey argocd.catornot.org.key -out argocd.catornot.org.crt -extfile argocd.catornot.org.ext
+openssl x509 -req -days 3650 -in catornot.org.csr -signkey catornot.org.key -out catornot.org.crt -extfile catornot.org.ext
 
 # examine the created certificate
-openssl x509 -text -in argocd.catornot.org.crt -noout
+openssl x509 -text -in catornot.org.crt -noout
 ```
 
 ### Create secrets using Self-signed certificate
@@ -176,26 +167,23 @@ openssl x509 -text -in argocd.catornot.org.crt -noout
 # To create this secret manually from an existing key pair, you can use kubectl:
 # Argo CD will pick up changes to the argocd-server-tls secret automatically
 # and will not require restart of the pods to use a renewed certificate.
-cd argocd_certs
+cd ~/catornot.org
 
 kubectl create secret tls catornot-tls \
-  --cert=./argocd.catornot.org.crt \
-  --key=./argocd.catornot.org.key
+  --cert=./catornot.org.crt \
+  --key=./catornot.org.key
+
+# NO NEED TO RESTART argocd-server
 ```
 
 - argocd-repo-server
 
 ```sh
 kubectl create -n argocd secret tls argocd-repo-server-tls \
-  --cert=./argocd.catornot.org.crt \
-  --key=./argocd.catornot.org.key
-
-k get deploy/argocd-repo-server -nargocd
-    NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
-    argocd-repo-server                 1/1     1            1           16h
+  --cert=./catornot.org.crt \
+  --key=./catornot.org.key
 
 k rollout restart deploy/argocd-repo-server -nargocd
-k get pod -nargocd
 ```
 
 - argocd-dex-server
@@ -205,54 +193,20 @@ k get pod -nargocd
 
 ```sh
 kubectl create -n argocd secret tls argocd-dex-server-tls \
-  --cert=./argocd.catornot.org.crt \
-  --key=./argocd.catornot.org.key
-
-k get deploy/argocd-dex-server -nargocd
-    NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
-    argocd-dex-server                 1/1     1            1           16h
+  --cert=./catornot.org.crt \
+  --key=./catornot.org.key
 
 k rollout restart deploy/argocd-dex-server -nargocd
-k get pod -nargocd
 ```
 
 #### Configuring TLS between Argo CD components
 
-- Configuring TLS to argocd-repo-server
-    - Modify the pod startup parameters for argocd-server and argocd-application-controller
-    - to include the `--repo-server-strict-tls` parameter.
+- Configuring TLS to `argocd-repo-server` and `argocd-dex-server`
+    - Modify the pod startup parameters for argocd-server, argocd-application-controller, and argocd-dex-server:
+        - --repo-server-strict-tls
+        - --dex-server-strict-tls
 
 ```sh
-kubectl get deploy/argocd-server -nargocd
-    NAME            READY   UP-TO-DATE   AVAILABLE   AGE
-    argocd-server   1/1     1            1           17h
-kubectl edit deployment argocd-server -n argocd
-    spec:
-      containers:
-      - args:
-        - /usr/local/bin/argocd-server
-        - --repo-server-strict-tls
-        name: argocd-server
-
-
-kubectl get statefulsets/argocd-application-controller -n argocd
-    NAME                            READY   AGE
-    argocd-application-controller   1/1     17h
-kubectl edit statefulset argocd-application-controller -n argocd
-    spec:
-      containers:
-      - args:
-        - /usr/local/bin/argocd-application-controller
-        - --repo-server-strict-tls
-```
-
-- Configuring TLS to argocd-dex-server
-    - Modify the pod startup parameters for argocd-server to include the --dex-server-strict-tls parameter.
-
-```sh
-kubectl get deploy/argocd-server -nargocd
-    NAME            READY   UP-TO-DATE   AVAILABLE   AGE
-    argocd-server   1/1     1            1           17h
 kubectl edit deployment argocd-server -n argocd
     spec:
       containers:
@@ -261,8 +215,14 @@ kubectl edit deployment argocd-server -n argocd
         - --repo-server-strict-tls
         - --dex-server-strict-tls
         name: argocd-server
-```
 
+kubectl edit statefulset argocd-application-controller -n argocd
+    spec:
+      containers:
+      - args:
+        - /usr/local/bin/argocd-application-controller
+        - --repo-server-strict-tls
+```
 
 ### Check argocd-server pods if it correctly uses the created certificate!
 
@@ -278,7 +238,6 @@ openssl x509 -text -in /app/config/server/tls/tls.crt -noout
 In case, argocd need to deploy application to a different Kubernetes cluster than the cluster that argocd is running in.
 When deploying internally (to the same cluster that Argo CD is running in),
 `https://kubernetes.default.svc` should be used as the application's K8s API server address.
-
 
 ```sh
 argocd cluster list
