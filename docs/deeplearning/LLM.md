@@ -83,6 +83,8 @@ It <i>redirects the LLM to retrieve relevant information from authoritative, pre
 - Article on RAG from:
     - [AWS](https://aws.amazon.com/what-is/retrieval-augmented-generation/)
     - [Google cloud](https://cloud.google.com/use-cases/retrieval-augmented-generation)
+    - [Oracle](https://www.oracle.com/artificial-intelligence/generative-ai/retrieval-augmented-generation-rag/)
+    - [databricks](https://www.databricks.com/glossary/retrieval-augmented-generation-rag)
 
 <img src="https://docs.aws.amazon.com/images/sagemaker/latest/dg/images/jumpstart/jumpstart-fm-rag.jpg" alt="gradient descent" width="650">
 
