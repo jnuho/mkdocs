@@ -8,29 +8,29 @@ authors:
   - junho
 ---
 
+<img src="https://d17pwbfgewyq5y.cloudfront.net/aiscope.png" target="_blank" width=300>
+
 <p align="left"><strong>Date:</strong> Auguest 18, 2024<br></p>
 
-# What is LLM
+# What is LLM?
 
-Large Language Model is a subset of deep learning and Generative AI. LLM is a type of AI model sepcifically designed to <i>understand, generate, manipulate human language.</i> They are trainined on vast amounts of text data and use this training to predict and generate text.
+Large Language Model (LLM) is a subset of deep learning and Generative AI. LLM is a type of AI model specifically designed to understand, generate, manipulate <i>human language.</i> They are trainined on vast amounts of text data and use this training to predict and generate text.
 
 ## Self-supervised learning
 
-During training, the model sees part of a sentence and tries to predict the next word or fill in missing words (like in masked language modeling), thus a self-supervised learning: the model generates its own labels from the data based on the structure or inherent patterns within the data itself. The model can learn from large amounts of unstructured data, capturing a broad range of linguistic patterns and knowledge.
+LLM is primarily trained using a form of self-supervision. It does not require explicit labels or annotations; instead, the model generates its own labels based on the data itself.
 
+During training, the model sees part of a sentence and tries to predict the next word or fill in missing words (like in masked language modeling). The model can learn from large amounts of unstructured data, capturing a broad range of linguistic patterns and knowledge.
 
 ## Generative AI
 
 Generative AI encompasses more than just language. It includes any AI that can create new content across different domains. LLMs are a specific application of Generative AI focused on language, specialized in generating and working with text.
 
-
 ## Foundation Model
 
-Foundation models, such as GPT-3 and GPT-4, are trained on extensive and diverse datasets in a broad, general-purpose manner.
+A foundation model is a large, pre-trained model that serves as a base or "foundation" for a wide variety of downstream tasks. These models are trained on broad and diverse data, making them versatile for multiple applications. LLMs like GPT-3 and GPT-4 are foundation models because they are pre-trained on vast amounts of data and can be fine-tuned or adapted for specific tasks, such as translation, summarization, sentiment analysis, and more.
 
-You've probably heard of ChatGPT, Gemini or Copilot. They are examples of fine-tuned versions of foundation models. They are LLMs that are built from the Foundation Models and go through fine-tuning process during which the model’s parameters are adjusted based on the new data, which might include domain-specific texts, dialogue examples, or other tailored content. This fine-tuning process helps the model refine its abilities and make it more effective for particular applications.
-
-A foundation model is a large, pre-trained model that serves as a base or "foundation" for a wide variety of downstream tasks. These models are trained on broad and diverse data, making them versatile for multiple applications. LLMs like GPT-4 are foundation models because they are pre-trained on vast amounts of data and can be fine-tuned or adapted for specific tasks, such as translation, summarization, sentiment analysis, and more.
+You've probably heard of ChatGPT, Gemini or Copilot. They are examples of fine-tuned versions of foundation models. They are LLMs that are built from the Foundation Models and go through fine-tuning process during which the model’s parameters are adjusted based on the new data, which might include domain-specific texts, dialogue examples, or other tailored content.
 
 A foundation model can be employed to develop a chatbot, translate languages, or craft creative content. In contrast, LLMs are usually specialized for one or two specific functions, like text generation or language translation. Whilst foundation models are used for a broader spectrum of output, they’re a bit undercooked. LLMs on the other hand, are more developed and stable, in that their accuracy rate is better than foundation models.
 
@@ -49,16 +49,11 @@ LLMs excel in understanding and generating human language, enabling them to perf
 - Understanding and Generation: LLMs are designed to comprehend and generate human language.
 - Multilingual Capabilities: Many LLMs are trained on data from multiple languages, allowing them to understand and generate text in various languages, making them versatile tools for global applications.
 
-
-
-
 ### 3. MODELS
 
 - Deep Learning Architectures: LLMs are built on advanced neural network architectures, such as <a href="https://www.youtube.com/watch?v=SZorAJ4I-sA" target="_blank"><b>transformers</b>.</a> (check [article](https://poloclub.github.io/transformer-explainer/?utm_source=tldrai))
 
 - Transfer Learning: LLMs utilize transfer learning, where a pre-trained model on a large corpus is fine-tuned for specific tasks. 
-
-
 
 
 ## What are hallucinations in LLMs?
@@ -68,28 +63,46 @@ LLMs are powerful, but they’re not without their shortcomings, as demonstrated
 
 ### Best Practices to Reduce Hallucinations in LLMs
 
-- Retrieval-Augmented Generation (RAG)
-    - Combines information retrieval with LLMs to produce accurate outputs.
-    - Uses benchmarks like Retrieval-Augmented Generation Benchmark (RGB) and RAGTruth to test and reduce hallucinations.
+Known challenges of LLMs include: presenting false information when it does not have the answer and creating inaccurate responses due to terminology confusion, etc.
 
-- Fine-Tuning LLMs
-    - Fine-tuning is a method in deep learning when a pre-trained model is further trained on a specific, often smaller, dataset to adapt it to a particular task or domain.
-    - Fine Tuning reduces hallucinations in LLMs by adjusting the model’s patterns
-    - using curated data to align with specific contexts, improving factual accuracy and coherence.
+Let’s look at some of the key strategies that can be used to reduce LLM hallucinations: Fine-tuning LLMs, RAG, etc.
 
-### Retrieval-Augmented Generation (RAG)
+#### Fine-Tuning LLMs
 
-- Combines information retrieval with LLMs to produce accurate outputs.
-- Uses benchmarks like Retrieval-Augmented Generation Benchmark (RGB) and RAGTruth to test and reduce hallucinations.
+- Fine-tuning is a method in deep learning when a pre-trained model is further trained on a specific, often smaller, dataset to adapt it to a particular task or domain.
+- Fine Tuning reduces hallucinations in LLMs by adjusting the model’s patterns
+- using curated data to align with specific contexts, improving factual accuracy and coherence.
 
+#### Retrieval-Augmented Generation (RAG)
 
+RAG (Retrieval-Augmented Generation), an AI framework, is one approach to solving the challenges as mentioned in the beginning. It combines the strengths of traditional information retrieval systems (such as databases) with the capabilities of generative large language models (LLMs) to produce more accurate and contextually relevant outputs. 
 
-
-## Links
+It <i>redirects the LLM to retrieve relevant information from authoritative, pre-determined knowledge sources.</i> Organizations have greater control over the generated text output, and users gain insights into how the LLM generates the response. It uses benchmarks like Retrieval-Augmented Generation Benchmark - `RGB` and `RAGTruth` to test and reduce hallucinations.
 
 
+- Article on RAG from:
+    - [AWS](https://aws.amazon.com/what-is/retrieval-augmented-generation/)
+    - [Google cloud](https://cloud.google.com/use-cases/retrieval-augmented-generation)
 
-- Idea and Concept
+<img src="https://docs.aws.amazon.com/images/sagemaker/latest/dg/images/jumpstart/jumpstart-fm-rag.jpg" alt="gradient descent" width="650">
+
+<sub><i>Original image credited to aws.amazon.com</i></sub>
+
+### Text Embedding
+
+In the context of language models, text embedding is a technique where words, sentences, or even entire documents are transformed into high-dimensional vectors. These vectors capture semantic information about the text, enabling the model to understand and process language more effectively and allowing for more effective search and retrieval.
+
+In an information retrieval system, text embedding is used to match a user's query with the most relevant entries in the database. By comparing vector representations, the system can identify which documents are most semantically similar to the query, even if the exact words used in the query do not appear in the documents.
+
+
+### Vector Database in RAG
+
+A text embedding model (like those provided by BERT, GPT, or other transformer-based models) converts text into high-dimensional vectors (numerical representations). These embeddings capture the semantic meaning of the text in a form that can be processed mathematically.
+
+Vector databases are specialized for storing and managing these high-dimensional vectors. They are designed to efficiently perform similarity searches and nearest-neighbor searches, which are essential for applications involving embeddings.
+
+
+## Referecne
 
 - [Eric Schmidt, AI Conference at Standford](https://www.youtube.com/watch?v=T_JKIkSf93Y)
 - [Geoffrey Hinton: Will digital intelligence replace biological intelligence?](https://www.youtube.com/watch?v=iHCeAotHZa4)
@@ -103,7 +116,7 @@ LLMs are powerful, but they’re not without their shortcomings, as demonstrated
 - [YC Combinator AI startup by college kids (2024)](https://www.youtube.com/watch?v=fmI_OciHV_8)
 - [Sholto Douglas & Trenton Bricken - How to Build & Understand GPT-7's Mind](https://www.youtube.com/watch?v=UTuuTTnjxMQ)
 
-- Reference
+<hr>
 
 - [tldr tech](https://tldr.tech/)
 - [Transformer explainer](https://poloclub.github.io/transformer-explainer/?utm_source=tldrai)

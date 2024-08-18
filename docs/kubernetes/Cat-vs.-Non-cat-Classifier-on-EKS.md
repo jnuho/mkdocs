@@ -119,7 +119,7 @@ Kubernetes offers orchestration of containerized applications across a cluster o
 
 <img src="https://imgur.com/KxETYaG.png" alt="ingress" width="700">
 
-#### Horizonal Pod Autoscaling
+#### Horizontal Pod Autoscaling
 
 HPA control loop checks `CPU` and `Memory` usage via api-server's metric api  and scales accordingly.
 

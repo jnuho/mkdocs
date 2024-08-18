@@ -9,7 +9,7 @@ I explore Kubernetes and DevOps practices and write posts here.
 - [Kubernetes cluster from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  On-premise Raspberry PI cluster.
 <!-- - [Kubernetes cluster from scratch](blog/2024/08/01/raspberry-pi-cluster-from-scratch):  On-premise Raspberry PI cluster. -->
 - [Create EKS cluster with Terraform](kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md): Cat vs. Non-cat classifier app on EKS using Terraform.
-- [Deep Neural Network with numpy](deep-learning/Deep-Neural-Network.md): jupyter notebook to build a L-layer Deep Neural Network.
+- [Deep Neural Network with numpy](deeplearning/Deep-Neural-Network.md): jupyter notebook to build a L-layer Deep Neural Network.
 - [Github Actions CI and Argo CD](cicd/argocd-github-actions-kubernetes.md): CI/CD pipeline for Kubernetes cluster
 - [Golang AWS dashboard](golang/aws-dashboard-gosdk.md): Resource monitoring app using Go AWS SDK
 
