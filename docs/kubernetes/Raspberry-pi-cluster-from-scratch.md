@@ -195,16 +195,15 @@ nc 127.0.0.1 6443 -v
 #   There are two cgroup drivers available: cgroupfs-default cgroup driver in the kubelet, systemd.
 #   The Container runtimes page explains that the systemd driver is recommended for kubeadm based setups
 #   instead of the kubelet's default cgroupfs driver, because kubeadm manages the kubelet as a systemd service.
-
-cat << EOF > kubeadm-config.yaml
-kind: ClusterConfiguration
-apiVersion: kubeadm.k8s.io/v1beta3
-kubernetesVersion: v1.30.3
----
-kind: KubeletConfiguration
-apiVersion: kubelet.config.k8s.io/v1beta1
-cgroupDriver: systemd
-EOF
+# cat << EOF > kubeadm-config.yaml
+# kind: ClusterConfiguration
+# apiVersion: kubeadm.k8s.io/v1beta3
+# kubernetesVersion: v1.30.3
+# ---
+# kind: KubeletConfiguration
+# apiVersion: kubelet.config.k8s.io/v1beta1
+# cgroupDriver: systemd
+# EOF
 ```
 
 [↑ Back to top](#)
@@ -984,9 +983,7 @@ kubectl get pod -o wide
 
 - [nginx-ingress tutorial by cert-manager](https://cert-manager.io/docs/tutorials/acme/nginx-ingress/)
 
-Our previous ingress-nginx installation works with default HTTP protocol. However, I wanted to secure  the connection to my application applying certificate issued by CA (Certificate Authority).
-
-One of the most popular CA as of July 2024 is [Let's Encrypt](https://en.wikipedia.org/wiki/Let%27s_Encrypt).
+Our previous ingress-nginx installation works with default HTTP protocol. However, I wanted to secure the connection to my application applying certificate issued by CA (Certificate Authority). One of the most popular CA as of July 2024 is [Let's Encrypt](https://en.wikipedia.org/wiki/Let%27s_Encrypt).
 
 In Kubernetes environment, `cert-manager` provide Cloud Native certificate management, which includes certificate auto-renewal!
 
