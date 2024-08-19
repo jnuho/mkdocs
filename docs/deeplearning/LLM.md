@@ -123,12 +123,12 @@ $$RRF(d) = \sum_{r \in R} \frac{1}{k + r(d)}$$
 - k is a constant (typically 60)
 - r(d) is the rank of document d in ranker r
 
-1. User Query: The process begins when a user inputs a question or query.
-2. Multiple Retrievers: The query is sent to multiple retrievers. These could be different retrieval models (e.g., dense, sparse, hybrid).
-3. Individual Rankings: Each retriever produces its own ranking of relevant documents.
-4. RRF Fusion: The rankings from all retrievers are combined using the RRF formula.
-5. Final Ranking: A unified ranking is produced based on the RRF scores.
-6. Generation: The generative model uses the top-ranked documents to produce the final answer.
+1.  User Query: The process begins when a user inputs a question or query.
+2.  Multiple Retrievers: The query is sent to multiple retrievers. These could be different retrieval models (e.g., dense, sparse, hybrid).
+3.  Individual Rankings: Each retriever produces its own ranking of relevant documents.
+4.  RRF Fusion: The rankings from all retrievers are combined using the RRF formula.
+5.  Final Ranking: A unified ranking is produced based on the RRF scores.
+6.  Generation: The generative model uses the top-ranked documents to produce the final answer.
 
 
 ### Text Embedding
