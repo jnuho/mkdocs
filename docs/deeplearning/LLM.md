@@ -32,7 +32,7 @@ Generative AI encompasses more than just language. It includes any AI that can c
 
 Foundation model is a large, pre-trained model that serves as a base or "foundation" for a wide variety of downstream tasks. These models are trained on broad and diverse data, making them versatile for multiple applications. GPT-3 and GPT-4 are foundation models because they are pre-trained on vast amounts of data and can be fine-tuned or adapted for specific tasks, such as translation, summarization, sentiment analysis, and more.
 
-LLMs are built from the Foundation Models and go through fine-tuning process during which the model’s parameters are adjusted based on the new data, which might include domain-specific texts, dialogue examples, or other tailored content. ChatGPT, Gemini or Copilot are LLMs that are the fine-tuned versions of foundation models. 
+LLMs are built from the Foundation Models and go through fine-tuning process during which the model's parameters are adjusted based on the new data, which might include domain-specific texts, dialogue examples, or other tailored content. ChatGPT, Gemini or Copilot are LLMs that are the fine-tuned versions of foundation models. 
 
 ## Three Pillars of LLM
 
@@ -57,14 +57,14 @@ LLMs excel in understanding and generating human language, enabling them to perf
 
 ## What are hallucinations in LLMs?
 
-LLMs are powerful, but they’re not without their shortcomings, as demonstrated by [incident](https://www.theverge.com/2023/2/8/23590864/google-ai-chatbot-bard-mistake-error-exoplanet-demo) of Bard's factual error in first demo. The point is when LLMs produce undesired output, it’s called a — "hallucination" by the consensus. (Some says it is more like a glitch or bug.)
+LLMs are powerful, but they're not without their shortcomings, as demonstrated by [incident](https://www.theverge.com/2023/2/8/23590864/google-ai-chatbot-bard-mistake-error-exoplanet-demo) of Bard's factual error in first demo. The point is when LLMs produce undesired output, it's called a — "hallucination" by the consensus. (Some says it is more like a glitch or bug.)
 
 
 ### Practices to Reduce Hallucinations in LLMs
 
 Known challenges of LLMs include: presenting false information when it does not have the answer and creating inaccurate responses due to terminology confusion, etc.
 
-Let’s look at some of the key strategies that can be used to reduce LLM hallucinations: Fine-tuning LLMs, RAG, etc.
+Let's look at some of the key strategies that can be used to reduce LLM hallucinations: Fine-tuning LLMs, RAG, etc.
 
 - Fine-Tunning LLMs
 - Retrieval-Augmented Generation (RAG)
@@ -72,7 +72,7 @@ Let’s look at some of the key strategies that can be used to reduce LLM halluc
 ### Fine-Tuning LLMs
 
 - Fine-tuning is a method in deep learning when a pre-trained model is further trained on a specific, often smaller, dataset to adapt it to a particular task or domain.
-- Fine Tuning reduces hallucinations in LLMs by adjusting the model’s patterns
+- Fine Tuning reduces hallucinations in LLMs by adjusting the model's patterns
 - using curated data to align with specific contexts, improving factual accuracy and coherence.
 
 ### Retrieval-Augmented Generation (RAG)

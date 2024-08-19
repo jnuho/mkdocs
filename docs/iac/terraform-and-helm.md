@@ -1219,7 +1219,7 @@ helm uninstall tst-release
 
 - Helm Repository
     - While you can deploy a Helm chart directly from the filesystem,
-    - it’s recommended to use Helm repositories.
+    - it's recommended to use Helm repositories.
     - Helm repositories allow versioning, collaboration, and easy distribution of charts
     - [`LINK`](https://www.kubernet.dev/getting-started-with-helm-simplifying-kubernetes-application-deployments)
 

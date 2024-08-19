@@ -290,7 +290,7 @@ func main() {
 ### sync.Once
 
 - `once-example.go`
-  - Say you’re building a REST API using the Go net/http package and you want a piece of code to be executed
+  - Say you're building a REST API using the Go net/http package and you want a piece of code to be executed
   - only when the HTTP handler is called (e.g. a get a DB connection).
   - You can wrap that code with once.Do and rest assured that
   - it will be only run when the handler is invoked for the first time.
@@ -674,7 +674,7 @@ func main() {
 
 - Deadlock in goroutines (not in using mutex): different scenario than above `mutex` deadlock
   - A deadlock occurs when a group of goroutines are waiting for each other, and none of them can proceed.
-  - Essentially, they’re stuck in a circular dependency, unable to make progress.
+  - Essentially, they're stuck in a circular dependency, unable to make progress.
 
 - `Deadlock` 예시
 

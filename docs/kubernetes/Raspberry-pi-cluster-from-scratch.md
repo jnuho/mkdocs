@@ -711,7 +711,7 @@ csi-node-driver-lkthq                      2/2     Running   0          6m43s
 ```
 
 - To determine the pod network CIDR, you can inspect the configuration of the CNI plugin installed in your cluster.
-- Here’s how you can check for some common CNI plugins:
+- Here's how you can check for some common CNI plugins:
 
 ```sh
 # 1. `calico` CNI plugin
@@ -859,7 +859,7 @@ kubectl get svc -ningress-nginx
 - [installation](https://metallb.universe.tf/installation/)
 
 - Preparation
-    - If you’re using kube-proxy in IPVS mode, since Kubernetes v1.14.2 you have to enable strict ARP mode.
+    - If you're using kube-proxy in IPVS mode, since Kubernetes v1.14.2 you have to enable strict ARP mode.
 
 ```sh
 # kubectl edit configmap -n kube-system kube-proxy

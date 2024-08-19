@@ -453,7 +453,7 @@ COPY --from=build /.env /.env
 
 EXPOSE 3001
 
-# When you specify CMD ["go-app"], Docker looks for an executable named go-app in the system’s $PATH.
+# When you specify CMD ["go-app"], Docker looks for an executable named go-app in the system's $PATH.
 # The $PATH includes common directories where executables are stored, such as /usr/local/bin, /usr/bin, and others.
 CMD ["backend-web-server", "-web-host=:3001"]
 ```
@@ -675,7 +675,7 @@ helm uninstall cat-release
 
 - Helm Repository
     - While you can deploy a Helm chart directly from the filesystem,
-    - it’s recommended to use Helm repositories.
+    - it's recommended to use Helm repositories.
     - Helm repositories allow versioning, collaboration, and easy distribution of charts
     - [`LINK`](https://www.kubernet.dev/getting-started-with-helm-simplifying-kubernetes-application-deployments)
 

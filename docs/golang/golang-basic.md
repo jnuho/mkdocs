@@ -1343,7 +1343,7 @@ func InputIntValue(stdin *bufio.Reader) (int, error) {
 // Scanln reads a small piece of input (like a number or a word) until the first Enter key press (newline).
 // stdin.ReadString reads the entire line of input (including spaces) until the Enter key press (newline).
 // Remember, buffered streams help manage data flow,
-// and Scanln and ReadString are like different ways of listening to your friend’s answers
+// and Scanln and ReadString are like different ways of listening to your friend's answers
 // —either short and quick or long and detailed!
 // => stdin is more explicit about handling buffering
 
@@ -1410,7 +1410,7 @@ for i,v := range slice1 {
 
 - Length: The length of a slice is the number of elements it currently contains. You can get the length of a slice using the built-in len() function.
 
-- Capacity: The capacity of a slice represents the maximum number of elements it can hold without allocating additional memory. You can get the capacity of a slice using the built-in cap() function. Initially, a slice’s capacity is equal to its length, but it can grow as needed. For example:
+- Capacity: The capacity of a slice represents the maximum number of elements it can hold without allocating additional memory. You can get the capacity of a slice using the built-in cap() function. Initially, a slice's capacity is equal to its length, but it can grow as needed. For example:
 
 - Performance
 
@@ -2058,7 +2058,7 @@ func main() {
 
 // NOTE
 // In Go, interfaces are already reference types.
-// When you pass an interface as an argument, you’re effectively passing a reference\
+// When you pass an interface as an argument, you're effectively passing a reference\
 // to the underlying concrete type that implements the interface.
 // Even if you pass an interface by value (without a pointer),
 // it behaves like a reference because it points to the actual implementation.
@@ -2177,7 +2177,7 @@ type Sender interface {
 }
 
 // In Go, interfaces are already reference types.
-// When you pass an interface as an argument, you’re effectively passing a reference\
+// When you pass an interface as an argument, you're effectively passing a reference\
 // to the underlying concrete type that implements the interface.
 // Even if you pass an interface by value (without a pointer),
 // it behaves like a reference because it points to the actual implementation.

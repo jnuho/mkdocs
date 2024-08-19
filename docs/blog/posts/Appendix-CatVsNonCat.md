@@ -270,7 +270,7 @@ sudo ip link set enp0s3 up
 
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 
-When a web application tries to make a request to a server that’s on a different domain, protocol, or port,
+When a web application tries to make a request to a server that's on a different domain, protocol, or port,
 it encounters a CORS (Cross-Origin Resource Sharing) issue. Add headers to backend server accordingly
 
 ```

@@ -131,8 +131,8 @@ openssl req -new -config catornot.org.cnf -key catornot.org.key -out catornot.or
 # 4. Signing Your Own Certificates
 # After a CSR is generated, use it to sign your own certificate and/or send it to a public CA
 # and ask him or her to sign the certificate
-# If you’re installing a TLS server for your own use, you probably don’t want to go to a CA to
-# get a publicly trusted certificate. It’s much easier to sign your own. 
+# If you're installing a TLS server for your own use, you probably don't want to go to a CA to
+# get a publicly trusted certificate. It's much easier to sign your own. 
 
 # (Required for) Creating Certificates Valid for Multiple Hostnames
 cat << EOF > catornot.org.ext

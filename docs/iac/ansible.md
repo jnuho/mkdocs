@@ -67,8 +67,8 @@ ansible-playbook -i inventory main.yml
 ```
 
 The best Ansible playbooks are idempotent, meaning you can run them more than one time,
-and assuming the system hasn’t been changed outside of Ansible,
-you’ll see no changes reported after the first time the playbook is run.
+and assuming the system hasn't been changed outside of Ansible,
+you'll see no changes reported after the first time the playbook is run.
 This is helpful for ensuring a consistent state across your application deployments,
 and to verify there are no changes (intended or not) happening outside of your automation.
 
