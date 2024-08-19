@@ -61,24 +61,24 @@ markdown_extensions:
       custom_checkbox: true
 
 nav:
-  - ☸️ 🇰🇺🇧🇪🇷🇳🇪🇹🇪🇸:
+  - ☸️ Kubernetes:
     # - <small>-</small> Kubernetes Pi Cluster from scratch: blog/posts/Raspberry-pi-cluster-from-scratch.md
     - <small>-</small> Kubernetes Pi Cluster from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
     - <small>-</small> EKS cluster with Terraform - Cat vs. Non-cat app: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
     - <small>-</small> Kubernetes Core concept: kubernetes/Kubernetes-Core-Concept.md
-  - 🧿 🇨🇮/🇨🇩:
+  - 🧿 CI/CD:
     # - Github Actions CI: cicd/github-actions.md
     - <small>-</small> Github Actions CI and Argo CD for Kubernetes cluster: cicd/argocd-github-actions-kubernetes.md
-  - 🧿 🇮🇦🇨:
+  - 🧿 IAC:
     - <small>-</small> Ansible for beginner: iac/ansible.md
     - <small>-</small> Terraform and Helm CLI: iac/terraform-and-helm.md
     - <small>-</small> Helm Chart Guide - PDF: iac/helm.md
-  - 🧿 🇱🇮🇳🇺🇽:
+  - 🧿 LINUX:
     - <small>-</small> Basic Linux command: linux/linux-basic.md
-  - 🧿 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
-    - <small>-</small> Large Language Model (🇱🇱🇲): deeplearning/LLM.md
+  - 🧿 Deep Learning:
+    - <small>-</small> Large Language Model (LLM): deeplearning/LLM.md
     - <small>-</small> Deep Neural Network with numpy: deeplearning/Deep-Neural-Network.md
-  - 🧿 🇬🇴🇱🇦🇳🇬:
+  - 🧿 Golang:
     - <small>-</small> Golang basics: golang/golang-basic.md
     - <small>-</small> Concurrency: golang/concurrency.md
     - <small>-</small> Worker pool pattern: golang/worker-pool-pattern.md
