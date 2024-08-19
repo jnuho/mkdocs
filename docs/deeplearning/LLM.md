@@ -78,11 +78,8 @@ Let’s look at some of the key strategies that can be used to reduce LLM halluc
 
 ### Retrieval-Augmented Generation (RAG)
 
-RAG (Retrieval-Augmented Generation), an AI framework, to solve the challenges mentioned at the beginning. It combines the strengths of traditional information retrieval systems (such as databases) with the capabilities of generative large language models (LLMs) to produce more accurate and contextually relevant outputs. 
-
-It <i>redirects the LLM to retrieve relevant information from authoritative, pre-determined knowledge sources.</i> Organizations have greater control over the generated text output, and users gain insights into how the LLM generates the response. It uses benchmarks like Retrieval-Augmented Generation Benchmark - `RGB` and `RAGTruth` to test and reduce hallucinations.
-
-With RAG, an **information retrieval** component is introduced that utilizes the user input to first pull information from a new data source. The user query and the relevant information are both given to the LLM. The LLM uses the new knowledge and its training data to create better responses.
+RAG (Retrieval-Augmented Generation) is an AI framework to solve the challenges of LLM. It combines the strengths of traditional **information retrieval** systems (such as databases) with the capabilities of generative large language models (LLMs) to produce more accurate and contextually relevant outputs.
+The information retrieval utilizes the user input to first pull information from a new data source (authoritative, pre-determined knowledge sources). The user query and the relevant information are both given to the LLM. The LLM uses the new knowledge and its training data to create better responses. RAG uses benchmarks like Retrieval-Augmented Generation Benchmark (`RGB`) and `RAGTruth` to test and reduce hallucinations.
 
 - Create external data
     - AI technique, called *embedding language models*, converts data into numerical representations and stores it in a vector database. This process creates a knowledge library that the generative AI models can understand.
@@ -94,23 +91,31 @@ With RAG, an **information retrieval** component is introduced that utilizes the
 - Update external data
     - To maintain current information for retrieval, asynchronously update the documents and update embedding representation of the documents.
  
-- Article on RAG from:
-    - [AWS](https://aws.amazon.com/what-is/retrieval-augmented-generation/)
-    - [Google cloud](https://cloud.google.com/use-cases/retrieval-augmented-generation)
-    - [Oracle](https://www.oracle.com/artificial-intelligence/generative-ai/retrieval-augmented-generation-rag/)
-    - [databricks](https://www.databricks.com/glossary/retrieval-augmented-generation-rag)
-
 <img src="https://docs.aws.amazon.com/images/sagemaker/latest/dg/images/jumpstart/jumpstart-fm-rag.jpg" alt="gradient descent" width="650">
 
 <sub><i>The following diagram shows the conceptual flow of using RAG with LLMs.: Original image credited to aws.amazon.com</i></sub>
 
-### Retrieval Method
-
-- BM25
-- Reciprocal Rank Fusion (RRF)
-- Dense Retrieval with Transformers
+- Article on RAG from:
+    - [AWS](https://aws.amazon.com/what-is/retrieval-augmented-generation/)
+    - [Google cloud](https://cloud.google.com/use-cases/retrieval-augmented-generation)
+    - [IBM](https://research.ibm.com/blog/retrieval-augmented-generation-RAG)
+    - [Oracle](https://www.oracle.com/artificial-intelligence/generative-ai/retrieval-augmented-generation-rag/)
+    - [databricks](https://www.databricks.com/glossary/retrieval-augmented-generation-rag)
+- Youtube on RAG from:
+    - [What is RAG](https://www.youtube.com/watch?v=u47GtXwePms)
+        - [How to set up RAG - demo](https://www.youtube.com/watch?v=P8tOjiYEFqU)
+    - [Advanced RAG Concept](https://www.youtube.com/watch?v=ipCx4Jv9Mhk)
+    - [RRF - How to stop worrying about boosting](https://www.youtube.com/watch?v=px4YBYrz0NU)
+    - [Training RAG](https://www.youtube.com/watch?v=zXgTwDHeaQY)
+    - [RAG with DuckDB](https://www.youtube.com/watch?v=U6k7HnQiWzc)
+    - [Hybrid Search for RAG in DuckDB - RRF](https://www.youtube.com/watch?v=Phg91R_RLLE)
 
 ### Reciprocal Rank Fusion (RRF)
+
+- Various Retrieval Method
+    - Reciprocal Rank Fusion (RRF)
+    - Dense Retrieval with Transformers
+    - BM25
 
 Reciprocal Rank Fusion is a rank aggregation method that combines rankings from multiple sources into a single, unified ranking. In the context of RAG, these sources typically use different retrieval models or approaches.
 
@@ -133,7 +138,6 @@ $$RRF(d) = \sum_{r \in R} \frac{1}{k + r(d)}$$
 
 ### Text Embedding
 
-text -> vectored
 In the context of language models, text embedding is a technique where words, sentences, or even entire documents are transformed into high-dimensional vectors. These vectors capture semantic information about the text, enabling the model to understand and process language more effectively and allowing for more effective search and retrieval.
 
 In an information retrieval system, text embedding is used to match a user's query with the most relevant entries in the database. By comparing vector representations, the system can identify which documents are most semantically similar to the query, even if the exact words used in the query do not appear in the documents.
