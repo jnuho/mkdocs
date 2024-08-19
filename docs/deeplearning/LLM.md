@@ -30,9 +30,7 @@ Generative AI encompasses more than just language. It includes any AI that can c
 
 A foundation model is a large, pre-trained model that serves as a base or "foundation" for a wide variety of downstream tasks. These models are trained on broad and diverse data, making them versatile for multiple applications. LLMs like GPT-3 and GPT-4 are foundation models because they are pre-trained on vast amounts of data and can be fine-tuned or adapted for specific tasks, such as translation, summarization, sentiment analysis, and more.
 
-You've probably heard of ChatGPT, Gemini or Copilot. They are examples of fine-tuned versions of foundation models. They are LLMs that are built from the Foundation Models and go through fine-tuning process during which the model’s parameters are adjusted based on the new data, which might include domain-specific texts, dialogue examples, or other tailored content.
-
-A foundation model can be employed to develop a chatbot, translate languages, or craft creative content. In contrast, LLMs are usually specialized for one or two specific functions, like text generation or language translation. Whilst foundation models are used for a broader spectrum of output, they’re a bit undercooked. LLMs on the other hand, are more developed and stable, in that their accuracy rate is better than foundation models.
+You've probably heard of ChatGPT, Gemini or Copilot and they are examples of fine-tuned versions of foundation models. Theres LLMs are built from the Foundation Models and go through fine-tuning process during which the model’s parameters are adjusted based on the new data, which might include domain-specific texts, dialogue examples, or other tailored content.
 
 
 ## Three Pillars of LLM
@@ -78,7 +76,8 @@ Let’s look at some of the key strategies that can be used to reduce LLM halluc
 
 ### Retrieval-Augmented Generation (RAG)
 
-RAG (Retrieval-Augmented Generation) is an AI framework to solve the challenges of LLM. It combines the strengths of traditional **information retrieval** systems (such as databases) with the capabilities of generative large language models (LLMs) to produce more accurate and contextually relevant outputs.
+RAG (Retrieval-Augmented Generation) is an AI framework that combines the strengths of traditional **information retrieval** systems (such as databases) with the capabilities of generative large language models (LLMs) to produce more accurate and contextually relevant outputs.
+
 The information retrieval utilizes the user input to first pull information from a new data source (authoritative, pre-determined knowledge sources). The user query and the relevant information are both given to the LLM. The LLM uses the new knowledge and its training data to create better responses. RAG uses benchmarks like Retrieval-Augmented Generation Benchmark (`RGB`) and `RAGTruth` to test and reduce hallucinations.
 
 - Create external data

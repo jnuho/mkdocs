@@ -76,8 +76,8 @@ nav:
   - 🧿 🇱🇮🇳🇺🇽:
     - <small>-</small> Basic Linux command: linux/linux-basic.md
   - 🧿 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
-    - <small>-</small> Deep Neural Network with numpy: deeplearning/Deep-Neural-Network.md
     - <small>-</small> Large Language Model: deeplearning/LLM.md
+    - <small>-</small> Deep Neural Network with numpy: deeplearning/Deep-Neural-Network.md
   - 🧿 🇬🇴🇱🇦🇳🇬:
     - <small>-</small> Golang basics: golang/golang-basic.md
     - <small>-</small> Concurrency: golang/concurrency.md
