@@ -14,9 +14,11 @@ authors:
 
 # What is LLM?
 
-Large Language Model (LLM) is a subset of deep learning and Generative AI. LLM is a type of AI model specifically designed to understand, generate, manipulate <i>human language.</i> They are trainined on vast amounts of text data and use this training to predict and generate text.
+Large Language Model (LLM), a subset of Generative AI, is a type of AI model specifically designed to understand, generate, manipulate <i>human language.</i> They are trained on vast amounts of text data and use this training to predict and generate text.
 
 ## Self-supervised learning
+
+ Self-supervised learning
 
 LLM is primarily trained using a form of self-supervision. It does not require explicit labels or annotations; instead, the model generates its own labels based on the data itself.
 
@@ -28,10 +30,9 @@ Generative AI encompasses more than just language. It includes any AI that can c
 
 ## Foundation Model
 
-A foundation model is a large, pre-trained model that serves as a base or "foundation" for a wide variety of downstream tasks. These models are trained on broad and diverse data, making them versatile for multiple applications. LLMs like GPT-3 and GPT-4 are foundation models because they are pre-trained on vast amounts of data and can be fine-tuned or adapted for specific tasks, such as translation, summarization, sentiment analysis, and more.
+Foundation model is a large, pre-trained model that serves as a base or "foundation" for a wide variety of downstream tasks. These models are trained on broad and diverse data, making them versatile for multiple applications. GPT-3 and GPT-4 are foundation models because they are pre-trained on vast amounts of data and can be fine-tuned or adapted for specific tasks, such as translation, summarization, sentiment analysis, and more.
 
-You've probably heard of ChatGPT, Gemini or Copilot and they are examples of fine-tuned versions of foundation models. Theres LLMs are built from the Foundation Models and go through fine-tuning process during which the model’s parameters are adjusted based on the new data, which might include domain-specific texts, dialogue examples, or other tailored content.
-
+LLMs are built from the Foundation Models and go through fine-tuning process during which the model’s parameters are adjusted based on the new data, which might include domain-specific texts, dialogue examples, or other tailored content. ChatGPT, Gemini or Copilot are LLMs that are the fine-tuned versions of foundation models. 
 
 ## Three Pillars of LLM
 
