@@ -116,7 +116,7 @@ Reciprocal Rank Fusion is a rank aggregation method that combines rankings from 
 
 The core of RRF is captured in its formula:
 
-$RRF(d) = \sum_{r \in R} \frac{1}{k + r(d)}$, where:
+$$RRF(d) = \sum_{r \in R} \frac{1}{k + r(d)}$$, where:
 
 - d is a document
 - R is the set of rankers (retrievers)
