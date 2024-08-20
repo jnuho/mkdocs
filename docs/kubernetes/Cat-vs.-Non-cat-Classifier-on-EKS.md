@@ -14,7 +14,7 @@ authors:
 
 <p align="left"><strong>Date:</strong> July 11, 2024<br></p>
 
-<img src="https://imgur.com/DwRBYMd.png" alt="EKS architecture" width="500">
+<img src="https://d17pwbfgewyq5y.cloudfront.net/aws-L4-igc.jpg" alt="EKS architecture" width="500">
 
 The CatVsNonCat image classifier uses a L-layer Neural network model to classify cat images.
 
@@ -228,7 +228,7 @@ Nginx Ingress Controller is a 3rd party implementation of Ingress controller.
 
 
 
-<img src="https://imgur.com/DwRBYMd.png" alt="EKS architecture" width="750">
+<img src="https://d17pwbfgewyq5y.cloudfront.net/aws-L4-igc.jpg" alt="EKS architecture" width="750">
 
 <div align="center"><b>NLB</b> with Nginx Ingress Controller</div>
 
