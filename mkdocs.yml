@@ -68,7 +68,7 @@ nav:
     - <small>-</small> Kubernetes Core concept: kubernetes/Kubernetes-Core-Concept.md
   - 🧿 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
     - <small>-</small> Large Language Model (🇱🇱🇲): deeplearning/LLM.md
-    - <small>-</small> Large Language Model (🇱🇱🇲): deeplearning/RAG.md
+    - <small>-</small> Retrieval-Augmented Generation (🇷🇦🇬): deeplearning/RAG.md
     - <small>-</small> Deep Neural Network with numpy: deeplearning/Deep-Neural-Network.md
   - 🧿 🇨🇮/🇨🇩:
     # - Github Actions CI: cicd/github-actions.md
