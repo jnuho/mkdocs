@@ -39,7 +39,7 @@ I will be creating a CI/CD pipeline -  Github actions as CI and Argo CD as CD. T
 
 ## Install Argo CD
 
-<img src="https://imgur.com/ZFTjY2G.jpg" alt="pi-cluster" width="800">
+<img src="https://d17pwbfgewyq5y.cloudfront.net/argocd.jpg" alt="pi-cluster" width="800">
 
 ```sh
 kubectl create namespace argocd
