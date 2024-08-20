@@ -1,6 +1,6 @@
 # 
 
-I explore Kubernetes and DevOps practices and write posts here.
+I explore Deep learning,  Kubernetes and DevOps practices and write posts here.
 
 <img src="https://d17pwbfgewyq5y.cloudfront.net/aws-L4-igc.jpg" alt="eks" width="200">
 <img src="https://d17pwbfgewyq5y.cloudfront.net/argocd.jpg" alt="argocd" width="200">
