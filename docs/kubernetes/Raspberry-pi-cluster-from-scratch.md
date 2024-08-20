@@ -18,7 +18,7 @@ I configured a Kubernetes cluster with `kubeadm` using 3 Raspberry pis.
 <img src="https://imagej.net/media/icons/pi.svg" alt="pi" width="30">
 <img src="https://www.tigera.io/app/uploads/2020/03/Calico-logo.svg" alt="calico" width="110">
 
-<img src="https://imgur.com/HEPBDpT.jpg" alt="pi-cluster-1" width="600">
+<img src="https://d17pwbfgewyq5y.cloudfront.net/pi-cluster.jpg" alt="pi-cluster-1" width="600">
 
 <sub><i>Raspberry PI - Kuberentes home cluster</i></sub>
 
@@ -70,7 +70,7 @@ So I decided to build a Raspberry Pi cluster with 1 master and 2 worker nodes fo
 
 Kubernetes consists of a control plane (master node) and worker nodes. For high availability, an [`odd number`](https://discuss.kubernetes.io/t/high-availability-host-numbers/13143) of master nodes (1, 3, 5, etc.) and more than 2 worker nodes are ideal. I opted for a minimal, scalable setup with 1 master and 2 worker nodes. To ensure durability and better performance, I used SSDs instead of microSD cards. NVMe SSDs require an M.2 HAT+ to connect them to the Raspberry Pi and OS install.
 
-<img src="https://imgur.com/Av7PzuR.jpg" alt="pi-cluster" width="600">
+<img src="https://d17pwbfgewyq5y.cloudfront.net/pi-cluster-wofan.jpg" alt="pi-cluster" width="600">
 
 <sub><i>Without fans</i></sub>
 

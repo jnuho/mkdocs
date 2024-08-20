@@ -4,7 +4,7 @@ I explore Kubernetes and DevOps practices and write posts here.
 
 <img src="https://i.imgur.com/DwRBYMd.png" alt="eks" width="200">
 <img src="https://imgur.com/ZFTjY2G.jpg" alt="argocd" width="200">
-<img src="https://imgur.com/5tIpYyR.jpg" alt="go aws sdk" width="180">
+<img src="https://d17pwbfgewyq5y.cloudfront.net/go-aws-dashboard.jpg" alt="go aws sdk" width="180">
 
 - [Kubernetes cluster from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  On-premise Raspberry PI cluster.
 <!-- - [Kubernetes cluster from scratch](blog/2024/08/01/raspberry-pi-cluster-from-scratch):  On-premise Raspberry PI cluster. -->
