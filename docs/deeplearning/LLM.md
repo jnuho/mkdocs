@@ -67,7 +67,7 @@ Known challenges of LLMs include: presenting false information when it does not 
 Let's look at some of the key strategies that can be used to reduce LLM hallucinations: Fine-tuning LLMs, RAG, etc.
 
 - Fine-Tunning LLMs
-- Retrieval-Augmented Generation (RAG)
+- Retrieval-Augmented Generation (RAG): [LINK](https://blogd.org/deeplearning/RAG/)
 
 ### Fine-Tuning LLMs
 
@@ -75,48 +75,8 @@ Let's look at some of the key strategies that can be used to reduce LLM hallucin
 - Fine Tuning reduces hallucinations in LLMs by adjusting the model's patterns
 - using curated data to align with specific contexts, improving factual accuracy and coherence.
 
-### Retrieval-Augmented Generation (RAG)
-
-- [LINK](https://blogd.org/deeplearning/RAG/)
-
-### Reciprocal Rank Fusion (RRF)
-
-- Various Retrieval Method
-    - Reciprocal Rank Fusion (RRF)
-    - Dense Retrieval with Transformers
-    - BM25
-
-Reciprocal Rank Fusion is a rank aggregation method that combines rankings from multiple sources into a single, unified ranking. In the context of RAG, these sources typically use different retrieval models or approaches.
-
-The core of RRF is captured in its formula:
-
-$$RRF(d) = \sum_{r \in R} \frac{1}{k + r(d)}$$
-
-- d is a document
-- R is the set of rankers (retrievers)
-- k is a constant (typically 60)
-- r(d) is the rank of document d in ranker r
-
-1.  User Query: The process begins when a user inputs a question or query.
-2.  Multiple Retrievers: The query is sent to multiple retrievers. These could be different retrieval models (e.g., dense, sparse, hybrid).
-3.  Individual Rankings: Each retriever produces its own ranking of relevant documents.
-4.  RRF Fusion: The rankings from all retrievers are combined using the RRF formula.
-5.  Final Ranking: A unified ranking is produced based on the RRF scores.
-6.  Generation: The generative model uses the top-ranked documents to produce the final answer.
 
 
-### Text Embedding
-
-In the context of language models, text embedding is a technique where words, sentences, or even entire documents are transformed into high-dimensional vectors. These vectors capture semantic information about the text, enabling the model to understand and process language more effectively and allowing for more effective search and retrieval.
-
-In an information retrieval system, text embedding is used to match a user's query with the most relevant entries in the database. By comparing vector representations, the system can identify which documents are most semantically similar to the query, even if the exact words used in the query do not appear in the documents.
-
-
-### Vector Database in RAG
-
-A text embedding model (like those provided by BERT, GPT, or other transformer-based models) converts text into high-dimensional vectors (numerical representations). These embeddings capture the semantic meaning of the text in a form that can be processed mathematically.
-
-Vector databases are specialized for storing and managing these high-dimensional vectors. They are designed to efficiently perform similarity searches and nearest-neighbor searches, which are essential for applications involving embeddings.
 
 
 ## Referecne

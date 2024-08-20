@@ -37,7 +37,7 @@ The information retrieval utilizes the user input to first pull information from
  - Useful links about RAG:
     - [LINK](https://blogd.org/deeplearning/reference/)
 
-### Reciprocal Rank Fusion (RRF)
+## Reciprocal Rank Fusion (RRF)
 
 - Various Retrieval Method
     - Reciprocal Rank Fusion (RRF)
@@ -63,14 +63,14 @@ $$RRF(d) = \sum_{r \in R} \frac{1}{k + r(d)}$$
 6.  Generation: The generative model uses the top-ranked documents to produce the final answer.
 
 
-### Text Embedding
+## Text Embedding
 
 In the context of language models, text embedding is a technique where words, sentences, or even entire documents are transformed into high-dimensional vectors. These vectors capture semantic information about the text, enabling the model to understand and process language more effectively and allowing for more effective search and retrieval.
 
 In an information retrieval system, text embedding is used to match a user's query with the most relevant entries in the database. By comparing vector representations, the system can identify which documents are most semantically similar to the query, even if the exact words used in the query do not appear in the documents.
 
 
-### Vector Database in RAG
+## Vector Database in RAG
 
 A text embedding model (like those provided by BERT, GPT, or other transformer-based models) converts text into high-dimensional vectors (numerical representations). These embeddings capture the semantic meaning of the text in a form that can be processed mathematically.
 
