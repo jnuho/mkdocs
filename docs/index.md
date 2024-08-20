@@ -19,7 +19,7 @@ I explore Deep learning,  Kubernetes and DevOps practices and write posts here.
 [![jnuho GitHub Streak](https://streak-stats.demolab.com?user=jnuho&theme=github-light)](https://github.com/jnuho)
 
 * <i class="fa fa-github"></i> <a href="https://github.com/jnuho" target="_blank">`GITHUB`</a>
-* <i class="fa fa-linkedin-square"></i> <a href="https://www.linkedin.com/in/jun-ho-lee-047166273/" target="_blank">`LINKEDIN`</a>
+* <i class="fa fa-linkedin-square"></i> <a href="https://www.linkedin.com/in/junho1ee" target="_blank">`LINKEDIN`</a>
 * <i class="fa fa-envelope" aria-hidden="true"></i> [`EMAIL`](mailto:cactoos555@gmail.com?subject=Test)
 
 <hr>
