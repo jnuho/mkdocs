@@ -1,9 +1,10 @@
 ---
 draft: false
-date: 2024-08-18
+date: 2024-08-28
 categories:
   - Deep Learning
   - LLM
+  - Ranking
 authors:
   - junho
 ---
@@ -16,28 +17,12 @@ authors:
 
 <p align="left"><strong>Date:</strong> Auguest 20, 2024<br></p>
 
-# What is Retrieval-Augmented Generation (RAG)?
-
-Foundation model is trainined offline and is agonostic to any newly created data. This makes them less effective for domain-specific tasks. You can use Retrieval-Augmented Generation (RAG) pipeline to retrieve data from outside a foundation model and augment your prompts by adding the relevant retrieved data in context. 
-
-RAG (Retrieval-Augmented Generation) combines the strengths of traditional **information retrieval** systems (such as databases) with the capabilities of generative large language models (LLMs) to produce more accurate and contextually relevant outputs.
-
-The information retrieval utilizes the user input to first pull information from a new data source (authoritative, pre-determined knowledge sources). The user query and the relevant information are both given to the LLM. The LLM uses the new knowledge and its training data to create better responses. RAG uses benchmarks like Retrieval-Augmented Generation Benchmark (`RGB`) and `RAGTruth` to test and reduce hallucinations.
-
-- Create external data
-    - AI technique, called *embedding language models*, converts data into numerical representations and stores it in a vector database. This process creates a knowledge library that the generative AI models can understand.
-- Retrieve relevant information
-    - The next step is to perform a relevancy search. The user query is converted to a vector representation and matched with the vector databases. The system will retrieve relevant documents alongside the individual person's past record. The relevancy was calculated and established using mathematical vector calculations and representations.
-    - **Reciprocal Rank Fusion (RRF)** can be used to improve the relevancy of search results by combining the rankings from multiple retrieval methods or models.
-- Augment the LLM prompt
-    - Next, the RAG model augments the user input (or prompts) by adding the relevant retrieved data in context. This step uses prompt engineering techniques to communicate effectively with the LLM. The augmented prompt allows the large language models to generate an accurate answer to user queries.
-- Update external data
-    - To maintain current information for retrieval, asynchronously update the documents and update embedding representation of the documents.
- 
- - Useful links about RAG:
-    - [LINK](https://blogd.org/deeplearning/reference/)
-
 ## Reciprocal Rank Fusion (RRF)
+
+A research [paper](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) introduces the Reciprocal Rank Fusion (RRF) method for combining multiple search results (rankings).
+
+It demonstrates that RRF outperforms both individual ranking methods and traditional ranking technique, such as the Condorcet fusion. The method is simple to implement, requires no training data, and has shown robust performance across various datasets.
+
 
 - Various Retrieval Method
     - Reciprocal Rank Fusion (RRF)
@@ -48,9 +33,10 @@ Reciprocal Rank Fusion is a rank aggregation method that combines rankings from 
 
 The core of RRF is captured in its formula:
 
-$$RRF(d) = \sum_{r \in R} \frac{1}{k + r(d)}$$
+$$RRF(d \in D) = \sum_{r \in R} \frac{1}{k + r(d)}$$
 
-- d is a document
+- D is a set of documents to be ranked
+- d is a document in the document set, D
 - R is the set of rankers (retrievers)
 - k is a constant (typically 60)
 - r(d) is the rank of document d in ranker r
@@ -62,12 +48,9 @@ $$RRF(d) = \sum_{r \in R} \frac{1}{k + r(d)}$$
 5.  Final Ranking: A unified ranking is produced based on the RRF scores.
 6.  Generation: The generative model uses the top-ranked documents to produce the final answer.
 
+"Our intuition in choosing this formula derived from fact that while highlyranked documents are more important, the importance of lower-ranked documents does not vanish as it would were, say, an exponential function used."
 
 ## Text Embedding
-
-- [sbert document](https://sbert.net/#)
-- [sbert thesis](https://arxiv.org/pdf/1908.10084)
-
 
 In the context of language models, text embedding is a technique where words, sentences, or even entire documents are transformed into high-dimensional vectors. These vectors capture semantic information about the text, enabling the model to understand and process language more effectively and allowing for more effective search and retrieval.
 
