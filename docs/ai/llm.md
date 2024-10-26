@@ -67,7 +67,7 @@ Known challenges of LLMs include: presenting false information when it does not 
 Let's look at some of the key strategies that can be used to reduce LLM hallucinations: Fine-tuning LLMs, RAG, etc.
 
 - Fine-Tunning LLMs
-- Retrieval-Augmented Generation (RAG): [LINK](https://blogd.org/deeplearning/RAG/)
+- Retrieval-Augmented Generation (RAG): [LINK](https://blogd.org/ai/RAG/)
 
 ### Fine-Tuning LLMs
 
@@ -81,4 +81,4 @@ Let's look at some of the key strategies that can be used to reduce LLM hallucin
 
 ## Referecne
 
-- [LINK](https://blogd.org/deeplearning/reference/)
+- [LINK](https://blogd.org/ai/reference/)

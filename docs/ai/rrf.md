@@ -65,4 +65,4 @@ Vector databases are specialized for storing and managing these high-dimensional
 
 ## Referecne
 
-- [LINK](https://blogd.org/deeplearning/reference/)
+- [LINK](https://blogd.org/ai/reference/)

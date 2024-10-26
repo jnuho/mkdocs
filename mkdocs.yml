@@ -63,13 +63,14 @@ markdown_extensions:
 nav:
   - ☸️ 🇰🇺🇧🇪🇷🇳🇪🇹🇪🇸:
     # - <small>-</small> Kubernetes Pi Cluster from scratch: blog/posts/Raspberry-pi-cluster-from-scratch.md
-    - <small>-</small> Kubernetes Pi Cluster from scratch: kubernetes/Raspberry-pi-cluster-from-scratch.md
-    - <small>-</small> EKS cluster with Terraform - Cat vs. Non-cat app: kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md
-    - <small>-</small> Kubernetes Core concept: kubernetes/Kubernetes-Core-Concept.md
-  - 🧿 🇩🇪🇪🇵 🇱🇪🇦🇷🇳🇮🇳🇬:
-    - <small>-</small> Large Language Model (🇱🇱🇲): deeplearning/LLM.md
-    - <small>-</small> Retrieval-Augmented Generation (🇷🇦🇬): deeplearning/RAG.md
-    - <small>-</small> Deep Neural Network with numpy: deeplearning/Deep-Neural-Network.md
+    - <small>-</small> Kubernetes Pi Cluster from scratch: kubernetes/raspberry-pi-cluster-from-scratch.md
+    - <small>-</small> EKS cluster with Terraform - Cat vs. Non-cat app: kubernetes/cat-vs.-non-cat-classifier-on-eks.md
+    - <small>-</small> Kubernetes Core concept: kubernetes/kubernetes-core-concept.md
+  - 🧿 🇦🇮:
+    - <small>-</small> Large Language Model (🇱🇱🇲): ai/llm.md
+    - <small>-</small> Offline Language Model: ai/offline.md
+    - <small>-</small> Retrieval-Augmented Generation (🇷🇦🇬): ai/rag.md
+    - <small>-</small> Deep Neural Network with numpy: ai/deep-neural-network.md
   - 🧿 🇨🇮/🇨🇩:
     # - Github Actions CI: cicd/github-actions.md
     - <small>-</small> Github Actions CI and Argo CD for Kubernetes cluster: cicd/argocd-github-actions-kubernetes.md

@@ -35,7 +35,7 @@ The information retrieval utilizes the user input to first pull information from
     - To maintain current information for retrieval, asynchronously update the documents and update embedding representation of the documents.
  
  - Useful links about RAG:
-    - [LINK](https://blogd.org/deeplearning/reference/)
+    - [LINK](https://blogd.org/ai/reference/)
 
 ## Reciprocal Rank Fusion (RRF)
 
@@ -82,4 +82,4 @@ Vector databases are specialized for storing and managing these high-dimensional
 
 ## Referecne
 
-- [LINK](https://blogd.org/deeplearning/reference/)
+- [LINK](https://blogd.org/ai/reference/)
