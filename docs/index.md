@@ -6,10 +6,10 @@ I explore Deep learning,  Kubernetes and DevOps practices and write posts here.
 <img src="https://d17pwbfgewyq5y.cloudfront.net/argocd.jpg" alt="argocd" width="200">
 <img src="https://d17pwbfgewyq5y.cloudfront.net/go-aws-dashboard.jpg" alt="go aws sdk" width="180">
 
-- [Kubernetes cluster from scratch](kubernetes/Raspberry-pi-cluster-from-scratch.md):  On-premise Raspberry PI cluster.
+- [Kubernetes cluster from scratch](kubernetes/raspberry-pi-cluster-from-scratch.md):  On-premise Raspberry PI cluster.
 <!-- - [Kubernetes cluster from scratch](blog/2024/08/01/raspberry-pi-cluster-from-scratch):  On-premise Raspberry PI cluster. -->
-- [Create EKS cluster with Terraform](kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS.md): Cat vs. Non-cat classifier app on EKS using Terraform.
-- [Deep Neural Network with numpy](ai/Deep-Neural-Network.md): jupyter notebook to build a L-layer Deep Neural Network.
+- [Create EKS cluster with Terraform](kubernetes/cat-vs.-non-cat-classifier-on-eks.md): Cat vs. Non-cat classifier app on EKS using Terraform.
+- [Deep Neural Network with numpy](ai/deep-neural-network.md): jupyter notebook to build a L-layer Deep Neural Network.
 - [Github Actions CI and Argo CD](cicd/argocd-github-actions-kubernetes.md): CI/CD pipeline for Kubernetes cluster
 - [Golang AWS dashboard](golang/aws-dashboard-gosdk.md): Resource monitoring app using Go AWS SDK
 
