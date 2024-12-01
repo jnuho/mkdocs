@@ -20,6 +20,6 @@ I explore Deep learning,  Kubernetes and DevOps practices and write posts here.
 
 * <i class="fa fa-github"></i> <a href="https://github.com/jnuho" target="_blank">`GITHUB`</a>
 * <i class="fa fa-linkedin-square"></i> <a href="https://www.linkedin.com/in/junho1ee" target="_blank">`LINKEDIN`</a>
-* <i class="fa fa-envelope" aria-hidden="true"></i> [`EMAIL`](mailto:cactoos555@gmail.com?subject=Test)
+* <i class="fa fa-envelope" aria-hidden="true"></i> [`EMAIL`](mailto:junho.lee.contact@gmail.com?subject=Test)
 
 <hr>

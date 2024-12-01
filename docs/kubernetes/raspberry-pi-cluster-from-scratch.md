@@ -1117,7 +1117,7 @@ spec:
     # You must replace this email address with your own.
     # Let's Encrypt will use this to contact you about expiring
     # certificates, and issues related to your account.
-    email: cactoos555@gmail.com
+    email: junho.lee.contact@gmail.com
     # The ACME server URL
     server: https://acme-staging-v02.api.letsencrypt.org/directory
     # Name of a secret used to store the ACME account private key
@@ -1151,7 +1151,7 @@ spec:
     # The ACME server URL
     server: https://acme-v02.api.letsencrypt.org/directory
     # Email address used for ACME registration
-    email: cactoos555@gmail.com
+    email: junho.lee.contact@gmail.com
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
       name: letsencrypt-prod

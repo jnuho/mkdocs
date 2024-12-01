@@ -105,7 +105,7 @@ distinguished_name = dn
 req_extensions = ext
 [dn]
 CN = www.catornot.org
-emailAddress = cactoos555@gmail.com
+emailAddress = junho.lee.contact@gmail.com
 O = CatOrNot Ltd
 L = Seoul
 C = KR
