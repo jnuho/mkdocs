@@ -16,7 +16,7 @@ I explore Deep learning,  Kubernetes and DevOps practices and write posts here.
 <hr>
 
 <!-- [![jnuho GitHub stats](https://github-readme-stats.vercel.app/api?username=jnuho&show_icons=true&rank_icon=percentile&show=reviews,prs_merged,prs_merged_percentage)](https://github.com/jnuho) -->
-[![jnuho GitHub Streak](https://streak-stats.demolab.com?user=jnuho&theme=github-light)](https://github.com/jnuho)
+<!-- [![jnuho GitHub Streak](https://streak-stats.demolab.com?user=jnuho&theme=github-light)](https://github.com/jnuho) -->
 
 * <i class="fa fa-github"></i> <a href="https://github.com/jnuho" target="_blank">`GITHUB`</a>
 * <i class="fa fa-linkedin-square"></i> <a href="https://www.linkedin.com/in/junho1ee" target="_blank">`LINKEDIN`</a>
