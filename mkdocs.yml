@@ -61,28 +61,28 @@ markdown_extensions:
       custom_checkbox: true
 
 nav:
-  - ☸️ Kubernetes:
+  - ☸️  Kubernetes:
     - <small>-</small> Kubernetes Pi Cluster from scratch: kubernetes/raspberry-pi-cluster-from-scratch.md
     - <small>-</small> EKS cluster with Terraform - Cat vs. Non-cat app: kubernetes/cat-vs.-non-cat-classifier-on-eks.md
     - <small>-</small> Kubernetes Core concept: kubernetes/kubernetes-core-concept.md
-  - 🧿 AI:
+  - 🧿  AI:
     - <small>-</small> Large Language Model (LLM): ai/llm.md
     - <small>-</small> Offline Language Model: ai/offline.md
     - <small>-</small> Retrieval-Augmented Generation (RAG): ai/rag.md
     - <small>-</small> Deep Neural Network with numpy: ai/deep-neural-network.md
-  - 🧿 CI/CD:
+  - 🧿  CI/CD:
     # - Github Actions CI: cicd/github-actions.md
     - <small>-</small> Github Actions CI and Argo CD for Kubernetes cluster: cicd/argocd-github-actions-kubernetes.md
-  - 🧿 Iac:
+  - 🧿  Iac:
     - <small>-</small> Ansible for beginner: iac/ansible.md
     - <small>-</small> Terraform and Helm CLI: iac/terraform-and-helm.md
     - <small>-</small> Helm Chart Guide - PDF: iac/helm.md
-  - 🧿 Linux:
+  - 🧿  Linux:
     - <small>-</small> Basic Linux command: linux/linux-basic.md
-  - 🧿 Golang:
+  - 🧿  Golang:
     - <small>-</small> Golang basics: golang/golang-basic.md
     - <small>-</small> Concurrency: golang/concurrency.md
     - <small>-</small> Worker pool pattern: golang/worker-pool-pattern.md
     - <small>-</small> Dashboard app with Go AWS SDK: golang/aws-dashboard-gosdk.md
-  - 🧿 Info: index.md
+  - 🧿  About: index.md
 
