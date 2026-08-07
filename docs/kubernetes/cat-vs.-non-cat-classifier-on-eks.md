@@ -74,7 +74,7 @@ The prediction model uses the following steps to train a Neural Network:
 
 <sub><i>Original image credited to towardsdatascience.com</i></sub>
 
-- jupyter [notebook](https://blogd.org/blog/2024/05/31/deep-neural-network-for-image-classification)
+- jupyter [notebook](https://uno-space.com/ai/deep-neural-network/)
 
 ```python
 def L_layer_model(
@@ -300,12 +300,12 @@ Kubernetes natively supports cloud environments, enabling seamless integration w
     - AWS: EKS cluster with 3 worker nodes. Terraform to deploy EKS and AWS Load Balancer Controller and Ingress for exposing the app.
     - Local: 3-node cluster with [microk8s](https://microk8s.io/docs/getting-started).
 - `Terraform` iac to create:
-    - [`LINK`](https://blogd.org/blog/2024/07/01/eks-with-terraform-and-helm)
+    - [`LINK`](https://uno-space.com/iac/terraform-and-helm/)
     - IAM Role and policy association with serviceaccount
     - Networks, EKS cluster, node group, addons
 - `Helm Chart`
     - deploy application using templates
-    - [`LINK`](https://blogd.org/blog/helm.pdf)
+    - [`LINK`](https://uno-space.com/iac/helm.pdf)
 - `Docker` and `Dockerfile` for building images
 - `Github Actions` for CI
     - Github repository -> Dockerhub image repository
@@ -343,7 +343,7 @@ Kubernetes natively supports cloud environments, enabling seamless integration w
    - [main.go](https://github.com/jnuho/CatVsNonCat/blob/main/cmd/backend-web-server/main.go#L50)
    - [weatherapi.go](https://github.com/jnuho/CatVsNonCat/blob/main/pkg/weatherapi.go#L160)
      - Implemented with `Fan-out/Fan-in pattern`
-     - Another possible pattern: [`Worker-pool pattern`](https://blogd.org/blog/2024/05/29/golang-worker-pool-pattern/)
+     - Another possible pattern: [`Worker-pool pattern`](https://uno-space.com/golang/worker-pool-pattern/)
 
 - `Backend - Python uvicorn + fast api web-server`
     - The Python backend worker is responsible for image classification.
@@ -799,7 +799,7 @@ The difference between a CA certificate and a self-signed certificate is the iss
 
 ## Appendix
 
-- [Appendix](https://blogd.org/blog/2024/01/01/catvsnoncat-appendix/)
+- [Appendix](https://uno-space.com/blog/2024/01/01/appendix-catvsnoncat/)
 
 
 ### References

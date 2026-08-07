@@ -3459,7 +3459,7 @@ if r, ok := recover().(net.Error); ok {
 ### 24.고루틴과 동시성 프로그래밍
 ### 25.채널과 컨텍스트
 
-- [Concurrency](https://blogd.org/golang/concurrency)
+- [Concurrency](https://uno-space.com/golang/concurrency)
 
 
 ### 26.단어검색 프로그램 만들기

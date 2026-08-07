@@ -8,7 +8,7 @@ authors:
     - junho
 ---
 
-Extra stuffs from [CatVsNonCat](https://blogd.org/blog/2024/07/11/implement-cat-vs-non-cat-classifier-on-eks/) project.
+Extra stuffs from [CatVsNonCat](https://uno-space.com/kubernetes/cat-vs.-non-cat-classifier-on-eks/) project.
 
 <!-- more -->
 

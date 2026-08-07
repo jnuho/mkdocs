@@ -59,9 +59,9 @@ Kubernetes is a complex distributed system, comprising numerous components that 
 
 Why On-Premise Kubernetes?
 
-I previously built a [Kubernetes Cluster on EKS](https://blogd.org/kubernetes/Cat-vs.-Non-cat-Classifier-on-EKS/). Due to cloud maintenance costs, however, I wanted to have a private on-premise setup for complete control over network, hardware, and security. It would be a good testing bed of application building for Kubernetes environment.
+I previously built a [Kubernetes Cluster on EKS](https://uno-space.com/kubernetes/cat-vs.-non-cat-classifier-on-eks/). Due to cloud maintenance costs, however, I wanted to have a private on-premise setup for complete control over network, hardware, and security. It would be a good testing bed of application building for Kubernetes environment.
 
-I initially tried a 3-master node MicroK8s cluster on [VirtualBox](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and a single-node setup using [Minikube](https://blogd.org/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation). But I encountered network instability in Virtualbox and lack of scalability in minikube. 
+I initially tried a 3-master node MicroK8s cluster on [VirtualBox](https://uno-space.com/blog/2024/01/01/appendix-catvsnoncat/#virtualbox-network-architecture) and a single-node setup using [Minikube](https://uno-space.com/blog/2024/01/01/appendix-catvsnoncat/#minikube-implementation). But I encountered network instability in Virtualbox and lack of scalability in minikube.
 
 So I decided to build a Raspberry Pi cluster with 1 master and 2 worker nodes for better stability and scalability, while allowing me to manually configure the control plane for a deeper understanding of Kubernetes management.
 
@@ -135,7 +135,7 @@ PCIE_PROBE=1
 
 ### Network settings
 
-Check [linux set-up](https://blogd.org/linux/linux-basic) for initial OS setups.
+Check [linux set-up](https://uno-space.com/linux/linux-basic) for initial OS setups.
 
 - Time sync
 - Change Hostname
@@ -1356,7 +1356,7 @@ sudo systemctl restart containerd
 
 "Argo CD is implemented as a Kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo)"
 
-- [LINK](https://blogd.org/cicd/argocd-on-pi-cluster/)
+- [LINK](https://uno-space.com/cicd/argocd-github-actions-kubernetes/)
 
 
 [↑ Back to top](#)
@@ -1370,4 +1370,3 @@ sudo systemctl restart containerd
 - [understanding-ip-subnets-and-cidr](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
 - [Calico](https://docs.tigera.io/calico/latest/getting-started/kubernetes/self-managed-onprem/onpremises#install-calico)
 - [Argo CD](https://argo-cd.readthedocs.io/en/stable/)
-

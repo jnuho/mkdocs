@@ -1,4 +1,5 @@
 site_name: JUN HO LEE
+site_url: https://uno-space.com/
 
 theme:
   name: material
@@ -85,4 +86,3 @@ nav:
     - <small>-</small> Worker pool pattern: golang/worker-pool-pattern.md
     - <small>-</small> Dashboard app with Go AWS SDK: golang/aws-dashboard-gosdk.md
   - 🧿  About: index.md
-
